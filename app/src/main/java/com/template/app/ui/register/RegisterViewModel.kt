@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.register
+package com.template.app.ui.register
 
 import com.template.app.data.model.User
 import com.template.core.base.BaseViewModel

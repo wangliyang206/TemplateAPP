@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.register
+package com.template.app.ui.register
 
 import android.os.Bundle
 import androidx.activity.viewModels

@@ -1,4 +1,4 @@
-﻿package com.template.core.config
+package com.template.core.config
 
 object CoreConfig {
     const val DEFAULT_PAGE_SIZE = 20

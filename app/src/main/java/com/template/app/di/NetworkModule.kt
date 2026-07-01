@@ -1,4 +1,4 @@
-﻿package com.template.app.di
+package com.template.app.di
 
 import com.template.app.data.api.ApiService
 import com.template.core.network.RetrofitClient

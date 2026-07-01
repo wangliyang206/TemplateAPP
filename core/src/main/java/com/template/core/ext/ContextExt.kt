@@ -1,4 +1,4 @@
-﻿package com.template.core.ext
+package com.template.core.ext
 
 import android.content.Context
 import android.widget.Toast

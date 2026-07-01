@@ -1,4 +1,4 @@
-﻿package com.template.app.di
+package com.template.app.di
 
 import android.content.Context
 import com.template.core.db.AppDatabase

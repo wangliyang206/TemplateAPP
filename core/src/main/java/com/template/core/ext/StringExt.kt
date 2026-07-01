@@ -1,4 +1,4 @@
-﻿package com.template.core.ext
+package com.template.core.ext
 
 fun String?.orEmpty(default: String = ""): String = this ?: default
 

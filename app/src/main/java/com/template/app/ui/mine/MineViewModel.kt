@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.mine
+package com.template.app.ui.mine
 
 import androidx.lifecycle.viewModelScope
 import com.template.core.base.BaseViewModel

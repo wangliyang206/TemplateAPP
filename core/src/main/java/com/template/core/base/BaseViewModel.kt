@@ -1,4 +1,4 @@
-﻿package com.template.core.base
+package com.template.core.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.home
+package com.template.app.ui.home
 
 import androidx.fragment.app.viewModels
 import com.template.app.databinding.FragmentHomeBinding

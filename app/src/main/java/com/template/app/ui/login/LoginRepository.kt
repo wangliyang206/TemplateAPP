@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.login
+package com.template.app.ui.login
 
 import com.template.app.data.api.ApiService
 import com.template.app.data.model.User

@@ -1,4 +1,4 @@
-﻿package com.template.core.ext
+package com.template.core.ext
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

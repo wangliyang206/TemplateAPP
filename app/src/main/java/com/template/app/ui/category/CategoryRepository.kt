@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.category
+package com.template.app.ui.category
 
 import com.template.core.base.BaseRepository
 import javax.inject.Inject

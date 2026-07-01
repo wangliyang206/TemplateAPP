@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.splash
+package com.template.app.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent

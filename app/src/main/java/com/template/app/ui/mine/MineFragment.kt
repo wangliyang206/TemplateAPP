@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.mine
+package com.template.app.ui.mine
 
 import android.content.Intent
 import androidx.fragment.app.viewModels

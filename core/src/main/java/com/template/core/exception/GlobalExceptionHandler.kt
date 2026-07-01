@@ -1,4 +1,4 @@
-﻿package com.template.core.exception
+package com.template.core.exception
 
 import android.content.Context
 import android.os.Process

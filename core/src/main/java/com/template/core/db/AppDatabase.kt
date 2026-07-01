@@ -1,4 +1,4 @@
-﻿package com.template.core.db
+package com.template.core.db
 
 import android.content.Context
 import androidx.room.Database

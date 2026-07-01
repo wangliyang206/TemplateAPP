@@ -1,4 +1,4 @@
-﻿package com.template.core.db
+package com.template.core.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

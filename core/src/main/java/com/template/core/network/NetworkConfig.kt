@@ -1,4 +1,4 @@
-﻿package com.template.core.network
+package com.template.core.network
 
 import com.template.core.BuildConfig
 

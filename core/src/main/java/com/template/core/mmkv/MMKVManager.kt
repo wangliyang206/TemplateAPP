@@ -1,4 +1,4 @@
-﻿package com.template.core.mmkv
+package com.template.core.mmkv
 
 import com.tencent.mmkv.MMKV
 

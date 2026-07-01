@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlinKapt)
@@ -7,7 +7,8 @@
 
 apply(from = rootProject.file("config/buildConfig.gradle.kts"))
 
-val buildConfig: Map<String, String> = rootProject.ext.get("buildConfig") as Map<String, String>
+@Suppress("UNCHECKED_CAST")
+val buildConfig: Map<String, String> = rootProject.extra["buildConfig"] as Map<String, String>
 
 android {
     namespace = "com.template.app"

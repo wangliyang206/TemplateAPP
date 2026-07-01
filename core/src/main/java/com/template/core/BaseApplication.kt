@@ -1,4 +1,4 @@
-﻿package com.template.core
+package com.template.core
 
 import android.app.Application
 import com.tencent.mmkv.MMKV

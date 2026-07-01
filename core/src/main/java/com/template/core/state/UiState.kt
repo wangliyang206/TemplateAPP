@@ -1,4 +1,4 @@
-﻿package com.template.core.state
+package com.template.core.state
 
 sealed class UiState<out T> {
     object Loading : UiState<Nothing>()

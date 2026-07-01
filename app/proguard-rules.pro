@@ -1,4 +1,4 @@
-﻿# ProGuard rules for TemplateAPP
+# ProGuard rules for TemplateAPP
 -keep public class com.template.app.** { *; }
 -keep class com.template.core.** { *; }
 

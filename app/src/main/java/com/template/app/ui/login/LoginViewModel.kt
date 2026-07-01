@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.login
+package com.template.app.ui.login
 
 import androidx.lifecycle.viewModelScope
 import com.template.app.data.model.User

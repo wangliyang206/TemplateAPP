@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.home
+package com.template.app.ui.home
 
 import com.template.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

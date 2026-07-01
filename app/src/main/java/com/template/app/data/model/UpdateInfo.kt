@@ -1,4 +1,4 @@
-﻿package com.template.app.data.model
+package com.template.app.data.model
 
 data class UpdateInfo(
     val versionCode: Int,

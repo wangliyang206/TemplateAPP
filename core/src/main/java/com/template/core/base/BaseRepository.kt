@@ -1,4 +1,4 @@
-﻿package com.template.core.base
+package com.template.core.base
 
 import com.template.core.network.ApiResult
 import kotlinx.coroutines.Dispatchers

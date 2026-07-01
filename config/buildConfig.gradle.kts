@@ -1,10 +1,8 @@
-﻿// Multi-environment configuration for TemplateAPP
+// Multi-environment configuration for TemplateAPP
 // Usage in app/build.gradle.kts:
 //   apply(from = rootProject.file("config/buildConfig.gradle.kts"))
 // Then access: rootProject.extra["buildConfig"]
-extra["environment"] = 0
-
-val env = extra["environment"] as Int
+val env = 0 // 0: dev, 1: test, 2: prod
 val config = when (env) {
     0 -> mapOf(
         "appName" to "TemplateAPP-Dev",
@@ -28,4 +26,4 @@ val config = when (env) {
         "versionNameSuffix" to ""
     )
 }
-extra["buildConfig"] = config
+rootProject.extra["buildConfig"] = config

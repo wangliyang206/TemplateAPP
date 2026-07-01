@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.splash
+package com.template.app.ui.splash
 
 import androidx.lifecycle.viewModelScope
 import com.template.core.base.BaseViewModel

@@ -1,1 +1,1 @@
-﻿# core module consumer proguard rules
+# core module consumer proguard rules

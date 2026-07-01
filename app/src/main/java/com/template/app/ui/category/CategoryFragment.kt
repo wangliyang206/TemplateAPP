@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.category
+package com.template.app.ui.category
 
 import androidx.fragment.app.viewModels
 import com.template.app.databinding.FragmentCategoryBinding

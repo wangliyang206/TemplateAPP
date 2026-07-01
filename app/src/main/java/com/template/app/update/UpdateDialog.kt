@@ -1,4 +1,4 @@
-﻿package com.template.app.update
+package com.template.app.update
 
 import android.app.Dialog
 import android.content.Context

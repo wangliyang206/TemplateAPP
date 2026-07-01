@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.login
+package com.template.app.ui.login
 
 import android.content.Intent
 import android.os.Bundle

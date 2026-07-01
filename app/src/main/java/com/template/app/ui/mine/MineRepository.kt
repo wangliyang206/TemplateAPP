@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.mine
+package com.template.app.ui.mine
 
 import com.template.core.base.BaseRepository
 import javax.inject.Inject
