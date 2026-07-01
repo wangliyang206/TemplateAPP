@@ -1,4 +1,4 @@
-package com.template.app.update
+﻿package com.template.app.update
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
@@ -28,7 +28,7 @@ class UpdateViewModel @Inject constructor(
         _updateState.launchWithState {
             val resp = apiService.checkUpdate(versionCode)
             if (resp.code == 200 && resp.data != null) {
-                resp.data
+                resp.data!!
             } else {
                 throw Exception(resp.message)
             }

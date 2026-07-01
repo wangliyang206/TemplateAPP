@@ -1,8 +1,10 @@
-package com.template.app.update
+﻿package com.template.app.update
 
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
+import com.google.android.material.R as MaterialR
 import com.template.app.databinding.DialogAppUpdateBinding
 
 class UpdateDialog(
@@ -10,7 +12,7 @@ class UpdateDialog(
     private val updateInfo: com.template.app.data.model.UpdateInfo,
     private val onUpdate: () -> Unit,
     private val onCancel: () -> Unit
-) : Dialog(context, com.template.core.R.style.CoreTheme) {
+) : Dialog(context, MaterialR.style.Theme_Material3_DayNight_Dialog) {
 
     private lateinit var binding: DialogAppUpdateBinding
 
@@ -18,6 +20,7 @@ class UpdateDialog(
         super.onCreate(savedInstanceState)
         binding = DialogAppUpdateBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window?.setBackgroundDrawableResource(android.R.color.transparent)
         setCancelable(!updateInfo.isForce)
         setCanceledOnTouchOutside(!updateInfo.isForce)
 
@@ -31,7 +34,7 @@ class UpdateDialog(
             onCancel()
             dismiss()
         }
-        binding.btnCancel.visibility = if (updateInfo.isForce) android.view.View.GONE else android.view.View.VISIBLE
+        binding.btnCancel.visibility = if (updateInfo.isForce) View.GONE else View.VISIBLE
     }
 
     fun setProgress(progress: Int) {

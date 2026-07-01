@@ -1,6 +1,6 @@
-package com.template.app.data.api
+﻿package com.template.app.data.api
 
-import com.template.app.data.model.BaseResponse
+import com.template.core.network.BaseResponse
 import com.template.app.data.model.UpdateInfo
 import com.template.app.data.model.User
 import retrofit2.http.Body

@@ -1,4 +1,4 @@
-package com.template.core.base
+﻿package com.template.core.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,15 +17,16 @@ abstract class BaseViewModel : ViewModel() {
     protected fun <T> MutableStateFlow<UiState<T>>.launchWithState(
         block: suspend () -> T
     ) {
+        val flow = this
         viewModelScope.launch(CoroutineExceptionHandler { _, throwable ->
             val msg = throwable.message ?: "操作失败"
-            this.value = UiState.Error(msg)
+            flow.value = UiState.Error(msg)
             _loadingState.value = false
         }) {
             _loadingState.value = true
-            this@launchWithState.value = UiState.Loading
+            flow.value = UiState.Loading
             val result = block()
-            this@launchWithState.value = UiState.Success(result)
+            flow.value = UiState.Success(result)
             _loadingState.value = false
         }
     }

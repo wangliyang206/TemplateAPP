@@ -1,5 +1,7 @@
-package com.template.core.base
+﻿package com.template.core.base
 
+import com.template.core.network.BaseResponse
+import com.template.core.network.ApiException
 import com.template.core.network.ApiResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,6 +14,17 @@ abstract class BaseRepository {
         when (val result = call()) {
             is ApiResult.Success -> result.data
             is ApiResult.Error -> throw result.exception
+        }
+    }
+
+    protected suspend fun <T> safeApi(
+        call: suspend () -> BaseResponse<T>
+    ): ApiResult<T> {
+        val resp = call()
+        return if (resp.code == 200 && resp.data != null) {
+            ApiResult.Success(resp.data)
+        } else {
+            ApiResult.Error(ApiException(resp.code, resp.message))
         }
     }
 
