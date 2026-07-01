@@ -1,0 +1,53 @@
+﻿package com.template.core.datastore
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "template_app_prefs")
+
+class DataStoreManager(private val context: Context) {
+
+    private val dataStore = context.dataStore
+
+    companion object Keys {
+        val KEY_USER_ID = stringPreferencesKey("user_id")
+        val KEY_TOKEN = stringPreferencesKey("token")
+        val KEY_USER_NAME = stringPreferencesKey("user_name")
+    }
+
+    suspend fun saveUser(userId: String, token: String, userName: String) {
+        dataStore.edit {
+            it[KEY_USER_ID] = userId
+            it[KEY_TOKEN] = token
+            it[KEY_USER_NAME] = userName
+        }
+    }
+
+    suspend fun clearUser() {
+        dataStore.edit {
+            it.remove(KEY_USER_ID)
+            it.remove(KEY_TOKEN)
+            it.remove(KEY_USER_NAME)
+        }
+    }
+
+    val userFlow: Flow<UserPref> = dataStore.data.map {
+        UserPref(
+            userId = it[KEY_USER_ID] ?: "",
+            token = it[KEY_TOKEN] ?: "",
+            userName = it[KEY_USER_NAME] ?: ""
+        )
+    }
+
+    data class UserPref(
+        val userId: String,
+        val token: String,
+        val userName: String
+    )
+}

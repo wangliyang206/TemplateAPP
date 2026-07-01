@@ -1,0 +1,206 @@
+﻿# TemplateAPP
+
+> Android 开发项目模板，基于 MVVM + Kotlin + XML 架构，结合 BeanSproutAssistant 和 ehp-doctor 两个项目的优点。
+
+---
+
+## 技术栈
+
+| 层级 | 技术选型 |
+|------|---------|
+| 语言 | Kotlin |
+| UI | XML + ViewBinding |
+| 架构 | MVVM（BaseActivity / BaseFragment / BaseViewModel / BaseRepository） |
+| 依赖注入 | Hilt |
+| 网络 | Retrofit + OkHttp + Gson + Logging Interceptor |
+| 本地存储 | DataStore Preferences + MMKV |
+| 数据库 | Room（已封装 UserDao 示例） |
+| 导航 | Jetpack Navigation Component + BottomNavigationView |
+| 图片 | Glide |
+| 日志 | Timber |
+| 权限 | XXPermissions |
+| 下拉刷新 | SmartRefreshLayout |
+| 屏幕适配 | AndroidAutoSize |
+| 状态栏 | ImmersionBar |
+| 异常处理 | 全局 UncaughtExceptionHandler + crash 日志保存 |
+| APP 升级 | 检查更新 + 强制/可选弹窗 + OkHttp 下载 + FileProvider 安装 |
+| 启动页 | Android 12 SplashScreen API |
+
+## 版本信息
+
+| 项目 | 版本 |
+|------|------|
+| AGP | 8.3.2 |
+| Kotlin | 1.9.23 |
+| Gradle | 8.4 |
+| Java | 17 |
+| compileSdk | 34 |
+| minSdk | 24 |
+| targetSdk | 34 |
+
+---
+
+## 项目结构
+
+```
+TemplateAPP/
+├── build.gradle.kts                      # 根 Gradle 配置
+├── settings.gradle.kts                   # 模块声明（app + core）
+├── gradle.properties                     # Gradle JVM 参数
+├── gradle.properties                     # Gradle JVM 参数
+├── local.properties.example              # 签名配置示例（复制为 local.properties 后使用）
+├── gradlew / gradlew.bat                 # Gradle Wrapper
+├── gradle/
+│   ├── libs.versions.toml                # 统一依赖版本管理（Version Catalog）
+│   └── wrapper/
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── config/
+│   └── buildConfig.gradle.kts            # 多环境配置（dev / test / prod）
+│
+├── core/                                 # 核心能力模块（独立 module）
+│   ├── build.gradle.kts
+│   └── src/main/
+│       ├── AndroidManifest.xml
+│       ├── java/com/template/core/
+│       │   ├── BaseApplication.kt        # Application 基类（Timber + MMKV 初始化）
+│       │   ├── base/
+│       │   │   ├── BaseActivity.kt       # 泛型 ViewBinding + ImmersionBar 状态栏
+│       │   │   ├── BaseFragment.kt       # 泛型 ViewBinding + 生命周期安全
+│       │   │   ├── BaseViewModel.kt      # 协程作用域 + UiState + launchWithState
+│       │   │   └── BaseRepository.kt     # apiCall 统一网络请求 + io 线程切换
+│       │   ├── network/
+│       │   │   ├── ApiResult.kt          # sealed class Success / Error
+│       │   │   ├── ApiErrorHandler.kt    # 统一异常映射
+│       │   │   ├── LoggingInterceptor.kt # OkHttp 日志
+│       │   │   ├── NetworkConfig.kt      # BASE_URL + 超时常量
+│       │   │   └── RetrofitClient.kt     # Retrofit 单例
+│       │   ├── datastore/DataStoreManager.kt   # 用户登录态持久化
+│       │   ├── mmkv/MMKVManager.kt             # 高频键值存取
+│       │   ├── db/
+│       │   │   ├── AppDatabase.kt        # Room 单例
+│       │   │   ├── UserDao.kt            # 查询示例
+│       │   │   └── UserEntity.kt         # 实体示例
+│       │   ├── exception/GlobalExceptionHandler.kt  # 崩溃日志保存
+│       │   ├── state/UiState.kt          # Loading / Success / Error
+│       │   ├── config/CoreConfig.kt      # 常量（PAGE_SIZE、SPLASH_DELAY_MS 等）
+│       │   └── ext/
+│       │       ├── ViewExt.kt            # visible / gone / setOnSingleClickListener
+│       │       ├── StringExt.kt          # isPhone / isEmail
+│       │       ├── ContextExt.kt         # toastShort / toastLong
+│       │       └── LiveDataExt.kt        # Event 单次消费 + observeEvent
+│       └── res/
+│           ├── values/                   # core 默认主题与颜色
+│           ├── layout/view_empty.xml
+│           └── xml/core_file_paths.xml   # FileProvider 路径声明
+│
+└── app/                                  # 应用模块
+    ├── build.gradle.kts
+    ├── proguard-rules.pro
+    ├── keystore/                         # 签名文件目录（.gitkeep 占位）
+    └── src/main/
+        ├── AndroidManifest.xml
+        ├── java/com/template/app/
+        │   ├── App.kt                   # @HiltAndroidApp Application
+        │   ├── MainActivity.kt          # BottomNavigation + NavHostFragment
+        │   ├── di/
+        │   │   ├── NetworkModule.kt     # 提供 ApiService
+        │   │   ├── DatabaseModule.kt    # 提供 AppDatabase + UserDao
+        │   │   └── DataStoreModule.kt   # 提供 DataStoreManager
+        │   ├── data/
+        │   │   ├── api/ApiService.kt    # 接口定义
+        │   │   └── model/
+        │   │       ├── BaseResponse.kt
+        │   │       ├── User.kt
+        │   │       └── UpdateInfo.kt
+        │   ├── ui/
+        │   │   ├── splash/
+        │   │   │   ├── SplashActivity.kt + SplashViewModel.kt
+        │   │   ├── login/
+        │   │   │   ├── LoginActivity.kt + LoginViewModel.kt + LoginRepository.kt
+        │   │   ├── register/
+        │   │   │   ├── RegisterActivity.kt + RegisterViewModel.kt + RegisterRepository.kt
+        │   │   ├── home/
+        │   │   │   ├── HomeFragment.kt + HomeViewModel.kt + HomeRepository.kt
+        │   │   ├── category/
+        │   │   │   ├── CategoryFragment.kt + CategoryViewModel.kt + CategoryRepository.kt
+        │   │   └── mine/
+        │   │       ├── MineFragment.kt + MineViewModel.kt + MineRepository.kt
+        │   └── update/
+        │       ├── UpdateChecker.kt      # 版本比对 + 安装
+        │       ├── UpdateDialog.kt       # 更新弹窗（XML Dialog）
+        │       ├── AppDownloadManager.kt # OkHttp 下载 + StateFlow 进度
+        │       └── UpdateViewModel.kt    # 检查更新 + 下载
+        └── res/
+            ├── layout/                   # 所有 Activity / Fragment / Dialog 布局
+            ├── menu/bottom_nav_menu.xml  # 底部导航菜单
+            ├── navigation/mobile_navigation.xml
+            ├── drawable/                 # icon + splash_background
+            ├── mipmap-anydpi-v26/        # adaptive-icon launcher
+            ├── values/                   # colors / strings / themes / dimens
+            └── xml/app_file_paths.xml
+```
+
+---
+
+## 快速开始
+
+### 1. 环境准备
+- Android Studio Ladybug (2024.2.1) 或更高版本
+- JDK 17
+- Android SDK 34
+
+### 2. 克隆项目后
+1. 复制 `local.properties.example` 为 `local.properties`，填写 SDK 路径和签名信息
+2. 将你的 release 签名 `.jks` 文件放入 `app/keystore/` 目录
+3. Sync Gradle，等待依赖下载完成
+
+### 3. 多环境切换
+编辑 `config/buildConfig.gradle.kts`，修改 `environment` 值：
+```kotlin
+set("environment", 0)  // 0=dev, 1=test, 2=prod
+```
+切换后自动变更 applicationId、API 地址、应用名称。
+
+### 4. 添加新页面
+1. 在 `app/src/main/java/.../ui/xxx/` 下创建 `XxxActivity.kt + XxxViewModel.kt + XxxRepository.kt`
+2. 创建对应的布局 `res/layout/activity_xxx.xml`
+3. 在 `AndroidManifest.xml` 中注册 Activity
+4. ViewModel 继承 `BaseViewModel`，使用 `launchWithState { ... }` 发起网络请求
+5. Repository 继承 `BaseRepository`，使用 `apiCall { ... }` 封装接口调用
+
+### 5. 添加新接口
+1. 在 `ApiService.kt` 中定义接口方法
+2. 在对应的 Repository 中注入 `ApiService` 并调用
+3. 响应体统一使用 `BaseResponse<T>` 包装
+
+---
+
+## 依赖版本集中管理
+
+所有版本号统一在 `gradle/libs.versions.toml` 中管理，模块中通过 `libs.xxx.xxx` 引用。
+
+---
+
+## 签名安全
+
+- 签名信息存放在 `local.properties`（已加入 `.gitignore`，不会提交）
+- 通过 `project.properties["KEY"]` 在 `build.gradle.kts` 中读取
+- 示例见 `local.properties.example`
+
+---
+
+## 待扩展点
+
+- [ ] 登录成功后 Token 自动刷新拦截器
+- [ ] 二维码扫描
+- [ ] 支付模块
+- [ ] IM 即时通讯集成
+- [ ] 国际化多语言
+- [ ] 单元测试 / UI 测试模板
+
+---
+
+## 许可证
+
+MIT License

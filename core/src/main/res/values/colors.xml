@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="core_primary">#FF6200EE</color>
+    <color name="core_primary_dark">#FF3700B3</color>
+    <color name="core_accent">#FF03DAC5</color>
+    <color name="core_white">#FFFFFFFF</color>
+    <color name="core_black">#FF000000</color>
+    <color name="core_gray">#FF999999</color>
+    <color name="core_bg">#FFF5F5F5</color>
+</resources>

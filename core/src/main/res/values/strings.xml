@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_app_name">TemplateAPP</string>
+    <string name="core_confirm">确认</string>
+    <string name="core_cancel">取消</string>
+    <string name="core_loading">加载中…</string>
+    <string name="core_empty">暂无数据</string>
+    <string name="core_retry">重试</string>
+</resources>
