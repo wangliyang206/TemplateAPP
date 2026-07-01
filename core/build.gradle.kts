@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.daggerHiltAndroid)
 }
 
@@ -49,9 +50,9 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    kapt(libs.androidx.room.compiler)
+    api(libs.androidx.room.runtime)
+    api(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
