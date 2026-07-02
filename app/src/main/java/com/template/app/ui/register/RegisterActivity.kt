@@ -1,6 +1,6 @@
-package com.template.app.ui.register
+﻿package com.template.app.ui.register
 
-import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +16,8 @@ import kotlinx.coroutines.launch
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
 
     private val viewModel: RegisterViewModel by viewModels()
+
+    override fun inflateBinding(inflater: LayoutInflater) = ActivityRegisterBinding.inflate(inflater)
 
     override fun initView() {
         binding.btnRegister.setOnClickListener { register() }

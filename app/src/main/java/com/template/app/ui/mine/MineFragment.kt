@@ -1,6 +1,8 @@
-package com.template.app.ui.mine
+﻿package com.template.app.ui.mine
 
 import android.content.Intent
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.template.app.databinding.FragmentMineBinding
 import com.template.app.ui.login.LoginActivity
@@ -12,6 +14,9 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
 
     private val viewModel: MineViewModel by viewModels()
 
+    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentMineBinding.inflate(inflater, container, false)
+
     override fun initView() {
         binding.tvTitle.text = "我的"
         binding.btnLogout.setOnClickListener {
@@ -21,9 +26,7 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
         }
     }
 
-    override fun initObserver() {
-    }
+    override fun initObserver() {}
 
-    override fun initData() {
-    }
+    override fun initData() {}
 }

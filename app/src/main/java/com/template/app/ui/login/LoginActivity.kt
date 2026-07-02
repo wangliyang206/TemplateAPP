@@ -1,7 +1,7 @@
-package com.template.app.ui.login
+﻿package com.template.app.ui.login
 
 import android.content.Intent
-import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     private val viewModel: LoginViewModel by viewModels()
+
+    override fun inflateBinding(inflater: LayoutInflater) = ActivityLoginBinding.inflate(inflater)
 
     override fun initView() {
         binding.btnLogin.setOnClickListener { login() }

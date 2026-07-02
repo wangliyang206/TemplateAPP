@@ -1,8 +1,9 @@
-package com.template.app.ui.splash
+﻿package com.template.app.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -19,6 +20,8 @@ import kotlinx.coroutines.launch
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private val viewModel: SplashViewModel by viewModels()
+
+    override fun inflateBinding(inflater: LayoutInflater) = ActivitySplashBinding.inflate(inflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
