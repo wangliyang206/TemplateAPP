@@ -45,6 +45,17 @@ class DataStoreManager(private val context: Context) {
         )
     }
 
+    /** 同步读取（仅用于 OkHttp Interceptor 等无法挂起的地方） */
+    suspend fun getUserSync(): UserPref {
+        return dataStore.data.first().let {
+            UserPref(
+                userId = it[KEY_USER_ID] ?: "",
+                token = it[KEY_TOKEN] ?: "",
+                userName = it[KEY_USER_NAME] ?: ""
+            )
+        }
+    }
+
     data class UserPref(
         val userId: String,
         val token: String,

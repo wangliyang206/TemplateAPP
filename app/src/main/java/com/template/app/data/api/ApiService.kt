@@ -18,4 +18,16 @@ interface ApiService {
 
     @GET("system/checkUpdate")
     suspend fun checkUpdate(@Query("versionCode") versionCode: Int): BaseResponse<UpdateInfo>
+
+    // ===== 列表分页示例 =====
+    @GET("article/list")
+    suspend fun getArticleList(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
+    ): BaseResponse<ArticleListResponse>
+
+    // ===== 文件上传示例 =====
+    @Multipart
+    @POST("file/upload")
+    suspend fun uploadFile(@Part file: MultipartBody.Part): BaseResponse<String>
 }
