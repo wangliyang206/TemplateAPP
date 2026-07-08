@@ -1,17 +1,17 @@
 package com.template.app.ui.list
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.template.app.data.api.ApiService
 import com.template.app.data.model.Article
-import com.template.core.base.BaseRepository
+import com.template.app.data.model.ArticleListParams
+import com.template.core.network.ApiRequest
+import com.template.core.network.NetworkConfig
+import com.template.core.network.SignUtils
 import javax.inject.Inject
 
 /**
  * PagingSource：为 Paging3 提供分页数据
- * 示例：文章列表分页
  */
 class ArticlePagingSource @Inject constructor(
     private val apiService: ApiService
@@ -20,8 +20,16 @@ class ArticlePagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val page = params.key ?: 1
         return try {
-            val response = apiService.getArticleList(page, params.loadSize)
-            val data = response.data ?: emptyList()
+            val requestParams = ArticleListParams(page, params.loadSize)
+            val request = ApiRequest(
+                token = "",
+                version = NetworkConfig.apiVersion,
+                client = NetworkConfig.clientName,
+                sign = SignUtils.signData(requestParams),
+                data = requestParams
+            )
+            val response = apiService.getArticleList(request)
+            val data = response.data?.list ?: emptyList()
             LoadResult.Page(
                 data = data,
                 prevKey = if (page == 1) null else page - 1,

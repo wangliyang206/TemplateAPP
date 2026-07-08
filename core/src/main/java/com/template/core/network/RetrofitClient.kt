@@ -1,8 +1,7 @@
-﻿package com.template.core.network
+package com.template.core.network
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,10 +22,12 @@ object RetrofitClient {
     fun init(baseUrl: String) {
         if (_retrofit != null) return
         Timber.d("RetrofitClient init with baseUrl: $baseUrl")
+
         val client = OkHttpClient.Builder()
             .connectTimeout(NetworkConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(NetworkConfig.READ_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(NetworkConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .addInterceptor(HeaderInterceptor())
             .addInterceptor(LoggingInterceptor())
             .build()
 

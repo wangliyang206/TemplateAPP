@@ -5,6 +5,12 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
+/**
+ * API 错误处理器
+ *
+ * 将网络层异常统一转换为 ApiException。
+ * 业务错误码（code != 0）由 BaseRepository.safeApi 处理，不经过此处。
+ */
 object ApiErrorHandler {
 
     fun handle(e: Throwable): ApiException {

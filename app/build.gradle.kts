@@ -105,6 +105,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.androidx.paging.runtime)
+
     implementation(libs.glide)
     kapt(libs.glide.compiler)
     implementation(libs.timber)

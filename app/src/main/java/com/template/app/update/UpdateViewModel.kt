@@ -1,10 +1,12 @@
-﻿package com.template.app.update
+package com.template.app.update
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.template.app.data.api.ApiService
+import com.template.app.data.model.CheckUpdateParams
 import com.template.app.data.model.UpdateInfo
 import com.template.core.base.BaseViewModel
+import com.template.core.network.ApiRequest
 import com.template.core.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +28,10 @@ class UpdateViewModel @Inject constructor(
 
     fun checkUpdate(versionCode: Int) {
         _updateState.launchWithState {
-            val resp = apiService.checkUpdate(versionCode)
-            if (resp.code == 200 && resp.data != null) {
+            val params = CheckUpdateParams(versionCode)
+            val request = ApiRequest.build(params)
+            val resp = apiService.checkUpdate(request)
+            if (resp.code == 0 && resp.data != null) {
                 resp.data!!
             } else {
                 throw Exception(resp.message)

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "template_app_prefs")
@@ -47,13 +48,12 @@ class DataStoreManager(private val context: Context) {
 
     /** 同步读取（仅用于 OkHttp Interceptor 等无法挂起的地方） */
     suspend fun getUserSync(): UserPref {
-        return dataStore.data.first().let {
-            UserPref(
-                userId = it[KEY_USER_ID] ?: "",
-                token = it[KEY_TOKEN] ?: "",
-                userName = it[KEY_USER_NAME] ?: ""
-            )
-        }
+        val preferences = dataStore.data.first()
+        return UserPref(
+            userId = preferences[KEY_USER_ID] ?: "",
+            token = preferences[KEY_TOKEN] ?: "",
+            userName = preferences[KEY_USER_NAME] ?: ""
+        )
     }
 
     data class UserPref(

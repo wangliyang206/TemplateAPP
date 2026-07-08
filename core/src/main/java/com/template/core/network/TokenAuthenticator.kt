@@ -14,7 +14,7 @@ import timber.log.Timber
  *
  * 用法：
  * val client = OkHttpClient.Builder()
- *     .authenticator(TokenAuthenticator(dataStoreManager))
+ *     .authenticator(TokenAuthenticator(dataStoreManager, refreshBlock))
  *     .addInterceptor(TokenInterceptor(dataStoreManager))
  *     .build()
  *
@@ -22,6 +22,9 @@ import timber.log.Timber
  * - 检测到 401 时自动调用刷新接口获取新 token
  * - 刷新成功后使用新 token 重试原请求
  * - 刷新失败则清空本地 token，引导用户重新登录
+ *
+ * 注意：新规范中 token 在请求体 ApiRequest 中。本 Authenticator 对任意 401 响应
+ * 都会尝试刷新本地 token（若本地无 token 则跳过）。
  */
 class TokenAuthenticator(
     private val dataStore: DataStoreManager,
@@ -32,31 +35,19 @@ class TokenAuthenticator(
     private val lock = Any()
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (response.request.header("Authorization") == null) {
-            return null // 不需要 token 的请求，不处理
-        }
-
         synchronized(lock) {
             if (isRefreshing) {
-                // 正在刷新中，用新 token 重试
-                val newToken = runBlocking { dataStore.getUserSync().token }
-                return if (newToken.isNotEmpty()) {
-                    response.request.newBuilder()
-                        .header("Authorization", "Bearer $newToken")
-                        .build()
-                } else null
+                return response.request
             }
 
             isRefreshing = true
             try {
-                // 同步获取当前 token
                 val currentToken = runBlocking { dataStore.getUserSync().token }
                 if (currentToken.isEmpty()) {
                     isRefreshing = false
                     return null
                 }
 
-                // 调用刷新接口
                 val result = runBlocking { refreshTokenCall(currentToken) }
                 return if (result != null) {
                     val newToken = result.token
@@ -68,11 +59,9 @@ class TokenAuthenticator(
                         )
                     }
                     isRefreshing = false
-                    response.request.newBuilder()
-                        .header("Authorization", "Bearer $newToken")
-                        .build()
+                    // 重试原请求（token 在 body 中，Repository 重建 ApiRequest 时自动取最新 token）
+                    response.request
                 } else {
-                    // 刷新失败
                     runBlocking { dataStore.clearUser() }
                     isRefreshing = false
                     null

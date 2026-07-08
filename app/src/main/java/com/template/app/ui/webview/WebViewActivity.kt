@@ -33,20 +33,20 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
 
-    private lateinit var url: String
-    private lateinit var title: String
+    private var pageUrl: String = "about:blank"
+    private var pageTitle: String = ""
 
     override fun inflateBinding(inflater: LayoutInflater) =
         ActivityWebviewBinding.inflate(inflater)
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun initView() {
-        url = intent.getStringExtra("url") ?: "about:blank"
-        title = intent.getStringExtra("title") ?: ""
+        pageUrl = intent.getStringExtra("url") ?: "about:blank"
+        pageTitle = intent.getStringExtra("title") ?: ""
 
         binding.ivBack.setOnClickListener { onBackPressed() }
         binding.ivClose.setOnClickListener { finish() }
-        binding.tvTitle.text = title
+        binding.tvTitle.text = pageTitle
 
         binding.webView.apply {
             settings.javaScriptEnabled = true
@@ -87,14 +87,14 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
                     }
                 }
 
-                override fun onReceivedTitle(view: WebView?, pageTitle: String?) {
-                    if (title.isEmpty() && !pageTitle.isNullOrEmpty()) {
-                        binding.tvTitle.text = pageTitle
+                override fun onReceivedTitle(view: WebView?, title: String?) {
+                    if (pageTitle.isEmpty() && !title.isNullOrEmpty()) {
+                        binding.tvTitle.text = title ?: ""
                     }
                 }
             }
 
-            loadUrl(url)
+            loadUrl(pageUrl)
         }
     }
 
