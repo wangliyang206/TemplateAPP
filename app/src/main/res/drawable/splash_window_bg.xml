@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 底层：斜向线性渐变背景（135度，紫色系，与 splash_bg.xml 完全一致） -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#FF6200EE"
+                android:endColor="#FF3700B3"
+                android:angle="135"
+                android:type="linear" />
+        </shape>
+    </item>
+
+    <!-- 中层：半透明白色圆形底托（120dp，比原 splash_bg 的 80dp 更大以突出图标） -->
+    <item
+        android:width="120dp"
+        android:height="120dp"
+        android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="#33FFFFFF" />
+        </shape>
+    </item>
+
+    <!-- 顶层：居中矢量图标 -->
+    <item
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:gravity="center" />
+</layer-list>
