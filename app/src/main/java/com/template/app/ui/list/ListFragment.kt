@@ -1,5 +1,6 @@
 package com.template.app.ui.list
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.template.app.data.model.Article
 import com.template.app.databinding.FragmentListBinding
 import com.template.app.databinding.ItemArticleBinding
+import com.template.app.ui.webview.WebViewActivity
 import com.template.core.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -38,7 +40,11 @@ class ListFragment : BaseFragment<FragmentListBinding>() {
     override fun initView() {
         adapter = ArticleAdapter(
             onItemClick = { article ->
-                // 点击跳转详情
+                val intent = Intent(requireContext(), WebViewActivity::class.java).apply {
+                    putExtra("url", article.url)
+                    putExtra("title", article.title)
+                }
+                startActivity(intent)
             }
         )
         binding.recyclerView.adapter = adapter

@@ -7,7 +7,16 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.template.app.ui.home.HomeFragment"
-        android:label="@string/tab_home" />
+        android:label="@string/tab_home">
+        <action
+            android:id="@+id/action_homeFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.template.app.ui.list.ListFragment"
+        android:label="列表示例" />
 
     <fragment
         android:id="@+id/categoryFragment"

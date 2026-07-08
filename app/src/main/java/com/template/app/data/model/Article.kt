@@ -7,6 +7,7 @@ data class Article(
     val id: Long,
     val title: String,
     val desc: String,
+    val url: String = "",
     val cover: String = "",
     val author: String = "",
     val createTime: String = ""
