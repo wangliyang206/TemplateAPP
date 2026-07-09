@@ -16,8 +16,11 @@ class LoginRepository @Inject constructor(
 ) : BaseRepository() {
 
     suspend fun login(phone: String, password: String): User {
+        // 本接口的请求体
         val params = LoginParams(phone, password)
+        // 构建最终请求体
         val request = buildApiRequest(params)
+        // 发起请求
         val response = apiCall { safeApi { apiService.login(request) } }
         // 保存用户信息
         dataStore.saveUser(response.userId, response.token, response.userName)
