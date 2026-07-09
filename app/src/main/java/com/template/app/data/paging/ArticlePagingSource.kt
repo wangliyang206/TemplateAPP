@@ -1,4 +1,4 @@
-package com.template.app.ui.list
+package com.template.app.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.template.app.data.model.Article
-import com.template.app.ui.list.ArticlePagingSource
+import com.template.app.data.paging.ArticlePagingSource
 import com.template.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
