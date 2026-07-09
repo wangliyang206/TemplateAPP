@@ -7,7 +7,7 @@ val config = when (env) {
     0 -> mapOf(
         "appName" to "TemplateAPP-Dev",
         "applicationId" to "com.template.app.dev",
-        "apiHost" to "https://api-dev.template.com/",
+        "apiHost" to "http://www.dagongji.xin/",
         "h5Host" to "https://h5-dev.template.com/",
         "versionNameSuffix" to "-dev"
     )

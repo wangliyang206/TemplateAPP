@@ -3,6 +3,7 @@ package com.template.app.ui.home
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.template.app.data.api.ApiService
 import com.template.app.data.model.Article
 import com.template.app.data.paging.ArticlePagingSource
 import com.template.core.base.BaseViewModel
@@ -15,7 +16,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    pagingSource: ArticlePagingSource
+    private val apiService: ApiService
 ) : BaseViewModel() {
 
     val articleFlow: Flow<PagingData<Article>> =
@@ -25,7 +26,9 @@ class HomeViewModel @Inject constructor(
                 enablePlaceholders = false,
                 initialLoadSize = 20
             )
-        ) { pagingSource }
+        ) {
+            ArticlePagingSource(apiService)
+        }
             .flow
             .cachedIn(viewModelScope)
 }

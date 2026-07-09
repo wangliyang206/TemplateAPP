@@ -17,11 +17,11 @@ class HeaderInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .header("Device-Type", NetworkConfig.deviceType)
-            .header("Device-Os", NetworkConfig.deviceOs)
-            .header("Client-Id", NetworkConfig.clientId)
-            .header("Channel", NetworkConfig.channel)
-            .header("Language", NetworkConfig.language)
+//            .header("Device-Type", NetworkConfig.deviceType)
+//            .header("Device-Os", NetworkConfig.deviceOs)
+//            .header("Client-Id", NetworkConfig.clientId)
+//            .header("Channel", NetworkConfig.channel)
+//            .header("Language", NetworkConfig.language)
             .build()
         return chain.proceed(request)
     }

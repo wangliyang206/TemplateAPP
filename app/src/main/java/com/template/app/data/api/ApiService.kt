@@ -20,10 +20,10 @@ import retrofit2.http.POST
 interface ApiService {
 
     // ===== 用户模块 =====
-    @POST("user/login")
+    @POST("member/login")
     suspend fun login(@Body request: ApiRequest<LoginParams>): BaseResponse<User>
 
-    @POST("user/register")
+    @POST("member/register")
     suspend fun register(@Body request: ApiRequest<RegisterParams>): BaseResponse<User>
 
     // ===== 系统模块 =====
