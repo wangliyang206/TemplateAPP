@@ -12,7 +12,7 @@ data class LoginParams(
 )
 
 data class RegisterParams(
-    val phone: String,
+    val mobile: String,
     val password: String
 )
 
