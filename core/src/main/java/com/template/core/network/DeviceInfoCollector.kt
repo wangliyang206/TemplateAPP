@@ -42,7 +42,7 @@ object DeviceInfoCollector {
             osver = Build.VERSION.RELEASE,
             vercode = getVerCode(context),
             vername = getVerName(context),
-            ppilheight = displayMetrics.heightPixels.toString(),
+            ppiheight = displayMetrics.heightPixels.toString(),
             ppiwidth = displayMetrics.widthPixels.toString()
         )
     }

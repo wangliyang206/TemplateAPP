@@ -7,7 +7,7 @@ package com.template.app.data.model
  */
 
 data class LoginParams(
-    val phone: String,
+    val mobile: String,
     val password: String
 )
 

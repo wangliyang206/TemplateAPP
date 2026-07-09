@@ -13,7 +13,7 @@ data class ClientInfo(
     val osver: String = "",
     val vercode: String = "",
     val vername: String = "",
-    val ppilheight: String = "",
+    val ppiheight: String = "",
     val ppiwidth: String = ""
 )
 

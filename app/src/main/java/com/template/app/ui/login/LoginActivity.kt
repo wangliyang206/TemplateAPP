@@ -49,6 +49,27 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     private fun login() {
         val phone = binding.etPhone.text.toString().trim()
         val pwd = binding.etPassword.text.toString().trim()
+
+        // 手机号必填 + 格式校验（11 位数字，1 开头）
+        if (phone.isEmpty()) {
+            toastShort("请输入手机号")
+            return
+        }
+        if (!phone.matches(Regex("^1[0-9]{10}$"))) {
+            toastShort("请输入正确的手机号")
+            return
+        }
+
+        // 密码必填 + 长度校验（至少 6 位）
+        if (pwd.isEmpty()) {
+            toastShort("请输入密码")
+            return
+        }
+        if (pwd.length < 6) {
+            toastShort("密码长度不能少于6位")
+            return
+        }
+
         viewModel.login(phone, pwd)
     }
 }

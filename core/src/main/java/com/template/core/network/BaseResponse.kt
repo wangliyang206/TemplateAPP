@@ -1,14 +1,21 @@
 ﻿package com.template.core.network
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * 统一错误信息
  *
  * 接口规范：
  * - errorCode: 负数表示错误，正数表示警告，0 表示成功
  * - errorMessage: 错误描述
+ *
+ * 注意：服务端返回的 JSON key 为全小写（errorcode / errormessage），
+ * 必须通过 @SerializedName 映射。
  */
 data class ErrorInfo(
+    @SerializedName("errorcode")
     val errorCode: Int,
+    @SerializedName("errormessage")
     val errorMessage: String
 )
 
@@ -18,14 +25,15 @@ data class ErrorInfo(
  * 接口规范格式：
  * {
  *   "version": 1,
- *   "errorInfo": { "errorCode": 0, "errorMessage": "..." } | null,
+ *   "errorinfo": { "errorcode": 0, "errormessage": "..." } | null,
  *   "data": { ... 业务数据 ... } | null
  * }
  *
- * 成功时 errorInfo 为 null 或 errorCode == 0
+ * 成功时 errorinfo 为 null，失败时包含 errorcode + errormessage
  */
 data class BaseResponse<T>(
     val version: Int,
+    @SerializedName("errorinfo")
     val errorInfo: ErrorInfo?,
     val data: T?
 ) {

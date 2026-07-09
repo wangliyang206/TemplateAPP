@@ -19,12 +19,14 @@ class LoginRepository @Inject constructor(
         val params = LoginParams(phone, password)
         val request = buildApiRequest(params)
         val response = apiCall { safeApi { apiService.login(request) } }
+        // 保存用户信息
         dataStore.saveUser(response.userId, response.token, response.userName)
+        // 保存用户信息到数据库
         userDao.insert(
             UserEntity(
                 userId = response.userId,
                 userName = response.userName,
-                phone = response.phone,
+                phone = response.userPhone,
                 avatar = response.avatar
             )
         )
