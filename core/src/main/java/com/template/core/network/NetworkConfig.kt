@@ -20,15 +20,15 @@ object NetworkConfig {
     /** 渠道来源 */
     var channel: String = "official"
 
-    /** 语言偏好，如 "zh"、"en" */
-    var language: String = "zh"
+    /** 语言偏好，如 "ZH"、"EN"、"AR" */
+    var language: String = "ZH"
 
     // ========== 请求体配置 ==========
-    /** API 版本号 */
-    var apiVersion: String = "v1"
+    /** API 版本号（整数） */
+    var apiVersion: Int = 1
 
-    /** 客户端类型标识：App / Web / H5 */
-    var clientName: String = "App"
+    /** 客户端设备信息对象（随请求体发送） */
+    var clientInfo: ClientInfo = ClientInfo()
 
     // ========== 签名配置 ==========
     /** 签名密钥，从服务端获取 */

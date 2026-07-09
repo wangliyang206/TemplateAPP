@@ -9,7 +9,7 @@ import com.template.app.data.model.Article
 import com.template.app.databinding.ItemArticleBinding
 
 /**
- * Paging3 Adapter — 文章列表（HomeFragment 与 ListFragment 共享）
+ * Paging3 Adapter — 文章列表
  */
 class ArticleAdapter(
     private val onItemClick: ((Article) -> Unit)? = null

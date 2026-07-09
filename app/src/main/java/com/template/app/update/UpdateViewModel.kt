@@ -31,10 +31,10 @@ class UpdateViewModel @Inject constructor(
             val params = CheckUpdateParams(versionCode)
             val request = ApiRequest.build(params)
             val resp = apiService.checkUpdate(request)
-            if (resp.code == 0 && resp.data != null) {
+            if (resp.isSuccess && resp.data != null) {
                 resp.data!!
             } else {
-                throw Exception(resp.message)
+                throw Exception(resp.errorMessage)
             }
         }
     }

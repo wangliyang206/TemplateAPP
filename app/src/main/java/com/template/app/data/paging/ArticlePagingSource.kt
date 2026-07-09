@@ -6,8 +6,6 @@ import com.template.app.data.api.ApiService
 import com.template.app.data.model.Article
 import com.template.app.data.model.ArticleListParams
 import com.template.core.network.ApiRequest
-import com.template.core.network.NetworkConfig
-import com.template.core.network.SignUtils
 import javax.inject.Inject
 
 /**
@@ -21,13 +19,7 @@ class ArticlePagingSource @Inject constructor(
         val page = params.key ?: 1
         return try {
             val requestParams = ArticleListParams(page, params.loadSize)
-            val request = ApiRequest(
-                token = "",
-                version = NetworkConfig.apiVersion,
-                client = NetworkConfig.clientName,
-                sign = SignUtils.signData(requestParams),
-                data = requestParams
-            )
+            val request = ApiRequest.build(requestParams)
             val response = apiService.getArticleList(request)
             val data = response.data?.list ?: emptyList()
             LoadResult.Page(

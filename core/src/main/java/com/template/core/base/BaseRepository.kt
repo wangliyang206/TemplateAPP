@@ -24,16 +24,16 @@ abstract class BaseRepository {
     /**
      * 安全包装 API 调用，将 BaseResponse 转换为 ApiResult
      *
-     * 规范：code == 0 表示成功，data 不为 null
+     * 规范：errorInfo 为 null 或 errorCode == 0 表示成功，data 不为 null
      */
     protected suspend fun <T> safeApi(
         call: suspend () -> BaseResponse<T>
     ): ApiResult<T> {
         val resp = call()
-        return if (resp.code == 0 && resp.data != null) {
+        return if (resp.isSuccess && resp.data != null) {
             ApiResult.Success(resp.data)
         } else {
-            ApiResult.Error(ApiException(resp.code, resp.message))
+            ApiResult.Error(ApiException(resp.errorCode, resp.errorMessage))
         }
     }
 
