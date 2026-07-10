@@ -12,11 +12,13 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
 
     private val viewModel: CategoryViewModel by viewModels()
 
+    override fun getTitleBarId(): Int = com.template.app.R.id.titleBar
+
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentCategoryBinding.inflate(inflater, container, false)
 
     override fun initView() {
-        binding.tvTitle.text = "分类"
+        binding.tvTitle.text = "分类内容"
     }
 
     override fun initObserver() {}
