@@ -1,15 +1,14 @@
-package com.template.app.ui.webview
+﻿package com.template.app.ui.webview
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.viewModels
+import com.template.app.R
 import com.template.app.databinding.ActivityWebviewBinding
 import com.template.core.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +34,8 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
 
     private var pageUrl: String = "about:blank"
     private var pageTitle: String = ""
+
+    override fun getTitleBarId(): Int = R.id.titleBar
 
     override fun inflateBinding(inflater: LayoutInflater) =
         ActivityWebviewBinding.inflate(inflater)
@@ -80,11 +81,9 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     binding.progressBar.progress = newProgress
-                    if (newProgress == 100) {
-                        binding.progressBar.visibility = android.view.View.GONE
-                    } else {
-                        binding.progressBar.visibility = android.view.View.VISIBLE
-                    }
+                    binding.progressBar.visibility =
+                        if (newProgress == 100) android.view.View.GONE
+                        else android.view.View.VISIBLE
                 }
 
                 override fun onReceivedTitle(view: WebView?, title: String?) {
