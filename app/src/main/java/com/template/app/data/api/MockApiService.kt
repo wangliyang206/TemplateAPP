@@ -1,4 +1,4 @@
-package com.template.app.data.api
+﻿package com.template.app.data.api
 
 import com.template.app.data.model.*
 import com.template.core.config.CoreConfig
@@ -105,6 +105,58 @@ class MockApiService : ApiService {
         )
     }
 
+    private val articleUrls = listOf(
+        "https://picsum.photos/800/600?random=1",
+        "https://picsum.photos/800/600?random=2",
+        "https://picsum.photos/800/600?random=3",
+        "https://picsum.photos/800/600?random=4",
+        "https://picsum.photos/800/600?random=5",
+        "https://picsum.photos/800/600?random=6",
+        "https://picsum.photos/800/600?random=7",
+        "https://picsum.photos/800/600?random=8",
+        "https://picsum.photos/800/600?random=9",
+        "https://picsum.photos/800/600?random=10",
+        "https://picsum.photos/800/600?random=11",
+        "https://picsum.photos/800/600?random=12",
+        "https://picsum.photos/800/600?random=13",
+        "https://picsum.photos/800/600?random=14",
+        "https://picsum.photos/800/600?random=15",
+        "https://picsum.photos/800/600?random=16",
+        "https://picsum.photos/800/600?random=17",
+        "https://picsum.photos/800/600?random=18",
+        "https://picsum.photos/800/600?random=19",
+        "https://picsum.photos/800/600?random=20",
+        "https://www.wikipedia.org",
+        "https://www.baidu.com",
+        "https://www.bing.com",
+        "https://github.com",
+        "https://www.w3schools.com",
+        "https://www.jianshu.com",
+        "https://www.csdn.net",
+        "https://www.oschina.net",
+        "https://developer.android.com",
+        "https://kotlinlang.org",
+        "https://gradle.org",
+        "https://www.androiddev.cn",
+        "https://www.androidweekly.cn",
+        "https://medium.com",
+        "https://dev.to",
+        "https://www.droidyue.com",
+        "https://www.chengyunfeng.com",
+        "https://www.robinliu.com",
+        "https://www.doublemu.me",
+        "https://www.androidperformance.com",
+        "https://www.jakewharton.com",
+        "https://www.squareup.com",
+        "https://www.facebook.com",
+        "https://www.twitter.com",
+        "https://www.instagram.com",
+        "https://www.youtube.com",
+        "https://www.tiktok.com",
+        "https://www.netflix.com",
+        "https://www.amazon.com"
+    )
+
     /**
      * 模拟获取文章列表
      */
@@ -115,19 +167,19 @@ class MockApiService : ApiService {
         val page = params.page
         val pageSize = params.pageSize
 
-        // 模拟分页数据
-        val total = 50
-        val totalPages = (total / pageSize) + 1
+        val total = articleUrls.size
+        val totalPages = (total + pageSize - 1) / pageSize
 
         val list = if (page <= totalPages) {
             val startIndex = (page - 1) * pageSize
             val endIndex = minOf(startIndex + pageSize, total)
             (startIndex until endIndex).map { index ->
+                val url = articleUrls[index]
                 Article(
                     id = index.toLong() + 1,
-                    title = "测试文章标题 ${index + 1}",
-                    desc = "这是第 ${index + 1} 篇测试文章的描述内容，用于展示列表数据。",
-                    url = "https://example.com/article/${index + 1}",
+                    title = if (url.contains("picsum")) "精美图片 ${index + 1}" else "文章标题 ${index + 1}",
+                    desc = if (url.contains("picsum")) "这是一张高质量的测试图片，点击查看大图。" else "这是第 ${index + 1} 篇测试文章的描述内容，点击查看详情。",
+                    url = url,
                     cover = "https://picsum.photos/400/300?random=${index + 1}",
                     author = "作者${(index % 5) + 1}",
                     createTime = "2024-01-${(index % 28) + 1}"

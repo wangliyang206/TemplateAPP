@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <!-- ##########################################通用部分########################################## -->
+    <!-- 头部字号 -->
+    <dimen name="common_top_title_textsize">16sp</dimen>
+
+    <!-- toolbar高度 -->
+    <dimen name="toolbar_minheight">48dp</dimen>
+
+</resources>

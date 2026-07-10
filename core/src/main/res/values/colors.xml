@@ -7,4 +7,6 @@
     <color name="core_black">#FF000000</color>
     <color name="core_gray">#FF999999</color>
     <color name="core_bg">#FFF5F5F5</color>
+
+    <color name="common_text_color">#333333</color>
 </resources>

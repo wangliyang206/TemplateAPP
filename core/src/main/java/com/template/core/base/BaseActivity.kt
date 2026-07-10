@@ -3,10 +3,9 @@
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.annotation.CallSuper
-import androidx.annotation.ColorInt
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
@@ -56,7 +55,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         }
 
         if (!isNavigationBarEnable()) {
-            immersionBar.hideBar(ImmersionBar.NAVIGATION_BAR)
+            immersionBar.hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR)
         }
 
         immersionBar.init()

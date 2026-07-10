@@ -45,9 +45,8 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
         pageUrl = intent.getStringExtra("url") ?: "about:blank"
         pageTitle = intent.getStringExtra("title") ?: ""
 
-        binding.ivBack.setOnClickListener { onBackPressed() }
-        binding.ivClose.setOnClickListener { finish() }
-        binding.tvTitle.text = pageTitle
+        binding.titleBar.ivBack.setOnClickListener { onBackPressed() }
+        binding.titleBar.tvTitle.text = pageTitle
 
         binding.webView.apply {
             settings.javaScriptEnabled = true
@@ -88,7 +87,7 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
 
                 override fun onReceivedTitle(view: WebView?, title: String?) {
                     if (pageTitle.isEmpty() && !title.isNullOrEmpty()) {
-                        binding.tvTitle.text = title ?: ""
+                        binding.titleBar.tvTitle.text = title ?: ""
                     }
                 }
             }
