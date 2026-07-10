@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.template.app.MainActivity
 import com.template.app.databinding.ActivityLoginBinding
+import com.template.app.ui.register.RegisterActivity
 import com.template.core.base.BaseActivity
 import com.template.core.ext.toastShort
 import com.template.core.state.UiState
@@ -24,7 +25,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     override fun initView() {
         binding.btnLogin.setOnClickListener { login() }
         binding.tvRegister.setOnClickListener {
-            startActivity(Intent(this, com.template.app.ui.register.RegisterActivity::class.java))
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
@@ -36,7 +37,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         is UiState.Loading -> { }
                         is UiState.Success -> {
                             toastShort("登录成功")
-                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            // 登录成功后返回 MainActivity，避免重复创建实例
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            }
+                            startActivity(intent)
                             finish()
                         }
                         is UiState.Error -> toastShort(it.message)

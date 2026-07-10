@@ -7,11 +7,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
 import com.template.app.R
 import com.template.app.databinding.FragmentMineBinding
 import com.template.app.ui.login.LoginActivity
 import com.template.core.base.BaseFragment
+import com.template.core.ext.loadCircleOrDrawable
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -54,12 +54,7 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
             }
 
             is MineViewModel.UserUiState.LoggedIn -> {
-                if (state.avatar.isNotEmpty()) {
-                    Glide.with(this).load(state.avatar).placeholder(R.drawable.bg_avatar_circle)
-                        .circleCrop().into(binding.ivAvatar)
-                } else {
-                    binding.ivAvatar.setImageResource(R.drawable.bg_avatar_circle)
-                }
+                binding.ivAvatar.loadCircleOrDrawable(state.avatar, R.drawable.bg_avatar_circle)
                 binding.tvNickname.text = state.userName.ifEmpty { "用户" }
                 binding.tvPhone.text = state.phone
                 binding.btnLogout.visibility = android.view.View.VISIBLE

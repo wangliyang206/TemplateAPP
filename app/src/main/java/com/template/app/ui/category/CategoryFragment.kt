@@ -3,6 +3,7 @@
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.template.app.R
 import com.template.app.databinding.FragmentCategoryBinding
 import com.template.core.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -12,7 +13,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
 
     private val viewModel: CategoryViewModel by viewModels()
 
-    override fun getTitleBarId(): Int = com.template.app.R.id.titleBar
+    override fun getTitleBarId(): Int = R.id.titleBar
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentCategoryBinding.inflate(inflater, container, false)
