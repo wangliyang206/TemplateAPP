@@ -120,6 +120,7 @@ dependencies {
     implementation(libs.smartrefresh.core)
     implementation(libs.smartrefresh.header)
     implementation(libs.smartrefresh.footer)
+    implementation(libs.banner)
     implementation(libs.xxpermissions)
     implementation(libs.utilcodex)
 

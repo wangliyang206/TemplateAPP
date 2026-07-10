@@ -1,4 +1,4 @@
-package com.template.app.data.model
+﻿package com.template.app.data.model
 
 /**
  * 业务请求参数数据类
@@ -22,5 +22,14 @@ data class CheckUpdateParams(
 
 data class ArticleListParams(
     val page: Int,
-    val pageSize: Int
+    val pageSize: Int,
+    val categoryId: Int = 0
+)
+
+data class BannerListParams(
+    val position: Int = 0
+)
+
+data class CategoryListParams(
+    val type: Int = 0
 )

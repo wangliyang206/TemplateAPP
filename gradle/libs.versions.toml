@@ -28,6 +28,7 @@ mmkv = "1.3.2"
 autosize = "v1.2.1"
 immersionbar = "3.2.2"
 smartrefresh = "2.0.5"
+banner = "2.2.2"
 xxpermissions = "18.5"
 utilcodex = "1.31.1"
 leakcanary = "2.12"
@@ -79,6 +80,7 @@ immersionbar-components = { group = "com.geyifeng.immersionbar", name = "immersi
 smartrefresh-core = { group = "io.github.scwang90", name = "refresh-layout-kernel", version.ref = "smartrefresh" }
 smartrefresh-header = { group = "io.github.scwang90", name = "refresh-header-classics", version.ref = "smartrefresh" }
 smartrefresh-footer = { group = "io.github.scwang90", name = "refresh-footer-classics", version.ref = "smartrefresh" }
+banner = { group = "io.github.youth5201314", name = "banner", version.ref = "banner" }
 xxpermissions = { group = "com.github.getActivity", name = "XXPermissions", version.ref = "xxpermissions" }
 utilcodex = { group = "com.blankj", name = "utilcodex", version.ref = "utilcodex" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }

@@ -1,7 +1,11 @@
-package com.template.app.data.api
+﻿package com.template.app.data.api
 
 import com.template.app.data.model.ArticleListParams
 import com.template.app.data.model.ArticleListResponse
+import com.template.app.data.model.Banner
+import com.template.app.data.model.BannerListParams
+import com.template.app.data.model.Category
+import com.template.app.data.model.CategoryListParams
 import com.template.app.data.model.CheckUpdateParams
 import com.template.app.data.model.LoginParams
 import com.template.app.data.model.RegisterParams
@@ -30,12 +34,14 @@ interface ApiService {
     @POST("system/checkUpdate")
     suspend fun checkUpdate(@Body request: ApiRequest<CheckUpdateParams>): BaseResponse<UpdateInfo>
 
+    // ===== 首页模块 =====
+    @POST("banner/list")
+    suspend fun getBannerList(@Body request: ApiRequest<BannerListParams>): BaseResponse<List<Banner>>
+
+    @POST("category/list")
+    suspend fun getCategoryList(@Body request: ApiRequest<CategoryListParams>): BaseResponse<List<Category>>
+
     // ===== 列表分页示例 =====
     @POST("article/list")
     suspend fun getArticleList(@Body request: ApiRequest<ArticleListParams>): BaseResponse<ArticleListResponse>
-
-    // ===== 文件上传示例（Multipart 不走统一包装，token/sign 以 @Part 传递） =====
-    // @Multipart
-    // @POST("file/upload")
-    // suspend fun uploadFile(@Part file: MultipartBody.Part): BaseResponse<String>
 }

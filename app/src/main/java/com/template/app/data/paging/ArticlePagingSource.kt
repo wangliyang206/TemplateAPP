@@ -1,4 +1,4 @@
-package com.template.app.data.paging
+﻿package com.template.app.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -10,15 +10,19 @@ import javax.inject.Inject
 
 /**
  * PagingSource：为 Paging3 提供分页数据
+ *
+ * @param apiService API 服务实例
+ * @param categoryId 分类 ID，0 表示全部
  */
 class ArticlePagingSource @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val categoryId: Int = 0
 ) : PagingSource<Int, Article>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val page = params.key ?: 1
         return try {
-            val requestParams = ArticleListParams(page, params.loadSize)
+            val requestParams = ArticleListParams(page, params.loadSize, categoryId)
             val request = ApiRequest.build(requestParams)
             val response = apiService.getArticleList(request)
             val data = response.data?.list ?: emptyList()
