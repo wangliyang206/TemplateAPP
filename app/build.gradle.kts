@@ -48,6 +48,8 @@ android {
             buildConfigField("String", "API_HOST", "\"${buildConfig["apiHost"]}\"")
             buildConfigField("String", "H5_HOST", "\"${buildConfig["h5Host"]}\"")
             buildConfigField("String", "APP_NAME", "\"${buildConfig["appName"]}\"")
+            // 是否使用本地测试数据（开启后将跳过真实 API 调用，直接返回模拟数据）
+            buildConfigField("boolean", "IS_DEBUG_DATA", "true")
         }
         release {
             isMinifyEnabled = true
@@ -57,6 +59,8 @@ android {
             buildConfigField("String", "API_HOST", "\"${buildConfig["apiHost"]}\"")
             buildConfigField("String", "H5_HOST", "\"${buildConfig["h5Host"]}\"")
             buildConfigField("String", "APP_NAME", "\"${buildConfig["appName"]}\"")
+            // Release 版本禁用测试数据
+            buildConfigField("boolean", "IS_DEBUG_DATA", "false")
         }
     }
 
