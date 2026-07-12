@@ -30,7 +30,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentHomeBinding.inflate(inflater, container, false)
 
-    override fun initView() {
+    override fun initView() {}
+
+    override fun initObserver() {
         // 观察轮播图数据
         viewModel.bannerList.observe(viewLifecycleOwner) { banners ->
             setupBanner(banners)
@@ -40,12 +42,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel.categoryList.observe(viewLifecycleOwner) { categories ->
             setupViewPager(categories)
         }
+    }
 
+    override fun initData() {
         // 加载首页数据
         viewModel.loadHomeData()
     }
-
-    override fun initObserver() {}
 
     /**
      * 设置轮播图 - 使用 youth5201314 Banner 库

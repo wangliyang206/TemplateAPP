@@ -1,4 +1,4 @@
-﻿package com.template.app.data.api
+package com.template.app.data.api
 
 import com.template.app.data.model.*
 import com.template.core.config.CoreConfig
@@ -169,10 +169,34 @@ class MockApiService : ApiService {
      * 分类对应的链接
      */
     private val categoryUrls = mapOf(
-        1 to listOf("https://developer.android.com", "https://kotlinlang.org", "https://developer.android.com/training/data-storage/room", "https://square.github.io/retrofit/", "https://developer.android.com/jetpack/guide"),
-        2 to listOf("https://kotlinlang.org/docs/coroutines-overview.html", "https://developer.android.com/topic/performance", "https://developer.android.com/jetpack/compose/animation", "https://docs.gradle.org", "https://developer.android.com/training/permissions/requesting"),
-        3 to listOf("https://picsum.photos/800/600?random=201", "https://picsum.photos/800/600?random=202", "https://picsum.photos/800/600?random=203", "https://picsum.photos/800/600?random=204", "https://picsum.photos/800/600?random=205"),
-        4 to listOf("https://www.36kr.com", "https://www.huxiu.com", "https://www.geekpark.net", "https://github.com/trending", "https://medium.com")
+        1 to listOf(
+            "https://developer.android.google.cn/jetpack/compose",     // Android Jetpack Compose 入门指南
+            "https://www.kotlincn.net/docs/reference/coroutines-overview.html", // Kotlin Coroutines 实战技巧
+            "https://developer.android.google.cn/training/data-storage/room", // Room 数据库最佳实践
+            "https://square.github.io/retrofit/",                      // Retrofit + OkHttp 网络请求封装（GitHub Pages 国内可访问）
+            "https://developer.android.google.cn/jetpack/guide"        // MVVM 架构模式详解
+        ),
+        2 to listOf(
+            "https://www.kotlincn.net/docs/reference/coroutines/exception-handling.html", // Kotlin 协程异常处理详解
+            "https://developer.android.google.cn/topic/performance",   // Android 性能优化实战
+            "https://developer.android.google.cn/jetpack/compose/animation", // Jetpack Compose 动画教程
+            "https://docs.gradle.org/current/userguide/performance.html", // Gradle 构建优化技巧（Gradle 文档国内可访问）
+            "https://developer.android.google.cn/training/permissions/requesting" // Android 权限适配方案
+        ),
+        3 to listOf(
+            "https://picsum.photos/1200/800?random=landscape-1",       // 精美风景图片
+            "https://picsum.photos/1200/800?random=citynight-2",       // 城市夜景摄影
+            "https://picsum.photos/1200/800?random=nature-3",          // 自然风光大片
+            "https://picsum.photos/1200/800?random=architecture-4",    // 建筑摄影精选
+            "https://picsum.photos/1200/800?random=portrait-5"        // 人像摄影佳作
+        ),
+        4 to listOf(
+            "https://www.36kr.com/",                                   // 科技前沿资讯
+            "https://www.huxiu.com/",                                  // 互联网行业动态
+            "https://www.geekpark.net/",                               // 开发者大会回顾
+            "https://gitee.com/explore",                               // 开源项目推荐（Gitee 国内版）
+            "https://sspai.com/tag/Technology"                         // 技术趋势分析（少数派）
+        )
     )
 
     /**

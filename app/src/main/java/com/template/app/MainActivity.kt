@@ -1,6 +1,5 @@
 ﻿package com.template.app
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
