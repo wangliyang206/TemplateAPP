@@ -116,8 +116,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        // 销毁轮播，释放资源
+        // 先销毁轮播（此时 binding 还未置空），再调用父类方法
         binding.banner.destroy()
+        super.onDestroyView()
     }
 }
