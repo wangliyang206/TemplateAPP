@@ -14,7 +14,7 @@ data class ClientInfo(
     val vercode: String = "",
     val vername: String = "",
     val ppiheight: String = "",
-    val ppiwidth: String = ""
+    val ppiwidth: String = "",
 )
 
 /**
@@ -38,19 +38,17 @@ data class ApiRequest<T>(
     val token: String = "",
     val language: String = "ZH",
     val sign: String = "",
-    val data: T
+    val data: T,
 ) {
     companion object {
-        fun <T : Any> build(data: T, token: String = "", userId: String = ""): ApiRequest<T> {
-            return ApiRequest(
-                userid = userId,
-                version = NetworkConfig.apiVersion,
-                client = NetworkConfig.clientInfo,
-                token = token,
-                language = NetworkConfig.language,
-                sign = SignUtils.signData(data),
-                data = data
-            )
-        }
+        fun <T : Any> build(data: T, token: String = "", userId: String = ""): ApiRequest<T> = ApiRequest(
+            userid = userId,
+            version = NetworkConfig.apiVersion,
+            client = NetworkConfig.clientInfo,
+            token = token,
+            language = NetworkConfig.language,
+            sign = SignUtils.signData(data),
+            data = data,
+        )
     }
 }

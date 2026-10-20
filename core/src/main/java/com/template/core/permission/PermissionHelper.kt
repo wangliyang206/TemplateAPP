@@ -2,8 +2,6 @@ package com.template.core.permission
 
 import android.Manifest
 import android.content.pm.PackageManager
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.hjq.permissions.OnPermissionCallback
@@ -49,7 +47,7 @@ class PermissionHelper(private val onResult: (granted: Boolean) -> Unit) {
 
     /** 申请存储权限（兼容 Android 10+） */
     fun requestStorage(activity: FragmentActivity) {
-        val permissions = if (android.os.Build.VERSION.SDK_INT >= 33) {
+        val permissions = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             listOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else {
             listOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -85,7 +83,7 @@ class PermissionHelper(private val onResult: (granted: Boolean) -> Unit) {
     /** 申请手机信息权限（读取手机号、SIM 卡信息） */
     fun requestPhone(activity: FragmentActivity) {
         val permissions = mutableListOf(Manifest.permission.READ_PHONE_STATE)
-        if (android.os.Build.VERSION.SDK_INT >= 33) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             permissions.add(Manifest.permission.READ_PHONE_NUMBERS)
         }
         XXPermissions.with(activity)
@@ -105,10 +103,8 @@ class PermissionHelper(private val onResult: (granted: Boolean) -> Unit) {
 
     companion object {
         /** 快速检查权限是否已授予 */
-        fun isGranted(activity: FragmentActivity, vararg permissions: String): Boolean {
-            return permissions.all {
-                ContextCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_GRANTED
-            }
+        fun isGranted(activity: FragmentActivity, vararg permissions: String): Boolean = permissions.all {
+            ContextCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_GRANTED
         }
     }
 }

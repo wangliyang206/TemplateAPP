@@ -11,9 +11,7 @@ import javax.inject.Inject
  * 本项目的 token 同时存在于请求体（ApiRequest.token，后端规范要求）与 header，
  * 两者由同一份 [TokenStore] 驱动，避免不一致。
  */
-class TokenInterceptor @Inject constructor(
-    private val tokenStore: TokenStore
-) : Interceptor {
+class TokenInterceptor @Inject constructor(private val tokenStore: TokenStore) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -26,7 +24,7 @@ class TokenInterceptor @Inject constructor(
         return chain.proceed(
             request.newBuilder()
                 .header(HEADER_AUTHORIZATION, "Bearer $token")
-                .build()
+                .build(),
         )
     }
 
@@ -40,7 +38,7 @@ class TokenInterceptor @Inject constructor(
         private val AUTH_EXEMPT_PATHS = listOf(
             "member/login",
             "member/register",
-            "member/refreshToken"
+            "member/refreshToken",
         )
     }
 }

@@ -21,9 +21,7 @@ import javax.inject.Inject
  * 这也正是「基类只给能力、不强制状态形状」的原因。
  */
 @HiltViewModel
-class ArticleListViewModel @Inject constructor(
-    repository: ArticleRepository
-) : ViewModel() {
+class ArticleListViewModel @Inject constructor(repository: ArticleRepository) : ViewModel() {
 
     private val categoryId = MutableStateFlow(0)
 

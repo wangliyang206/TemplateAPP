@@ -6,24 +6,30 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
-    <!-- 启动页基础样式：存放 minSdk 24 即可用的属性 -->
-    <style name="AppTheme.Splash.Base" parent="AppTheme">
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@drawable/splash_window_bg</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+    <!--
+      表单页（登录/注册）统一灰色底。
+      这里把颜色放到 windowBackground，而不是在布局根节点再画一层：
+      两者同色时，多画的那一层就是纯 Overdraw。
+    -->
+    <style name="AppTheme.Form" parent="AppTheme">
+        <item name="android:windowBackground">@color/bg_gray</item>
+    </style>
 
-        <!-- 去掉启动瞬间的系统动画与预览窗口 -->
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
-        <item name="android:windowDisablePreview">true</item>
-        <item name="android:activityOpenEnterAnimation">@null</item>
-        <item name="android:activityCloseExitAnimation">@null</item>
-        <item name="android:windowEnterAnimation">@null</item>
-        <item name="android:windowExitAnimation">@null</item>
+    <!--
+      启动屏：用 androidx.core:core-splashscreen 的标准做法，不再自建 SplashActivity。
+      好处：
+      1. 少一次 Activity 启动 + 去掉旧实现里人为的 1500ms delay，冷启动更快；
+      2. API 31+ 由系统绘制启动屏，不会"白屏闪一下"；低版本由库兼容，行为一致；
+      3. 图标与背景可直接改这两个属性，不需要维护多套 drawable。
+
+      拆成 Base + 各版本覆写（values-v27 / values-v29 覆盖刘海屏、导航栏对比度属性）。
+    -->
+    <style name="AppTheme.Splash.Base" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.Splash.Base" />
+
 </resources>

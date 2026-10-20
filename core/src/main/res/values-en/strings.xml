@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_app_name">TemplateAPP</string>
+    <string name="core_confirm">OK</string>
+    <string name="core_cancel">Cancel</string>
+    <string name="core_loading">Loading…</string>
+    <string name="core_empty">No data</string>
+    <string name="core_retry">Retry</string>
+
+    <!-- Error messages: mapped uniformly by AppError.asUiMessage() -->
+    <string name="core_error_network">Network unavailable. Check your connection and try again</string>
+    <string name="core_error_timeout">Request timed out. Please try again later</string>
+    <string name="core_error_unauthorized">Session expired. Please sign in again</string>
+    <string name="core_error_http">Server error (%1$d). Please try again later</string>
+    <string name="core_error_unknown">Something went wrong. Please try again later</string>
+</resources>

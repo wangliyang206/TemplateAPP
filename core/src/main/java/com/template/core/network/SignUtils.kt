@@ -26,7 +26,7 @@ object SignUtils {
     fun signData(data: Any): String {
         if (secretKey.isEmpty()) return ""
         val json = gson.toJson(data)
-        val raw = "${json}&key=${secretKey}"
+        val raw = "$json&key=$secretKey"
         return md5(raw)
     }
 

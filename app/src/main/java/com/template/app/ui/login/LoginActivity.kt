@@ -9,6 +9,7 @@ import com.template.app.databinding.ActivityLoginBinding
 import com.template.app.ui.register.RegisterActivity
 import com.template.core.base.BaseActivity
 import com.template.core.ext.collectFlow
+import com.template.core.ext.isPhone
 import com.template.core.ext.toastShort
 import com.template.core.state.UiState
 import com.template.core.state.asString
@@ -31,6 +32,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     override fun initObserver() {
         collectFlow(viewModel.loginState) { state ->
             when (state) {
+                is UiState.Idle -> binding.btnLogin.isEnabled = true
                 is UiState.Loading -> binding.btnLogin.isEnabled = false
                 is UiState.Success -> {
                     binding.btnLogin.isEnabled = true
@@ -38,7 +40,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                     startActivity(
                         Intent(this@LoginActivity, MainActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        }
+                        },
                     )
                     finish()
                 }
@@ -57,15 +59,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
         when {
             phone.isEmpty() -> toastShort(getString(R.string.login_phone_required))
-            !phone.matches(PHONE_REGEX) -> toastShort(getString(R.string.login_phone_invalid))
+            !phone.isPhone() -> toastShort(getString(R.string.login_phone_invalid))
             pwd.isEmpty() -> toastShort(getString(R.string.login_password_required))
-            pwd.length < MIN_PASSWORD_LENGTH -> toastShort(getString(R.string.login_password_too_short))
+            pwd.length < MIN_PASSWORD_LENGTH ->
+                toastShort(getString(R.string.login_password_too_short, MIN_PASSWORD_LENGTH))
             else -> viewModel.login(phone, pwd)
         }
     }
 
     private companion object {
-        val PHONE_REGEX = Regex("^1[0-9]{10}$")
         const val MIN_PASSWORD_LENGTH = 6
     }
 }

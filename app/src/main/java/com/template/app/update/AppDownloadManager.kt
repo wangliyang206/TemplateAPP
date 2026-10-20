@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class AppDownloadManager {
@@ -38,7 +39,7 @@ class AppDownloadManager {
                 return@withContext null
             }
             val total = body.contentLength()
-            val buffer = ByteArray(8192)
+            val buffer = ByteArray(BUFFER_SIZE)
             var downloaded: Long = 0
             body.byteStream().use { input ->
                 FileOutputStream(file).use { output ->
@@ -53,7 +54,7 @@ class AppDownloadManager {
             }
             _state.value = DownloadState.Completed(file)
             file
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             _state.value = DownloadState.Failed(e.message ?: "下载异常")
             null
         }
@@ -68,5 +69,10 @@ class AppDownloadManager {
         data class Downloading(val progress: Int) : DownloadState()
         data class Completed(val file: File) : DownloadState()
         data class Failed(val message: String) : DownloadState()
+    }
+
+    private companion object {
+        /** 8KB 是 Okio/文件流的常用块大小：太小系统调用多，太大占内存且进度回调不细腻 */
+        const val BUFFER_SIZE = 8 * 1024
     }
 }

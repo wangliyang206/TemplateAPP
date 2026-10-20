@@ -17,9 +17,7 @@ import javax.inject.Inject
  * 登录/登出后页面自动刷新，不需要手动通知。
  */
 @HiltViewModel
-class MineViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository
-) : BaseViewModel() {
+class MineViewModel @Inject constructor(private val sessionRepository: SessionRepository) : BaseViewModel() {
 
     val userState: StateFlow<UserUiState> = sessionRepository.session
         .map { session ->
@@ -27,7 +25,7 @@ class MineViewModel @Inject constructor(
                 UserUiState.LoggedIn(
                     userName = session.userName,
                     phone = session.phone,
-                    avatar = session.avatar
+                    avatar = session.avatar,
                 )
             } else {
                 UserUiState.NotLoggedIn
@@ -36,7 +34,7 @@ class MineViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserUiState.NotLoggedIn
+            initialValue = UserUiState.NotLoggedIn,
         )
 
     fun logout() = launchCatching {
@@ -46,10 +44,6 @@ class MineViewModel @Inject constructor(
     sealed interface UserUiState {
         data object NotLoggedIn : UserUiState
 
-        data class LoggedIn(
-            val userName: String,
-            val phone: String,
-            val avatar: String
-        ) : UserUiState
+        data class LoggedIn(val userName: String, val phone: String, val avatar: String) : UserUiState
     }
 }

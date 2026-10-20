@@ -23,44 +23,40 @@ abstract class BaseRepository {
     /**
      * 调用 API 并直接取业务数据；失败时抛 [AppException]。
      */
-    protected suspend fun <T> apiCall(call: suspend () -> ApiResult<T>): T =
-        withContext(Dispatchers.IO) {
-            when (val result = call()) {
-                is ApiResult.Success -> result.data
-                is ApiResult.Failure -> throw AppException(result.error)
-            }
+    protected suspend fun <T> apiCall(call: suspend () -> ApiResult<T>): T = withContext(Dispatchers.IO) {
+        when (val result = call()) {
+            is ApiResult.Success -> result.data
+            is ApiResult.Failure -> throw AppException(result.error)
         }
+    }
 
     /**
      * 把统一响应体转换为 [ApiResult]，任何异常都收敛成 [AppError]。
      */
-    protected suspend fun <T> safeApi(call: suspend () -> BaseResponse<T>): ApiResult<T> =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = call()
-                val data = response.data
-                when {
-                    response.isSuccess && data != null -> ApiResult.Success(data)
-                    response.isSuccess -> ApiResult.Failure(AppError.Unknown())
-                    else -> ApiResult.Failure(
-                        AppError.Business(response.errorCode, response.errorMessage)
-                    )
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                ApiResult.Failure(e.toAppError())
+    protected suspend fun <T> safeApi(call: suspend () -> BaseResponse<T>): ApiResult<T> = withContext(Dispatchers.IO) {
+        try {
+            val response = call()
+            val data = response.data
+            when {
+                response.isSuccess && data != null -> ApiResult.Success(data)
+                response.isSuccess -> ApiResult.Failure(AppError.Unknown())
+                else -> ApiResult.Failure(
+                    AppError.Business(response.errorCode, response.errorMessage),
+                )
             }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            ApiResult.Failure(e.toAppError())
         }
+    }
 
     /**
      * 构建统一请求体。
      *
      * @param token 需要鉴权时传当前 token；登录/注册等匿名接口传空串
      */
-    protected fun <T : Any> buildApiRequest(data: T, token: String = ""): ApiRequest<T> =
-        ApiRequest.build(data, token)
+    protected fun <T : Any> buildApiRequest(data: T, token: String = ""): ApiRequest<T> = ApiRequest.build(data, token)
 
-    protected suspend fun <T> io(block: suspend () -> T): T =
-        withContext(Dispatchers.IO) { block() }
+    protected suspend fun <T> io(block: suspend () -> T): T = withContext(Dispatchers.IO) { block() }
 }

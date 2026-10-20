@@ -14,9 +14,7 @@ import javax.inject.Inject
  * 继承 BaseViewModel，只暴露一个 State，加载失败由基类统一转成 UiState.Error。
  */
 @HiltViewModel
-class CategoryViewModel @Inject constructor(
-    private val repository: CategoryRepository
-) : BaseViewModel() {
+class CategoryViewModel @Inject constructor(private val repository: CategoryRepository) : BaseViewModel() {
 
     private val _state = MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
     val state: StateFlow<UiState<List<Category>>> = _state.asStateFlow()

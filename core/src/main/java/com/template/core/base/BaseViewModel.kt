@@ -38,7 +38,7 @@ abstract class BaseViewModel : ViewModel() {
 
     private val _effects = MutableSharedFlow<UiEffect>(
         extraBufferCapacity = 16,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
     /** 一次性副作用流，UI 在 STARTED 状态收集 */
@@ -55,7 +55,7 @@ abstract class BaseViewModel : ViewModel() {
      */
     protected fun <T> MutableStateFlow<UiState<T>>.launchWithState(
         showLoading: Boolean = true,
-        block: suspend () -> T
+        block: suspend () -> T,
     ) {
         val state = this
         viewModelScope.launch {
@@ -80,7 +80,7 @@ abstract class BaseViewModel : ViewModel() {
      */
     protected fun launchCatching(
         onError: (AppError) -> Unit = { sendEffect(UiEffect.ShowMessage(it.asUiMessage())) },
-        block: suspend () -> Unit
+        block: suspend () -> Unit,
     ) {
         viewModelScope.launch {
             try {

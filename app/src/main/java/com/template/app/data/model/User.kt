@@ -8,5 +8,5 @@ data class User(
     val userName: String,
     val userPhone: String,
     val token: String,
-    val avatar: String? = null
+    val avatar: String? = null,
 )

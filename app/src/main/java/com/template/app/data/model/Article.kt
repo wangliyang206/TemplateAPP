@@ -10,13 +10,10 @@ data class Article(
     val url: String = "",
     val cover: String = "",
     val author: String = "",
-    val createTime: String = ""
+    val createTime: String = "",
 )
 
 /**
  * 文章列表响应
  */
-data class ArticleListResponse(
-    val total: Int,
-    val list: List<Article>
-)
+data class ArticleListResponse(val total: Int, val list: List<Article>)

@@ -62,7 +62,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             is UiState.Empty -> binding.stateLayout.showEmpty(getString(R.string.home_empty))
             is UiState.Error -> binding.stateLayout.showError(
                 message = state.message.asString(requireContext()),
-                onRetry = viewModel::refresh
+                onRetry = viewModel::refresh,
             )
             is UiState.Success -> {
                 if (state.data.isEmpty) {
@@ -90,7 +90,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                         Intent(requireContext(), WebViewActivity::class.java).apply {
                             putExtra("url", banner.linkUrl)
                             putExtra("title", banner.title)
-                        }
+                        },
                     )
                 }
             }
@@ -99,8 +99,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.banner.apply {
             setAdapter(adapter)
             setIndicator(CircleIndicator(context))
-            setLoopTime(3000)
-            setBannerRound(20f)
+            setLoopTime(BANNER_LOOP_INTERVAL_MS)
+            setBannerRound(BANNER_CORNER_RADIUS_DP)
             isAutoLoop(true)
             start()
         }
@@ -122,7 +122,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             tab.text = categories[position].name
         }.attach()
 
-        binding.contentViewPager.offscreenPageLimit = categories.size.coerceAtMost(4)
+        binding.contentViewPager.offscreenPageLimit = categories.size.coerceAtMost(MAX_OFFSCREEN_PAGES)
     }
 
     override fun onResume() {
@@ -138,5 +138,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun onDestroyView() {
         binding.banner.destroy()
         super.onDestroyView()
+    }
+
+    private companion object {
+        const val BANNER_LOOP_INTERVAL_MS = 3000L
+        const val BANNER_CORNER_RADIUS_DP = 20f
+
+        /** 预加载页数上限：太多会同时持有过多 Fragment 与列表，内存换不来收益 */
+        const val MAX_OFFSCREEN_PAGES = 4
     }
 }

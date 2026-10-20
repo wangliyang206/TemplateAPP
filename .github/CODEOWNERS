@@ -1,0 +1,14 @@
+# 默认负责人：模板核心维护者，PR 未指定 reviewer 时自动指派
+* @template-maintainers
+
+# 构建与依赖变更需要更高审查强度
+*.gradle.kts @template-maintainers
+gradle/libs.versions.toml @template-maintainers
+gradle/wrapper/ @template-maintainers
+
+# 签名与 CI 任何人不得随意修改
+docs/SIGNING.md @template-maintainers
+.github/workflows/ @template-maintainers
+
+# 说明：@template-maintainers 需替换为实际 GitHub 组织/团队名，
+# 或改为具体账号，如 * @zhangsan @lisi

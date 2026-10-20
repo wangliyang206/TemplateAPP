@@ -1,6 +1,5 @@
 package com.template.core.network
 
-import com.google.gson.Gson
 import kotlinx.coroutines.test.runTest
 import okhttp3.Protocol
 import okhttp3.Request
@@ -19,8 +18,6 @@ import org.junit.Test
  */
 class TokenAuthenticatorTest {
 
-    private val gson = Gson()
-
     private class FakeTokenStore(var token: String) : TokenStore {
         var cleared = false
         override suspend fun currentToken(): String = token
@@ -33,26 +30,24 @@ class TokenAuthenticatorTest {
         }
     }
 
-    private fun requestWithBody(token: String): Request =
-        Request.Builder()
-            .url("https://api.example.com/member/profile")
-            .post("""{"version":1,"token":"$token","data":{}}""".toRequestBody())
-            .build()
+    private fun requestWithBody(token: String): Request = Request.Builder()
+        .url("https://api.example.com/member/profile")
+        .post("""{"version":1,"token":"$token","data":{}}""".toRequestBody())
+        .build()
 
-    private fun unauthorized(request: Request): Response =
-        Response.Builder()
-            .request(request)
-            .protocol(Protocol.HTTP_1_1)
-            .code(401)
-            .message("Unauthorized")
-            .body("".toResponseBody(null))
-            .build()
+    private fun unauthorized(request: Request): Response = Response.Builder()
+        .request(request)
+        .protocol(Protocol.HTTP_1_1)
+        .code(401)
+        .message("Unauthorized")
+        .body("".toResponseBody(null))
+        .build()
 
     @Test
     fun `401 时刷新成功并重写请求体中的 token`() = runTest {
         val store = FakeTokenStore("old-token")
         val manager = SessionManager(store)
-        val authenticator = TokenAuthenticator(store, { _ -> "new-token" }, manager, gson)
+        val authenticator = TokenAuthenticator(store, { _ -> "new-token" }, manager)
 
         val retried = authenticator.authenticate(null, unauthorized(requestWithBody("old-token")))
 
@@ -69,7 +64,7 @@ class TokenAuthenticatorTest {
     fun `刷新失败时清理登录态并放弃重试`() = runTest {
         val store = FakeTokenStore("old-token")
         val manager = SessionManager(store)
-        val authenticator = TokenAuthenticator(store, { _ -> null }, manager, gson)
+        val authenticator = TokenAuthenticator(store, { _ -> null }, manager)
 
         val retried = authenticator.authenticate(null, unauthorized(requestWithBody("old-token")))
 
@@ -84,9 +79,11 @@ class TokenAuthenticatorTest {
         var refreshCalled = false
         val authenticator = TokenAuthenticator(
             store,
-            { _ -> refreshCalled = true; null },
+            { _ ->
+                refreshCalled = true
+                null
+            },
             manager,
-            gson
         )
 
         val retried = authenticator.authenticate(null, unauthorized(requestWithBody("")))
@@ -102,9 +99,11 @@ class TokenAuthenticatorTest {
         var refreshCalled = false
         val authenticator = TokenAuthenticator(
             store,
-            { _ -> refreshCalled = true; null },
+            { _ ->
+                refreshCalled = true
+                null
+            },
             manager,
-            gson
         )
 
         val retried = authenticator.authenticate(null, unauthorized(requestWithBody("old-token")))

@@ -19,6 +19,9 @@ sealed interface UiMessage {
     data class Res(@StringRes val id: Int, val args: List<Any> = emptyList()) : UiMessage
 }
 
+// String.format 风格的占位符必须用数组传入，这里的展开无法避免；
+// 该路径只在渲染一条文案时执行，不属于热点，不做额外优化。
+@Suppress("SpreadOperator")
 fun UiMessage.asString(context: Context): String = when (this) {
     is UiMessage.Text -> value
     is UiMessage.Res -> if (args.isEmpty()) {

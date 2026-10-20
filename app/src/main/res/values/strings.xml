@@ -15,7 +15,6 @@
     <string name="mine_logout">退出登录</string>
     <string name="mine_not_login">未登录</string>
     <string name="mine_click_to_login">点击登录</string>
-    <string name="update_title">发现新版本</string>
     <string name="update_now">立即更新</string>
     <string name="update_later">稍后更新</string>
 
@@ -28,6 +27,16 @@
     <string name="login_phone_required">请输入手机号</string>
     <string name="login_phone_invalid">请输入正确的手机号</string>
     <string name="login_password_required">请输入密码</string>
-    <string name="login_password_too_short">密码长度不能少于6位</string>
+    <!-- 用占位符而不是写死"6"，改长度限制时只改常量，文案自动跟着变 -->
+    <string name="login_password_too_short">密码长度不能少于%1$d位</string>
     <string name="register_success">注册成功</string>
+    <string name="register_phone_invalid">请输入正确的手机号</string>
+    <string name="register_password_too_short">密码长度不能少于%1$d位</string>
+    <string name="register_password_mismatch">两次输入的密码不一致</string>
+    <string name="update_new_version">发现新版本 %1$s</string>
+    <string name="update_progress">%1$d%%</string>
+    <string name="category_id_tag">#%1$d</string>
+
+    <!-- 无障碍描述 -->
+    <string name="cd_avatar">头像</string>
 </resources>

@@ -30,7 +30,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         // 后续钩子方法
         initView()
         initObserver()
-        initData()
     }
 
     /**
@@ -88,12 +87,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected open fun initView() {}
 
     /**
-     * 初始化观察者（如 LiveData 订阅）。
+     * 订阅 ViewModel 的 StateFlow / SharedFlow（effects）。
      */
     protected open fun initObserver() {}
-
-    /**
-     * 初始化数据（如加载网络数据）。
-     */
-    protected open fun initData() {}
 }

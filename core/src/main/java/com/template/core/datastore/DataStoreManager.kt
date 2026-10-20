@@ -54,7 +54,7 @@ class DataStoreManager(private val context: Context) {
             token = it[KEY_TOKEN] ?: "",
             userName = it[KEY_USER_NAME] ?: "",
             phone = it[KEY_USER_PHONE] ?: "",
-            avatar = it[KEY_USER_AVATAR] ?: ""
+            avatar = it[KEY_USER_AVATAR] ?: "",
         )
     }
 
@@ -66,7 +66,7 @@ class DataStoreManager(private val context: Context) {
             token = preferences[KEY_TOKEN] ?: "",
             userName = preferences[KEY_USER_NAME] ?: "",
             phone = preferences[KEY_USER_PHONE] ?: "",
-            avatar = preferences[KEY_USER_AVATAR] ?: ""
+            avatar = preferences[KEY_USER_AVATAR] ?: "",
         )
     }
 
@@ -75,6 +75,6 @@ class DataStoreManager(private val context: Context) {
         val token: String,
         val userName: String,
         val phone: String,
-        val avatar: String
+        val avatar: String,
     )
 }

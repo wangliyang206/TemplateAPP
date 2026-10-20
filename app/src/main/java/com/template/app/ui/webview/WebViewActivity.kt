@@ -10,6 +10,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import com.template.app.BuildConfig
 import com.template.app.R
 import com.template.app.databinding.ActivityWebviewBinding
@@ -45,15 +47,20 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
 
     override fun getTitleBarId(): Int = R.id.titleBar
 
-    override fun inflateBinding(inflater: LayoutInflater) =
-        ActivityWebviewBinding.inflate(inflater)
+    override fun inflateBinding(inflater: LayoutInflater) = ActivityWebviewBinding.inflate(inflater)
+
+    // 网页可后退时先退网页，否则交给系统回退（onBackPressed 已废弃，走 OnBackPressedDispatcher）
+    private lateinit var backCallback: OnBackPressedCallback
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun initView() {
+        backCallback = onBackPressedDispatcher.addCallback(this, enabled = false) {
+            binding.webView.goBack()
+        }
         pageUrl = resolveUrl(intent.getStringExtra(EXTRA_URL) ?: "about:blank")
         pageTitle = intent.getStringExtra(EXTRA_TITLE) ?: ""
 
-        binding.titleBar.ivBack.setOnClickListener { onBackPressed() }
+        binding.titleBar.ivBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.titleBar.tvTitle.text = pageTitle
 
         binding.webView.apply {
@@ -68,10 +75,7 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
             addJavascriptInterface(WebViewJsBridge(this@WebViewActivity), "AndroidBridge")
 
             webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
+                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     val url = request?.url?.toString() ?: return false
                     // 拦截外部协议（如 alipays:// weixin://）
                     return if (url.startsWith("http://") || url.startsWith("https://")) {
@@ -86,14 +90,22 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
                         true
                     }
                 }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    backCallback.isEnabled = binding.webView.canGoBack()
+                }
             }
 
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     binding.progressBar.progress = newProgress
                     binding.progressBar.visibility =
-                        if (newProgress == 100) android.view.View.GONE
-                        else android.view.View.VISIBLE
+                        if (newProgress == 100) {
+                            android.view.View.GONE
+                        } else {
+                            android.view.View.VISIBLE
+                        }
                 }
 
                 override fun onReceivedTitle(view: WebView?, title: String?) {
@@ -104,14 +116,6 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
             }
 
             loadUrl(pageUrl)
-        }
-    }
-
-    override fun onBackPressed() {
-        if (binding.webView.canGoBack()) {
-            binding.webView.goBack()
-        } else {
-            super.onBackPressed()
         }
     }
 
@@ -138,7 +142,7 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
                 Intent(context, WebViewActivity::class.java).apply {
                     putExtra(EXTRA_URL, url)
                     putExtra(EXTRA_TITLE, title)
-                }
+                },
             )
         }
 

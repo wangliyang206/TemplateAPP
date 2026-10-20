@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TemplateAPP</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_category">Categories</string>
+    <string name="tab_mine">Me</string>
+    <string name="login_title">Sign in</string>
+    <string name="login_phone_hint">Phone number</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button">Sign in</string>
+    <string name="login_to_register">No account yet? Register</string>
+    <string name="register_title">Register</string>
+    <string name="register_password_confirm_hint">Confirm password</string>
+    <string name="register_button">Register</string>
+    <string name="mine_logout">Sign out</string>
+    <string name="mine_not_login">Not signed in</string>
+    <string name="mine_click_to_login">Tap to sign in</string>
+    <string name="update_now">Update now</string>
+    <string name="update_later">Later</string>
+
+    <!-- Home -->
+    <string name="home_empty">Nothing here yet</string>
+    <string name="category_empty">No categories</string>
+
+    <!-- Login / register validation & results -->
+    <string name="login_success">Signed in</string>
+    <string name="login_phone_required">Please enter your phone number</string>
+    <string name="login_phone_invalid">Please enter a valid phone number</string>
+    <string name="login_password_required">Please enter your password</string>
+    <string name="login_password_too_short">Password too short (minimum %1$d)</string>
+    <string name="register_success">Registered</string>
+    <string name="register_phone_invalid">Please enter a valid phone number</string>
+    <string name="register_password_too_short">Password too short (minimum %1$d)</string>
+    <string name="register_password_mismatch">Passwords do not match</string>
+    <string name="update_new_version">New version %1$s available</string>
+    <string name="update_progress">%1$d%%</string>
+    <string name="category_id_tag">#%1$d</string>
+
+    <!-- Accessibility -->
+    <string name="cd_avatar">Avatar</string>
+</resources>

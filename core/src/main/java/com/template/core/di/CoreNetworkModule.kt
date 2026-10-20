@@ -49,7 +49,7 @@ object CoreNetworkModule {
     fun provideOkHttpClient(
         headerInterceptor: HeaderInterceptor,
         tokenInterceptor: TokenInterceptor,
-        tokenAuthenticator: TokenAuthenticator
+        tokenAuthenticator: TokenAuthenticator,
     ): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(NetworkConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(NetworkConfig.READ_TIMEOUT, TimeUnit.SECONDS)
@@ -64,13 +64,10 @@ object CoreNetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(
-        client: OkHttpClient,
-        gson: Gson,
-        @Named(BASE_URL) baseUrl: String
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
+    fun provideRetrofit(client: OkHttpClient, gson: Gson, @Named(BASE_URL) baseUrl: String): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
 }

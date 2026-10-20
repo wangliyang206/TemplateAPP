@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class CategoryRepository @Inject constructor(
     private val apiService: ApiService,
-    private val requestFactory: ApiRequestFactory
+    private val requestFactory: ApiRequestFactory,
 ) : BaseRepository() {
 
     suspend fun load(): List<Category> = apiCall {

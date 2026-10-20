@@ -1,0 +1,61 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Android 模板依赖自动更新策略：小版本自动提 PR，核心工具链（AGP/Kotlin/KSP）大版本必须人工评估",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "timezone": "Asia/Shanghai",
+  "schedule": [
+    "before 10am on monday"
+  ],
+  "prHourlyLimit": 3,
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "description": "AGP 大版本升级涉及迁移成本，人工评估",
+      "matchPackageNames": [
+        "com.android.tools.build:gradle",
+        "com.android.application",
+        "com.android.library"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Kotlin 大版本与 KSP 强关联，人工评估",
+      "matchPackageNames": [
+        "org.jetbrains.kotlin:kotlin-gradle-plugin",
+        "org.jetbrains.kotlin.android"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "KSP 版本必须与 Kotlin 版本联动，手动升级",
+      "matchPackageNames": [
+        "com.google.devtools.ksp"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Hilt 编译器与 KSP 联动，手动升级",
+      "matchPackageNames": [
+        "com.google.dagger:hilt-android-compiler",
+        "com.google.dagger:hilt-android-gradle-plugin"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "测试类依赖小版本自动合并",
+      "matchPackageNames": [
+        "junit:junit",
+        "io.mockk:mockk",
+        "org.robolectric:robolectric"
+      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ]
+}

@@ -13,9 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UpdateViewModel @Inject constructor(
-    private val repository: UpdateRepository
-) : BaseViewModel() {
+class UpdateViewModel @Inject constructor(private val repository: UpdateRepository) : BaseViewModel() {
 
     private val _updateState = MutableStateFlow<UiState<UpdateInfo>>(UiState.Idle)
     val updateState: StateFlow<UiState<UpdateInfo>> = _updateState.asStateFlow()
@@ -32,7 +30,7 @@ class UpdateViewModel @Inject constructor(
             downloadManager.download(
                 context,
                 updateInfo.downloadUrl,
-                "template_app_${updateInfo.versionCode}.apk"
+                "template_app_${updateInfo.versionCode}.apk",
             )
         }
     }

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_gray"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="Overdraw">
 
     <!-- 标题栏 -->
     <LinearLayout
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/surface"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingVertical="12dp">
@@ -31,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_normal"
-        android:background="@color/white"
+        android:background="@color/surface"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/margin_normal">
@@ -39,6 +41,7 @@
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="64dp"
+            android:contentDescription="@string/cd_avatar"
             android:layout_height="64dp"
             android:background="@drawable/bg_avatar_circle"
             android:scaleType="centerCrop" />

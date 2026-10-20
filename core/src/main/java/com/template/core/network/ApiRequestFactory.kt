@@ -11,9 +11,7 @@ import javax.inject.Singleton
  * 现在 token 由 [TokenStore] 统一注入，鉴权接口与匿名接口用参数显式区分。
  */
 @Singleton
-class ApiRequestFactory @Inject constructor(
-    private val tokenStore: TokenStore
-) {
+class ApiRequestFactory @Inject constructor(private val tokenStore: TokenStore) {
 
     suspend fun <T : Any> build(data: T, authenticated: Boolean = true): ApiRequest<T> {
         val token = if (authenticated) tokenStore.currentToken() else ""

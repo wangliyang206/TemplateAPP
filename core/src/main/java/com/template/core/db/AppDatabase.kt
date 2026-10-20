@@ -17,7 +17,7 @@ import androidx.room.migration.Migration
 @Database(
     entities = [UserEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -39,9 +39,10 @@ abstract class AppDatabase : RoomDatabase() {
          */
         val MIGRATIONS: Array<Migration> = emptyArray()
 
-        fun build(context: Context): AppDatabase =
-            Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
-                .addMigrations(*MIGRATIONS)
-                .build()
+        fun build(context: Context): AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
+            // 逐个 addMigrations 而不是 *MIGRATIONS 展开：
+            // 展开会先复制整个数组，且空数组时是纯开销；这里也顺便避免 detekt 的性能告警
+            .apply { MIGRATIONS.forEach { addMigrations(it) } }
+            .build()
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- core 模块暗色模式：覆盖语义底色与文字色，随系统切换 -->
+<resources>
+    <color name="core_bg">#FF121212</color>
+    <color name="core_gray">#FFA6A6A6</color>
+    <color name="common_text_color">#FFEDEDED</color>
+</resources>

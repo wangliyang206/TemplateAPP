@@ -2,7 +2,6 @@ package com.template.core.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.template.core.R
 
@@ -20,11 +19,8 @@ import com.template.core.R
  * statefulLayout.showEmpty("暂无数据")
  * statefulLayout.showError("加载失败") { retry() }
  */
-class StatefulLayout @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+class StatefulLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     sealed class State {
         object Content : State()
@@ -38,11 +34,11 @@ class StatefulLayout @JvmOverloads constructor(
     private var emptyView: StateCardView? = null
     private var errorView: StateCardView? = null
 
-    private val inflater = LayoutInflater.from(context)
-
     override fun onFinishInflate() {
         super.onFinishInflate()
-        // 确保子 view 数量 ≤ 1（即内容本身）
+        require(childCount <= 1) {
+            "StatefulLayout 只能包裹一个内容子 View，当前有 $childCount 个。请把多个子 View 包进一个容器里。"
+        }
     }
 
     fun showLoading() {
@@ -89,24 +85,23 @@ class StatefulLayout @JvmOverloads constructor(
 
     private fun ensureLoadingView() {
         if (loadingView == null) {
-            loadingView = inflater.inflate(R.layout.view_state_card, this, false) as StateCardView
-            addView(loadingView)
+            // 注意：不要 inflate(R.layout.view_state_card) —— 它的根是 <merge>，
+            // 只能由 StateCardView 自己的 init 以 attachToRoot=true 的方式填充。
+            loadingView = StateCardView(context).also { addView(it) }
         }
         loadingView?.visibility = VISIBLE
     }
 
     private fun ensureEmptyView() {
         if (emptyView == null) {
-            emptyView = inflater.inflate(R.layout.view_state_card, this, false) as StateCardView
-            addView(emptyView)
+            emptyView = StateCardView(context).also { addView(it) }
         }
         emptyView?.visibility = VISIBLE
     }
 
     private fun ensureErrorView() {
         if (errorView == null) {
-            errorView = inflater.inflate(R.layout.view_state_card, this, false) as StateCardView
-            addView(errorView)
+            errorView = StateCardView(context).also { addView(it) }
         }
         errorView?.visibility = VISIBLE
     }

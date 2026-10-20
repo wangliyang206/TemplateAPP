@@ -33,7 +33,7 @@ class BannerImageAdapter(banners: List<Banner>) : BannerAdapter<Banner, BannerVi
         val imageView = ImageView(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
             )
             scaleType = ImageView.ScaleType.CENTER_CROP
         }

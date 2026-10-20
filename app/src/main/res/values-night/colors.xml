@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  暗色模式色板。CoreTheme 已是 Theme.Material3.DayNight，
+  这里只需覆盖 app 模块的语义色，布局全部引用语义色即可自动切换。
+  色值参照 Material Design 暗色规范：背景 #121212，表面 #1E1E1E，
+  主色降饱和到 #BB86FC，正文改为浅色。
+-->
+<resources>
+    <color name="primary">#FFBB86FC</color>
+    <color name="surface">#FF1E1E1E</color>
+    <color name="divider">#FF2C2C2C</color>
+    <color name="text_primary">#FFEDEDED</color>
+    <color name="text_secondary">#FFA6A6A6</color>
+    <color name="text_hint">#FF6B6B6B</color>
+    <color name="bg_gray">#FF121212</color>
+</resources>

@@ -1,12 +1,12 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.File
 import java.security.KeyStore
 import java.security.MessageDigest
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    // 公共 Android 配置（compileSdk / minSdk / targetSdk / compileOptions / lint / packaging）
+    // 由 build-logic 的 convention plugin 统一提供，模块内只写自己特有的内容
+    alias(libs.plugins.templateAndroidApplication)
     alias(libs.plugins.ksp)
     alias(libs.plugins.daggerHiltAndroid)
 }
@@ -17,10 +17,11 @@ plugins {
 // CI：  通过环境变量注入
 // 缺失时不阻塞 debug 构建，但 release 包将是未签名产物。
 // ---------------------------------------------------------------------------
-val localProperties = Properties().apply {
-    val file = rootProject.file("local.properties")
-    if (file.exists()) file.inputStream().use { load(it) }
-}
+val localProperties =
+    Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
+    }
 
 fun secret(name: String): String? =
     (localProperties.getProperty(name) ?: System.getenv(name))?.takeIf { it.isNotBlank() }
@@ -30,12 +31,14 @@ val releaseStorePassword = secret("RELEASE_STORE_PASSWORD")
 val releaseKeyAlias = secret("RELEASE_KEY_ALIAS")
 val releaseKeyPassword = secret("RELEASE_KEY_PASSWORD")
 
-val hasReleaseSigning = listOfNotNull(
-    releaseStoreFile,
-    releaseStorePassword,
-    releaseKeyAlias,
-    releaseKeyPassword
-).size == 4 && rootProject.file(releaseStoreFile!!).exists()
+val hasReleaseSigning =
+    listOfNotNull(
+        releaseStoreFile,
+        releaseStorePassword,
+        releaseKeyAlias,
+        releaseKeyPassword,
+    ).size == 4 &&
+        rootProject.file(releaseStoreFile!!).exists()
 
 // ---------------------------------------------------------------------------
 // 模板占位密钥闸门
@@ -51,28 +54,33 @@ val placeholderReleaseSha256 =
 val allowPlaceholderReleaseKey =
     (findProperty("template.usePlaceholderReleaseKey") as? String)?.toBoolean() ?: true
 
-fun keystoreSha256(path: String, storePass: String, alias: String): String? = runCatching {
-    // KeyStore.getInstance(File, char[]) 会自动探测 JKS / PKCS12 并完成加载（JDK 9+）
-    val ks = KeyStore.getInstance(File(path), storePass.toCharArray())
-    val cert = ks.getCertificate(alias) ?: return@runCatching null
-    MessageDigest.getInstance("SHA-256")
-        .digest(cert.encoded)
-        .joinToString(":") { "%02X".format(it) }
-}.getOrNull()
+fun keystoreSha256(
+    path: String,
+    storePass: String,
+    alias: String,
+): String? =
+    runCatching {
+        // KeyStore.getInstance(File, char[]) 会自动探测 JKS / PKCS12 并完成加载（JDK 9+）
+        val ks = KeyStore.getInstance(File(path), storePass.toCharArray())
+        val cert = ks.getCertificate(alias) ?: return@runCatching null
+        MessageDigest
+            .getInstance("SHA-256")
+            .digest(cert.encoded)
+            .joinToString(":") { "%02X".format(it) }
+    }.getOrNull()
 
 val releaseCertSha256: String? =
     if (hasReleaseSigning) {
         keystoreSha256(
             rootProject.file(releaseStoreFile!!).absolutePath,
             releaseStorePassword!!,
-            releaseKeyAlias!!
+            releaseKeyAlias!!,
         )
     } else {
         null
     }
 
 val usingPlaceholderReleaseKey = releaseCertSha256 != null && releaseCertSha256 == placeholderReleaseSha256
-
 
 // ---------------------------------------------------------------------------
 // debug 签名：必须固定，否则每台机器用自己生成的 ~/.android/debug.keystore。
@@ -89,15 +97,13 @@ val hasDebugSigning = rootProject.file(debugStoreFile).exists()
 
 android {
     namespace = "com.template.app"
-    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.template.app"
-        minSdk = 24
-        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // 指向自定义 Runner，让仪器化测试跑在 HiltTestApplication 上（否则 @AndroidEntryPoint 页面注入失败）
+        testInstrumentationRunner = "com.template.app.HiltTestRunner"
 
         // 请求签名密钥：不要写死在代码里，本地用 local.properties，CI 用环境变量
         buildConfigField("String", "SIGN_SECRET", "\"${secret("SIGN_SECRET").orEmpty()}\"")
@@ -113,8 +119,8 @@ android {
                 keyPassword = debugKeyPassword
             } else {
                 logger.warn(
-                    "[signing] 未找到团队 debug 密钥 ${debugStoreFile}，将回退到本机默认 debug.keystore，" +
-                        "多人协作时会导致覆盖安装失败。请从内部仓库获取 app/keystore/debug.jks。"
+                    "[signing] 未找到团队 debug 密钥 $debugStoreFile，将回退到本机默认 debug.keystore，" +
+                        "多人协作时会导致覆盖安装失败。请从内部仓库获取 app/keystore/debug.jks。",
                 )
             }
         }
@@ -177,39 +183,9 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     buildFeatures {
         viewBinding = true
         buildConfig = true
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "/META-INF/LICENSE*"
-        }
-    }
-
-    lint {
-        abortOnError = true
-        checkReleaseBuilds = true
-        warningsAsErrors = false
-        // 版本升级由 Renovate / dependabot 负责，不在 lint 里噪音告警
-        disable += setOf("GradleDependency", "AndroidGradlePluginVersion", "NewerVersionAvailable")
-    }
-
-    testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -225,7 +201,7 @@ tasks.register("verifyReleaseSigning") {
                 |请在 local.properties 或环境变量中提供：
                 |  RELEASE_STORE_FILE / RELEASE_STORE_PASSWORD / RELEASE_KEY_ALIAS / RELEASE_KEY_PASSWORD
                 |说明见 docs/SIGNING.md。
-                """.trimMargin()
+                """.trimMargin(),
             )
         }
 
@@ -240,7 +216,7 @@ tasks.register("verifyReleaseSigning") {
                 |  keytool -genkeypair -v -keystore app/keystore/release.jks -alias youralias \
                 |          -keyalg RSA -keysize 2048 -validity 10000
                 |然后同步更新 local.properties 里的 RELEASE_* 四项。说明见 docs/SIGNING.md。
-                """.trimMargin()
+                """.trimMargin(),
             )
         }
 
@@ -255,7 +231,7 @@ tasks.register("verifyReleaseSigning") {
                 |     正式对外发布前必须重新生成 release.jks，
                 |     并把 gradle.properties 的 template.usePlaceholderReleaseKey 改为 false。
                 |======================================================================
-                """.trimMargin()
+                """.trimMargin(),
             )
         } else {
             logger.lifecycle("[signing] release 使用自有密钥，SHA-256: $releaseCertSha256")
@@ -276,6 +252,10 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // Glide 的 KSP 编译器：生成 AppGlideModule，避免运行时
+    // "Failed to find GeneratedAppGlideModule" 告警，并让缓存策略在编译期固定下来
+    ksp(libs.glide.ksp)
+
     debugImplementation(libs.leakcanary)
 
     testImplementation(libs.junit)
@@ -284,7 +264,14 @@ dependencies {
     testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.paging.testing)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.konsist)
+    testImplementation(libs.androidx.junit)
 
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.espresso)
+    androidTestImplementation(libs.hilt.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }

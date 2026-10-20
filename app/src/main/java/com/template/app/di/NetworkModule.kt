@@ -28,14 +28,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService =
-        if (BuildConfig.IS_DEBUG_DATA) {
-            Timber.d("使用 MockApiService（IS_DEBUG_DATA=true）")
-            MockApiService()
-        } else {
-            Timber.d("使用真实 ApiService：${BuildConfig.API_HOST}")
-            retrofit.create(ApiService::class.java)
-        }
+    fun provideApiService(retrofit: Retrofit): ApiService = if (BuildConfig.IS_DEBUG_DATA) {
+        Timber.d("使用 MockApiService（IS_DEBUG_DATA=true）")
+        MockApiService()
+    } else {
+        Timber.d("使用真实 ApiService：${BuildConfig.API_HOST}")
+        retrofit.create(ApiService::class.java)
+    }
 
     /**
      * Token 刷新实现。

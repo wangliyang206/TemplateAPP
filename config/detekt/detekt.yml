@@ -1,0 +1,89 @@
+# detekt 配置（模板基线）
+#
+# 原则：默认规则集全开，只关掉会误伤模板写法的少数项，并升级几条真正重要的规则。
+# 每条 override 都写了原因——不要为了"过 CI"随手加禁用项。
+
+build:
+  maxIssues: 0
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+complexity:
+  LongMethod:
+    # Compose 之外的 View 代码里，Fragment 的 initView 天然偏长，放宽到 80 行
+    threshold: 80
+  LongParameterList:
+    functionThreshold: 8
+    constructorThreshold: 10
+  TooManyFunctions:
+    thresholdInFiles: 25
+    thresholdInClasses: 20
+    thresholdInInterfaces: 20
+    thresholdInObjects: 15
+    ignorePrivate: true
+    ignoreOverridden: true
+  CyclomaticComplexMethod:
+    threshold: 20
+
+style:
+  MagicNumber:
+    # 模板里 UI 尺寸、超时时间等常量较常见，集中在 companion 里即可
+    ignoreNumbers:
+      - "-1"
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+      - "10"
+      - "100"
+      - "1000"
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotated: ["StringRes"]
+  MaxLineLength:
+    maxLineLength: 120
+    excludes: ["**/test/**", "**/androidTest/**"]
+  UnusedPrivateMember:
+    allowedNames: "_.*"
+  ForbiddenComment:
+    # 模板里保留 TODO 是合理的交接手段，但禁止留下作者名/GitHub issue 式注释
+    comments:
+      - reason: "不要把工单号写进代码，链接放到 PR 描述里"
+        value: "STOPSHIP"
+  ReturnCount:
+    max: 4
+  UnnecessaryAbstractClass:
+    active: true
+
+naming:
+  FunctionNaming:
+    functionPattern: "[a-z][a-zA-Z0-9]*"
+    # 允许 @Composable 风格的大写函数名（为将来接 Compose 留口）
+    ignoreAnnotated: ["Composable"]
+  TopLevelPropertyNaming:
+    constantPattern: "[A-Z][A-Z0-9_]*"
+    propertyPattern: "[A-Za-z][_A-Za-z0-9]*"
+
+exceptions:
+  TooGenericExceptionCaught:
+    # 这两处 catch 宽泛是**刻意设计**，不是疏忽：
+    # - BaseViewModel：统一把任意失败映射成 UiState.Error，取消异常另行抛出不吞；
+    # - GlobalExceptionHandler：崩溃落盘时若再抛会递归崩溃，只能兜底并记日志。
+    excludes:
+      - "**/core/error/**"
+      - "**/base/BaseRepository.kt"
+      - "**/base/BaseViewModel.kt"
+      - "**/exception/GlobalExceptionHandler.kt"
+
+coroutines:
+  GlobalCoroutineUsage:
+    active: true
+
+potential-bugs:
+  UnsafeCallOnNullableType:
+    active: true
+  LateinitUsage:
+    # BaseApplication.INSTANCE 是刻意的单例写法
+    excludes: ["**/BaseApplication.kt"]

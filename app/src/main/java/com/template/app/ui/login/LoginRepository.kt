@@ -17,7 +17,7 @@ import javax.inject.Inject
 class LoginRepository @Inject constructor(
     private val apiService: ApiService,
     private val requestFactory: ApiRequestFactory,
-    private val sessionRepository: SessionRepository
+    private val sessionRepository: SessionRepository,
 ) : BaseRepository() {
 
     suspend fun login(phone: String, password: String): User {

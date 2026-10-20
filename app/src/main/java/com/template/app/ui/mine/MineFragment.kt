@@ -42,8 +42,6 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
         }
     }
 
-    override fun initData() {}
-
     private fun renderUserState(state: MineViewModel.UserUiState) {
         when (state) {
             is MineViewModel.UserUiState.NotLoggedIn -> {

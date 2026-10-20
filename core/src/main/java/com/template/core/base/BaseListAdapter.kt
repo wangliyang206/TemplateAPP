@@ -1,7 +1,6 @@
 package com.template.core.base
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -53,7 +52,9 @@ abstract class BaseListAdapter<T : Any, VB : ViewBinding>(
             val pos = holder.bindingAdapterPosition
             if (pos != RecyclerView.NO_POSITION) {
                 onItemLongClick?.invoke(pos, getItem(pos)) ?: false
-            } else false
+            } else {
+                false
+            }
         }
         return holder
     }
@@ -62,6 +63,5 @@ abstract class BaseListAdapter<T : Any, VB : ViewBinding>(
         onBind(holder, getItem(position))
     }
 
-    class BaseViewHolder<VB : ViewBinding>(val binding: VB) :
-        RecyclerView.ViewHolder(binding.root)
+    class BaseViewHolder<VB : ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root)
 }

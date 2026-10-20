@@ -18,10 +18,7 @@ import javax.inject.Singleton
  * - MineViewModel 等页面只依赖本类，不直接碰 DataStore。
  */
 @Singleton
-class SessionRepository @Inject constructor(
-    private val dataStore: DataStoreManager,
-    private val userDao: UserDao
-) {
+class SessionRepository @Inject constructor(private val dataStore: DataStoreManager, private val userDao: UserDao) {
 
     val session: Flow<Session> = dataStore.userFlow.map { pref ->
         Session(
@@ -29,7 +26,7 @@ class SessionRepository @Inject constructor(
             token = pref.token,
             userName = pref.userName,
             phone = pref.phone,
-            avatar = pref.avatar
+            avatar = pref.avatar,
         )
     }
 
@@ -39,15 +36,15 @@ class SessionRepository @Inject constructor(
             token = user.token,
             userName = user.userName,
             phone = user.userPhone,
-            avatar = user.avatar
+            avatar = user.avatar,
         )
         userDao.insert(
             UserEntity(
                 userId = user.userId,
                 userName = user.userName,
                 phone = user.userPhone,
-                avatar = user.avatar
-            )
+                avatar = user.avatar,
+            ),
         )
     }
 
@@ -57,12 +54,6 @@ class SessionRepository @Inject constructor(
     }
 }
 
-data class Session(
-    val userId: String,
-    val token: String,
-    val userName: String,
-    val phone: String,
-    val avatar: String
-) {
+data class Session(val userId: String, val token: String, val userName: String, val phone: String, val avatar: String) {
     val isLoggedIn: Boolean get() = token.isNotEmpty()
 }

@@ -13,9 +13,7 @@ import org.junit.runner.Description
  * 把 Dispatchers.Main 替换成测试调度器，让 viewModelScope 可在 JVM 上运行。
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainDispatcherRule(
-    val dispatcher: TestDispatcher = StandardTestDispatcher()
-) : TestWatcher() {
+class MainDispatcherRule(val dispatcher: TestDispatcher = StandardTestDispatcher()) : TestWatcher() {
 
     override fun starting(description: Description) {
         Dispatchers.setMain(dispatcher)

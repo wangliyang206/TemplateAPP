@@ -27,10 +27,4 @@ class WebViewJsBridge(private val context: Context) {
             (context as? androidx.appcompat.app.AppCompatActivity)?.onBackPressedDispatcher?.onBackPressed()
         }
     }
-
-    /**
-     * H5 调用：获取用户 Token（如需）
-     */
-    @JavascriptInterface
-    fun getToken(): String = ""
 }

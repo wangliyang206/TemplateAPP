@@ -17,9 +17,7 @@ import javax.inject.Inject
  * - 不再用 postValue 拼 LiveData（统一 StateFlow）。
  */
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val repository: HomeRepository
-) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val repository: HomeRepository) : BaseViewModel() {
 
     private val _state = MutableStateFlow<UiState<HomeData>>(UiState.Idle)
     val state: StateFlow<UiState<HomeData>> = _state.asStateFlow()

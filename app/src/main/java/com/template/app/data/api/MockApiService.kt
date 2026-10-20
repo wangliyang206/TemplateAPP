@@ -1,6 +1,22 @@
+// Mock 服务是"假数据表"：里面的尺寸/分页数字不是业务常量，抽成常量反而让假数据更难读，
+// 故在文件级抑制 MagicNumber 并写明原因。
+@file:Suppress("MagicNumber")
+
 package com.template.app.data.api
 
-import com.template.app.data.model.*
+import com.template.app.data.model.Article
+import com.template.app.data.model.ArticleListParams
+import com.template.app.data.model.ArticleListResponse
+import com.template.app.data.model.Banner
+import com.template.app.data.model.BannerListParams
+import com.template.app.data.model.Category
+import com.template.app.data.model.CategoryListParams
+import com.template.app.data.model.CheckUpdateParams
+import com.template.app.data.model.LoginParams
+import com.template.app.data.model.RefreshTokenParams
+import com.template.app.data.model.RegisterParams
+import com.template.app.data.model.UpdateInfo
+import com.template.app.data.model.User
 import com.template.core.config.CoreConfig
 import com.template.core.network.ApiRequest
 import com.template.core.network.BaseResponse
@@ -24,24 +40,20 @@ class MockApiService : ApiService {
     /**
      * 构建成功响应
      */
-    private fun <T> successResponse(data: T): BaseResponse<T> {
-        return BaseResponse(
-            version = 1,
-            errorInfo = null,
-            data = data
-        )
-    }
+    private fun <T> successResponse(data: T): BaseResponse<T> = BaseResponse(
+        version = 1,
+        errorInfo = null,
+        data = data,
+    )
 
     /**
      * 构建失败响应
      */
-    private fun <T> errorResponse(code: Int, message: String): BaseResponse<T> {
-        return BaseResponse(
-            version = 1,
-            errorInfo = ErrorInfo(code, message),
-            data = null
-        )
-    }
+    private fun <T> errorResponse(code: Int, message: String): BaseResponse<T> = BaseResponse(
+        version = 1,
+        errorInfo = ErrorInfo(code, message),
+        data = null,
+    )
 
     // ===== 用户模块 =====
 
@@ -60,8 +72,8 @@ class MockApiService : ApiService {
                     userName = "测试用户",
                     userPhone = params.mobile,
                     token = "mock_token_${System.currentTimeMillis()}",
-                    avatar = "https://picsum.photos/200/200?random=1"
-                )
+                    avatar = "https://picsum.photos/200/200?random=1",
+                ),
             )
         } else {
             // 登录失败 - 手机号或密码错误
@@ -83,8 +95,8 @@ class MockApiService : ApiService {
                 userName = "新用户_${params.mobile.takeLast(4)}",
                 userPhone = params.mobile,
                 token = "mock_token_${System.currentTimeMillis()}",
-                avatar = null
-            )
+                avatar = null,
+            ),
         )
     }
 
@@ -104,8 +116,8 @@ class MockApiService : ApiService {
                 userName = "测试用户",
                 userPhone = "15032134297",
                 token = "mock_token_refreshed_${System.currentTimeMillis()}",
-                avatar = "https://picsum.photos/200/200?random=1"
-            )
+                avatar = "https://picsum.photos/200/200?random=1",
+            ),
         )
     }
 
@@ -125,8 +137,8 @@ class MockApiService : ApiService {
                 downloadUrl = "https://example.com/app_v1.1.0.apk",
                 isForce = false,
                 apkSize = 15_000_000L, // 15MB
-                updateLog = "1. 新增文章收藏功能\n2. 优化首页加载速度\n3. 修复已知Bug"
-            )
+                updateLog = "1. 新增文章收藏功能\n2. 优化首页加载速度\n3. 修复已知Bug",
+            ),
         )
     }
 
@@ -144,7 +156,7 @@ class MockApiService : ApiService {
             Banner(3, "热门活动", "https://picsum.photos/800/400?random=103", "https://developer.android.com"),
             Banner(4, "精选好物", "https://picsum.photos/800/400?random=104", "https://kotlinlang.org"),
             Banner(5, "品牌盛典", "https://picsum.photos/800/400?random=105", "https://www.csdn.net"),
-            Banner(6, "会员专享", "https://picsum.photos/800/400?random=106", "https://www.jianshu.com")
+            Banner(6, "会员专享", "https://picsum.photos/800/400?random=106", "https://www.jianshu.com"),
         )
         return successResponse(banners)
     }
@@ -159,7 +171,7 @@ class MockApiService : ApiService {
             Category(1, "推荐"),
             Category(2, "技术"),
             Category(3, "摄影"),
-            Category(4, "资讯")
+            Category(4, "资讯"),
         )
         return successResponse(categories)
     }
@@ -170,20 +182,71 @@ class MockApiService : ApiService {
      * 分类对应的标题前缀
      */
     private val categoryTitles = mapOf(
-        1 to listOf("Android Jetpack Compose 入门指南", "Kotlin Coroutines 实战技巧", "Room 数据库最佳实践", "Retrofit + OkHttp 网络请求封装", "MVVM 架构模式详解", "Paging3 分页加载实现", "Glide 图片加载优化", "DataStore 替代 SharedPreferences", "Hilt 依赖注入完全指南", "ConstraintLayout 布局进阶"),
-        2 to listOf("Kotlin 协程异常处理详解", "Android 性能优化实战", "Jetpack Compose 动画教程", "Gradle 构建优化技巧", "Android 权限适配方案", "Compose 与 View 混合开发", "ViewModel 最佳实践", "LiveData 与 StateFlow 对比", "Room 数据库迁移指南", "WorkManager 高级用法"),
+        1 to listOf(
+            "Android Jetpack Compose 入门指南",
+            "Kotlin Coroutines 实战技巧",
+            "Room 数据库最佳实践",
+            "Retrofit + OkHttp 网络请求封装",
+            "MVVM 架构模式详解",
+            "Paging3 分页加载实现",
+            "Glide 图片加载优化",
+            "DataStore 替代 SharedPreferences",
+            "Hilt 依赖注入完全指南",
+            "ConstraintLayout 布局进阶",
+        ),
+        2 to listOf(
+            "Kotlin 协程异常处理详解",
+            "Android 性能优化实战",
+            "Jetpack Compose 动画教程",
+            "Gradle 构建优化技巧",
+            "Android 权限适配方案",
+            "Compose 与 View 混合开发",
+            "ViewModel 最佳实践",
+            "LiveData 与 StateFlow 对比",
+            "Room 数据库迁移指南",
+            "WorkManager 高级用法",
+        ),
         3 to listOf("精美风景图片", "城市夜景摄影", "自然风光大片", "建筑摄影精选", "人像摄影佳作", "美食摄影集锦", "动物世界图片", "科技产品展示", "艺术设计作品", "旅行日记配图"),
-        4 to listOf("科技前沿资讯", "互联网行业动态", "开发者大会回顾", "开源项目推荐", "技术趋势分析", "产品设计灵感", "创业故事分享", "职场经验交流", "行业报告解读", "未来科技展望")
+        4 to listOf(
+            "科技前沿资讯",
+            "互联网行业动态",
+            "开发者大会回顾",
+            "开源项目推荐",
+            "技术趋势分析",
+            "产品设计灵感",
+            "创业故事分享",
+            "职场经验交流",
+            "行业报告解读",
+            "未来科技展望",
+        ),
     )
 
     /**
      * 分类对应的描述
      */
     private val categoryDescs = mapOf(
-        1 to listOf("深入讲解 Android Jetpack 组件的使用方法，帮助你快速掌握现代 Android UI 开发。", "掌握 Kotlin 协程的核心原理，学习如何优雅地处理异步操作。", "详细介绍 Room 数据库的使用技巧，包括查询优化和事务处理。", "从零开始封装网络请求框架，实现统一的错误处理和拦截。", "全面解析 MVVM 架构模式，理解各层之间的协作关系。"),
-        2 to listOf("学习 Kotlin 协程的异常处理机制，避免应用崩溃。", "分析 App 性能瓶颈，提供实用的优化方案。", "探索 Jetpack Compose 的动画系统，打造流畅的动效。", "优化 Gradle 构建速度，提升开发效率。", "处理 Android 运行时权限，提供良好的用户体验。"),
-        3 to listOf("这是一张精美的风景照片，展现大自然的壮丽景色。", "繁华都市的夜景，灯火辉煌美不胜收。", "自然风光无限好，山水之间显真情。", "现代建筑与艺术的完美结合。", "人物肖像摄影，捕捉精彩瞬间。"),
-        4 to listOf("了解最新科技动态，把握行业发展趋势。", "互联网行业最新资讯，助你拓展视野。", "各大开发者大会精彩内容回顾。", "精选优质开源项目，提升开发效率。", "深度分析技术发展趋势。")
+        1 to listOf(
+            "深入讲解 Android Jetpack 组件的使用方法，帮助你快速掌握现代 Android UI 开发。",
+            "掌握 Kotlin 协程的核心原理，学习如何优雅地处理异步操作。",
+            "详细介绍 Room 数据库的使用技巧，包括查询优化和事务处理。",
+            "从零开始封装网络请求框架，实现统一的错误处理和拦截。",
+            "全面解析 MVVM 架构模式，理解各层之间的协作关系。",
+        ),
+        2 to listOf(
+            "学习 Kotlin 协程的异常处理机制，避免应用崩溃。",
+            "分析 App 性能瓶颈，提供实用的优化方案。",
+            "探索 Jetpack Compose 的动画系统，打造流畅的动效。",
+            "优化 Gradle 构建速度，提升开发效率。",
+            "处理 Android 运行时权限，提供良好的用户体验。",
+        ),
+        3 to listOf(
+            "这是一张精美的风景照片，展现大自然的壮丽景色。",
+            "繁华都市的夜景，灯火辉煌美不胜收。",
+            "自然风光无限好，山水之间显真情。",
+            "现代建筑与艺术的完美结合。",
+            "人物肖像摄影，捕捉精彩瞬间。",
+        ),
+        4 to listOf("了解最新科技动态，把握行业发展趋势。", "互联网行业最新资讯，助你拓展视野。", "各大开发者大会精彩内容回顾。", "精选优质开源项目，提升开发效率。", "深度分析技术发展趋势。"),
     )
 
     /**
@@ -191,33 +254,33 @@ class MockApiService : ApiService {
      */
     private val categoryUrls = mapOf(
         1 to listOf(
-            "https://developer.android.google.cn/jetpack/compose",     // Android Jetpack Compose 入门指南
+            "https://developer.android.google.cn/jetpack/compose", // Android Jetpack Compose 入门指南
             "https://www.kotlincn.net/docs/reference/coroutines-overview.html", // Kotlin Coroutines 实战技巧
             "https://developer.android.google.cn/training/data-storage/room", // Room 数据库最佳实践
-            "https://square.github.io/retrofit/",                      // Retrofit + OkHttp 网络请求封装（GitHub Pages 国内可访问）
-            "https://developer.android.google.cn/jetpack/guide"        // MVVM 架构模式详解
+            "https://square.github.io/retrofit/", // Retrofit + OkHttp 网络请求封装（GitHub Pages 国内可访问）
+            "https://developer.android.google.cn/jetpack/guide", // MVVM 架构模式详解
         ),
         2 to listOf(
             "https://www.kotlincn.net/docs/reference/coroutines/exception-handling.html", // Kotlin 协程异常处理详解
-            "https://developer.android.google.cn/topic/performance",   // Android 性能优化实战
+            "https://developer.android.google.cn/topic/performance", // Android 性能优化实战
             "https://developer.android.google.cn/jetpack/compose/animation", // Jetpack Compose 动画教程
             "https://docs.gradle.org/current/userguide/performance.html", // Gradle 构建优化技巧（Gradle 文档国内可访问）
-            "https://developer.android.google.cn/training/permissions/requesting" // Android 权限适配方案
+            "https://developer.android.google.cn/training/permissions/requesting", // Android 权限适配方案
         ),
         3 to listOf(
-            "https://picsum.photos/1200/800?random=landscape-1",       // 精美风景图片
-            "https://picsum.photos/1200/800?random=citynight-2",       // 城市夜景摄影
-            "https://picsum.photos/1200/800?random=nature-3",          // 自然风光大片
-            "https://picsum.photos/1200/800?random=architecture-4",    // 建筑摄影精选
-            "https://picsum.photos/1200/800?random=portrait-5"        // 人像摄影佳作
+            "https://picsum.photos/1200/800?random=landscape-1", // 精美风景图片
+            "https://picsum.photos/1200/800?random=citynight-2", // 城市夜景摄影
+            "https://picsum.photos/1200/800?random=nature-3", // 自然风光大片
+            "https://picsum.photos/1200/800?random=architecture-4", // 建筑摄影精选
+            "https://picsum.photos/1200/800?random=portrait-5", // 人像摄影佳作
         ),
         4 to listOf(
-            "https://www.36kr.com/",                                   // 科技前沿资讯
-            "https://www.huxiu.com/",                                  // 互联网行业动态
-            "https://www.geekpark.net/",                               // 开发者大会回顾
-            "https://gitee.com/explore",                               // 开源项目推荐（Gitee 国内版）
-            "https://sspai.com/tag/Technology"                         // 技术趋势分析（少数派）
-        )
+            "https://www.36kr.com/", // 科技前沿资讯
+            "https://www.huxiu.com/", // 互联网行业动态
+            "https://www.geekpark.net/", // 开发者大会回顾
+            "https://gitee.com/explore", // 开源项目推荐（Gitee 国内版）
+            "https://sspai.com/tag/Technology", // 技术趋势分析（少数派）
+        ),
     )
 
     /**
@@ -261,7 +324,7 @@ class MockApiService : ApiService {
                     url = urls[urlIndex],
                     cover = "https://picsum.photos/400/300?random=${categoryId * 100 + index + 1}",
                     author = authors[authorIndex],
-                    createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}"
+                    createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}",
                 )
             }
         } else {
@@ -271,8 +334,8 @@ class MockApiService : ApiService {
         return successResponse(
             ArticleListResponse(
                 total = total,
-                list = list
-            )
+                list = list,
+            ),
         )
     }
 }

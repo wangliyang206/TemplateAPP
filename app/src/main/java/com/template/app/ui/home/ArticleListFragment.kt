@@ -10,7 +10,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
-import com.template.app.data.model.Article
 import com.template.app.ui.adapter.ArticleAdapter
 import com.template.app.ui.webview.WebViewActivity
 import com.template.core.base.BaseFragment
@@ -33,11 +32,9 @@ class ArticleListFragment : BaseFragment<com.template.app.databinding.FragmentAr
          * 创建 Fragment 实例
          * @param categoryId 分类 ID
          */
-        fun newInstance(categoryId: Int): ArticleListFragment {
-            return ArticleListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_CATEGORY_ID, categoryId)
-                }
+        fun newInstance(categoryId: Int): ArticleListFragment = ArticleListFragment().apply {
+            arguments = Bundle().apply {
+                putInt(ARG_CATEGORY_ID, categoryId)
             }
         }
     }
@@ -56,12 +53,13 @@ class ArticleListFragment : BaseFragment<com.template.app.databinding.FragmentAr
 
     override fun inflateBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?
-    ): com.template.app.databinding.FragmentArticleListBinding {
-        return com.template.app.databinding.FragmentArticleListBinding.inflate(
-            inflater, container, false
+        container: ViewGroup?,
+    ): com.template.app.databinding.FragmentArticleListBinding =
+        com.template.app.databinding.FragmentArticleListBinding.inflate(
+            inflater,
+            container,
+            false,
         )
-    }
 
     override fun initView() {
         // 设置分类 ID，触发数据加载
@@ -74,7 +72,7 @@ class ArticleListFragment : BaseFragment<com.template.app.databinding.FragmentAr
                     putExtra("title", article.title)
                 }
                 startActivity(intent)
-            }
+            },
         )
         binding.recyclerView.adapter = adapter
 

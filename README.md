@@ -10,9 +10,10 @@
 
 | 文档 | 什么时候看 |
 |---|---|
-| **[docs/NEW_PROJECT.md](docs/NEW_PROJECT.md)** | **第一步**。改名清单（8 步）+ 使用说明 + 注意事项，含照抄就踩的坑 |
-| **[docs/SIGNING.md](docs/SIGNING.md)** | 第 6 步必读。模板自带的是**占位签名密钥**，新项目必须换掉 |
+| **[docs/NEW_PROJECT.md](docs/NEW_PROJECT.md)** | **第一步**。改名清单 + 使用说明 + 注意事项，含照抄就踩的坑（支持 `scripts/init-project.sh` 一键初始化） |
+| **[docs/SIGNING.md](docs/SIGNING.md)** | 签名必读。模板自带的是**占位签名密钥**，新项目必须换掉 |
 | **[docs/CHECKLIST.md](docs/CHECKLIST.md)** | 交付前自检，逐条可验证 |
+| **[项目复核报告.md](项目复核报告.md)** | 想知道"这模板还差什么"时看。95 分复评 + 27 项缺口处置对照 |
 
 > **最低限度**：不改包名直接用会出现两个应用抢同一 applicationId；不换签名密钥等于用一把
 > 公开的私钥上架。这两条都写在 NEW_PROJECT.md 的「注意事项」里。
@@ -35,11 +36,15 @@
 ## 模块结构
 
 ```
-:app    壳工程 —— Application、导航、flavors、DI 装配、页面
-:core   能力库 —— 网络 / 数据库 / 存储 / 状态容器 / 基类 / UI 组件
+:app         壳工程 —— Application、导航、flavors、DI 装配、页面
+:core        能力库 —— 网络 / 数据库 / 存储 / 状态容器 / 基类 / UI 组件
+build-logic  构建逻辑 —— convention plugins（公共 Android 配置的单一真相源）
 ```
 
 依赖方向固定为 `app → core`，禁止反向依赖。通用库由 core 以 `api` 暴露，app 不再重复声明版本。
+模块级公共 Android 配置（compileSdk / minSdk / compileOptions / jvmTarget / lint / packaging）
+统一在 `build-logic/convention` 的 `template.android.application` / `template.android.library`
+插件里维护，模块脚本只写自己特有的内容 —— 升级 SDK 版本只改一处（`ProjectConfig`）。
 
 ## 目录约定（app）
 
@@ -96,6 +101,15 @@ Toast / 导航属于一次性副作用，走 `effects: SharedFlow<UiEffect>`，
 ```bash
 ./scripts/new-feature.sh profile   # 生成 Fragment/ViewModel/Repository/Layout 四件套
 ```
+
+**4. 门禁随手跑（CI 同款，一次通过）**
+
+```bash
+./gradlew detekt spotlessCheck :core:testDebugUnitTest :app:testDevDebugUnitTest :app:lintDevDebug :app:assembleDevDebug
+```
+
+detekt 是 0 容忍（`maxIssues: 0`），lint 也是 0 warning 基线 —— 引入新告警会在 CI 被拦。
+分层约定由 `ArchTest`（Konsist）守护：ViewModel 禁直连 ApiService、UI 禁触网络栈，违反即测试失败。
 
 ## 环境与构建
 

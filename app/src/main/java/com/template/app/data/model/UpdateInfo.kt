@@ -6,5 +6,5 @@ data class UpdateInfo(
     val downloadUrl: String,
     val isForce: Boolean,
     val apkSize: Long,
-    val updateLog: String
+    val updateLog: String,
 )

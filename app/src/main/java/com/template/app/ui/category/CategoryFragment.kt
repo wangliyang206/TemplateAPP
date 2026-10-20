@@ -47,7 +47,7 @@ class CategoryFragment : BaseFragment<FragmentCategoryBinding>() {
             is UiState.Empty -> binding.stateLayout.showEmpty(getString(R.string.category_empty))
             is UiState.Error -> binding.stateLayout.showError(
                 message = state.message.asString(requireContext()),
-                onRetry = viewModel::load
+                onRetry = viewModel::load,
             )
             is UiState.Success -> {
                 if (state.data.isEmpty()) {

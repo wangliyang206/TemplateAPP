@@ -1,18 +1,14 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    // 公共 Library 配置（compileSdk / minSdk / compileOptions / jvmTarget）由 build-logic 统一提供
+    alias(libs.plugins.templateAndroidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.daggerHiltAndroid)
 }
 
 android {
     namespace = "com.template.core"
-    compileSdk = 35
 
     defaultConfig {
-        minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -25,24 +21,14 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
 
     testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+        // Robolectric 需要真实资源来 inflate 布局（StatefulLayout / StateCardView 的回归测试依赖它）
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -97,7 +83,6 @@ dependencies {
     // UI / 工具
     api(libs.glide)
     api(libs.timber)
-    api(libs.mmkv)
     api(libs.autosize)
     api(libs.immersionbar)
     api(libs.immersionbar.components)
@@ -113,4 +98,6 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.androidx.test.core)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.junit)
 }

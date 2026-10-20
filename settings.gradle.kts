@@ -23,3 +23,6 @@ dependencyResolutionManagement {
 rootProject.name = "TemplateAPP"
 include(":app")
 include(":core")
+
+// 构建逻辑（convention plugins）：模块级公共配置收敛在这里，模块脚本只保留特有内容
+includeBuild("build-logic")

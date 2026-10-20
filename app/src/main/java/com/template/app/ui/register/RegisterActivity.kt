@@ -25,6 +25,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
     override fun initObserver() {
         collectFlow(viewModel.registerState) { state ->
             when (state) {
+                is UiState.Idle -> binding.btnRegister.isEnabled = true
                 is UiState.Loading -> binding.btnRegister.isEnabled = false
                 is UiState.Success -> {
                     binding.btnRegister.isEnabled = true

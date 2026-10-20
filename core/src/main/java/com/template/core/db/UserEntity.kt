@@ -14,5 +14,5 @@ data class UserEntity(
     @ColumnInfo(name = "phone")
     val phone: String? = null,
     @ColumnInfo(name = "avatar")
-    val avatar: String? = null
+    val avatar: String? = null,
 )

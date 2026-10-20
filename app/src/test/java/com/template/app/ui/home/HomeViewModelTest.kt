@@ -45,7 +45,7 @@ class HomeViewModelTest {
     private class FakeApiService(
         private val banners: List<Banner> = emptyList(),
         private val categories: List<Category> = emptyList(),
-        private val businessError: ErrorInfo? = null
+        private val businessError: ErrorInfo? = null,
     ) : ApiService {
 
         override suspend fun getBannerList(request: ApiRequest<BannerListParams>): BaseResponse<List<Banner>> =
@@ -58,15 +58,13 @@ class HomeViewModelTest {
         override suspend fun register(request: ApiRequest<RegisterParams>): BaseResponse<User> = notUsed()
         override suspend fun refreshToken(request: ApiRequest<RefreshTokenParams>): BaseResponse<User> = notUsed()
         override suspend fun checkUpdate(request: ApiRequest<CheckUpdateParams>): BaseResponse<UpdateInfo> = notUsed()
-        override suspend fun getArticleList(
-            request: ApiRequest<ArticleListParams>
-        ): BaseResponse<ArticleListResponse> = notUsed()
+        override suspend fun getArticleList(request: ApiRequest<ArticleListParams>): BaseResponse<ArticleListResponse> =
+            notUsed()
 
         private fun notUsed(): Nothing = error("该接口不应在 HomeViewModel 测试中被调用")
     }
 
-    private fun repository(service: ApiService) =
-        HomeRepository(service, ApiRequestFactory(FakeTokenStore()))
+    private fun repository(service: ApiService) = HomeRepository(service, ApiRequestFactory(FakeTokenStore()))
 
     /** 等状态离开 Idle/Loading（Repository 内部切了真实 IO 线程，不能用虚拟时间推进） */
     private suspend fun awaitSettled(viewModel: HomeViewModel): UiState<HomeData> =
@@ -78,9 +76,9 @@ class HomeViewModelTest {
             repository(
                 FakeApiService(
                     banners = listOf(Banner(1, "标题", "https://img", "https://link")),
-                    categories = listOf(Category(1, "推荐"))
-                )
-            )
+                    categories = listOf(Category(1, "推荐")),
+                ),
+            ),
         )
 
         val state = awaitSettled(viewModel)
@@ -93,7 +91,7 @@ class HomeViewModelTest {
     @Test
     fun `业务错误时进入 Error 且携带服务端文案`() = runTest {
         val viewModel = HomeViewModel(
-            repository(FakeApiService(businessError = ErrorInfo(-1001, "服务开小差了")))
+            repository(FakeApiService(businessError = ErrorInfo(-1001, "服务开小差了"))),
         )
 
         val state = awaitSettled(viewModel)

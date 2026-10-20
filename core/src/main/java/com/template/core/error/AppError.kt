@@ -35,14 +35,14 @@ sealed interface AppError {
     data class Unknown(val cause: Throwable? = null) : AppError
 }
 
-class AppException(
-    val error: AppError,
-    cause: Throwable? = null
-) : Exception(error.toString(), cause)
+class AppException(val error: AppError, cause: Throwable? = null) : Exception(error.toString(), cause)
+
+/** HTTP 401：既用于错误映射，也是 TokenAuthenticator 的触发条件 */
+const val HTTP_UNAUTHORIZED = 401
 
 fun Throwable.toAppError(): AppError = when (this) {
     is AppException -> error
-    is HttpException -> if (code() == 401) AppError.Unauthorized else AppError.Http(code())
+    is HttpException -> if (code() == HTTP_UNAUTHORIZED) AppError.Unauthorized else AppError.Http(code())
     is SocketTimeoutException -> AppError.Timeout
     is ConnectException, is UnknownHostException -> AppError.Network
     is IOException -> AppError.Network

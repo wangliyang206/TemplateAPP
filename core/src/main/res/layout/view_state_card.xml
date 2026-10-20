@@ -23,9 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textColor="#666666"
+            android:textColor="@color/common_text_color"
             android:textSize="14sp"
-            android:text="暂无数据" />
+            android:text="@string/core_empty" />
 
         <TextView
             android:id="@+id/btn_state_retry"
@@ -35,8 +35,8 @@
             android:background="@drawable/bg_retry_btn"
             android:gravity="center"
             android:paddingHorizontal="24dp"
-            android:text="重试"
-            android:textColor="#FFFFFF"
+            android:text="@string/core_retry"
+            android:textColor="@color/core_white"
             android:textSize="13sp"
             android:visibility="gone" />
 

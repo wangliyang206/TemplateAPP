@@ -21,9 +21,7 @@ interface TokenStore {
  * 基于 DataStore 的实现（模板默认）。
  * 若后续换成 MMKV / 加密存储，只需替换这个类。
  */
-class DataStoreTokenStore @Inject constructor(
-    private val dataStore: DataStoreManager
-) : TokenStore {
+class DataStoreTokenStore @Inject constructor(private val dataStore: DataStoreManager) : TokenStore {
 
     override suspend fun currentToken(): String = dataStore.getUserSync().token
 
@@ -34,7 +32,7 @@ class DataStoreTokenStore @Inject constructor(
             token = token,
             userName = user.userName,
             phone = user.phone,
-            avatar = user.avatar
+            avatar = user.avatar,
         )
     }
 

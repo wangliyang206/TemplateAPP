@@ -11,11 +11,8 @@ import com.template.core.R
 /**
  * 状态卡片：Loading / Empty / Error
  */
-class StateCardView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+class StateCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     private val ivIcon: ImageView
     private val tvMessage: TextView

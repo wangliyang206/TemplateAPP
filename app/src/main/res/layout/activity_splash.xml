@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 背景与图标已由 windowBackground (@drawable/splash_window_bg) 承载，
-     布局设为透明，确保 windowBackground 首帧与 Activity 内容零视觉差 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent">
-</FrameLayout>

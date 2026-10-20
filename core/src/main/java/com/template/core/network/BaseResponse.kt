@@ -16,7 +16,7 @@ data class ErrorInfo(
     @SerializedName("errorcode")
     val errorCode: Int,
     @SerializedName("errormessage")
-    val errorMessage: String
+    val errorMessage: String,
 )
 
 /**
@@ -35,7 +35,7 @@ data class BaseResponse<T>(
     val version: Int,
     @SerializedName("errorinfo")
     val errorInfo: ErrorInfo?,
-    val data: T?
+    val data: T?,
 ) {
     /** 判断响应是否成功 */
     val isSuccess: Boolean

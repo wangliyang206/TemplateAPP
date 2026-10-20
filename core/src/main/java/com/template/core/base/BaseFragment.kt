@@ -19,11 +19,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     protected abstract fun getTitleBarId(): Int
 
     @CallSuper
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = inflateBinding(inflater, container)
         return _binding!!.root
     }
@@ -34,12 +30,11 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         initStatusBar()
         initView()
         initObserver()
-        initData()
     }
 
     private fun initStatusBar() {
         val id = getTitleBarId()
-        if (id != 0 && isAdded && activity != null) {
+        if (id != 0 && isAdded) {
             ImmersionBar.with(this)
                 .statusBarDarkFont(true)
                 .titleBar(id)
@@ -47,11 +42,11 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         }
     }
 
+    /** 视图初始化：findViewById / setOnClickListener / 列表配置 */
     protected open fun initView() {}
 
+    /** 订阅 ViewModel 的 StateFlow 与 effects，页面销毁自动取消 */
     protected open fun initObserver() {}
-
-    protected open fun initData() {}
 
     @CallSuper
     override fun onDestroyView() {

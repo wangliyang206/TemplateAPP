@@ -9,13 +9,12 @@ import javax.inject.Inject
 
 class UpdateRepository @Inject constructor(
     private val apiService: ApiService,
-    private val requestFactory: ApiRequestFactory
+    private val requestFactory: ApiRequestFactory,
 ) : BaseRepository() {
 
-    suspend fun checkUpdate(versionCode: Int): UpdateInfo =
-        apiCall {
-            safeApi {
-                apiService.checkUpdate(requestFactory.build(CheckUpdateParams(versionCode)))
-            }
+    suspend fun checkUpdate(versionCode: Int): UpdateInfo = apiCall {
+        safeApi {
+            apiService.checkUpdate(requestFactory.build(CheckUpdateParams(versionCode)))
         }
+    }
 }

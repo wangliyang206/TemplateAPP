@@ -11,7 +11,7 @@ import javax.inject.Inject
 class RegisterRepository @Inject constructor(
     private val apiService: ApiService,
     private val requestFactory: ApiRequestFactory,
-    private val sessionRepository: SessionRepository
+    private val sessionRepository: SessionRepository,
 ) : BaseRepository() {
 
     suspend fun register(phone: String, password: String): User {

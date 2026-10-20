@@ -22,7 +22,8 @@
 ## 架构一致性
 
 - [ ] 没有 ViewModel 直接依赖 `ApiService`
-      `grep -rn ": ApiService\|apiService:" app/src/main/java --include=*ViewModel.kt` → 输出为空
+      **首选**：`./gradlew :app:testDevDebugUnitTest --tests "*ArchTest"`（Konsist 架构测试，含 UI 层禁触网络栈、State 命名、Repository 位置 4 条规则）
+      人工复核：`grep -rn ": ApiService\|apiService:" app/src/main/java --include=*ViewModel.kt` → 输出为空
 - [ ] 没有 `catch (_: Exception) {}` 这类静默吞错
       `grep -rn "catch (_: Exception)" app core --include=*.kt` → 输出为空
 - [ ] 页面状态统一 `UiState`，副作用统一 `UiEffect`
@@ -43,12 +44,15 @@
 ## 构建与质量
 
 - [ ] `./gradlew :app:assembleDevDebug` 通过
-- [ ] `./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest` 通过，用例数 ≥ 15（当前 19）
-- [ ] `./gradlew :app:lintDevDebug` 无 error
+- [ ] `./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest` 通过，用例数 ≥ 20（当前 26，含 Konsist 架构测试 4 条）
+- [ ] `./gradlew detekt spotlessCheck` 全绿（detekt 为 0 容忍，任何违规都会失败）
+- [ ] `./gradlew :app:lintDevDebug` **无 error 且无 warning**（基线为 0 warning，新增告警必须当场处理）
+- [ ] `./gradlew :app:connectedDevDebugAndroidTest` 真机冒烟 2/2 通过
 - [ ] `./gradlew :app:assembleProdRelease` 成功，产物**无** `-unsigned` 后缀
-- [ ] `proguard-rules.pro` 无整包 keep
-      `grep -n "keep class \*\*" app/proguard-rules.pro` → 输出为空
+- [ ] `proguard-rules.pro` 无整包 keep、无写死包名（改名后规则必须仍然生效）
+      `grep -n "keep class \*\*\|com.template" app/proguard-rules.pro core/*.pro` → 输出为空
 - [ ] 依赖版本全部来自 `libs.versions.toml`，模块内无硬编码版本号
+- [ ] 公共 Android 配置只在 `build-logic` 改（模块脚本无 compileSdk/minSdk/compileOptions 重复声明）
 - [ ] CI 在 PR 上全绿
 
 ## 模板可用性

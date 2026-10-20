@@ -20,7 +20,7 @@ import javax.inject.Inject
  */
 class HomeRepository @Inject constructor(
     private val apiService: ApiService,
-    private val requestFactory: ApiRequestFactory
+    private val requestFactory: ApiRequestFactory,
 ) : BaseRepository() {
 
     suspend fun load(): HomeData = coroutineScope {
@@ -42,9 +42,6 @@ class HomeRepository @Inject constructor(
     }
 }
 
-data class HomeData(
-    val banners: List<Banner>,
-    val categories: List<Category>
-) {
+data class HomeData(val banners: List<Banner>, val categories: List<Category>) {
     val isEmpty: Boolean get() = banners.isEmpty() && categories.isEmpty()
 }

@@ -1,7 +1,8 @@
 # core 模块的 consumer rules：随 AAR 传递给使用方，无需 app 重复配置。
 
-# 网络层模型通过 Gson 反射序列化，字段名需保留
--keepclassmembers,allowobfuscation class com.template.core.network.** {
+# 网络层模型通过 Gson 反射序列化，字段名需保留。
+# 同样**不写完整包名**，用 `**.network.**` 匹配任意前缀，保证模板改名后规则依然生效。
+-keepclassmembers,allowobfuscation class **.network.** {
     <fields>;
 }
 

@@ -11,9 +11,8 @@ import com.template.app.databinding.ItemArticleBinding
 /**
  * Paging3 Adapter — 文章列表
  */
-class ArticleAdapter(
-    private val onItemClick: ((Article) -> Unit)? = null
-) : PagingDataAdapter<Article, ArticleAdapter.VH>(ArticleDiffCallback()) {
+class ArticleAdapter(private val onItemClick: ((Article) -> Unit)? = null) :
+    PagingDataAdapter<Article, ArticleAdapter.VH>(ArticleDiffCallback()) {
 
     class VH(val binding: ItemArticleBinding) : RecyclerView.ViewHolder(binding.root)
 

@@ -14,13 +14,11 @@ import javax.inject.Singleton
  * Application 层订阅 [expired] 统一跳转登录页——业务页面不需要写任何登出逻辑。
  */
 @Singleton
-class SessionManager @Inject constructor(
-    private val tokenStore: TokenStore
-) {
+class SessionManager @Inject constructor(private val tokenStore: TokenStore) {
 
     private val _expired = MutableSharedFlow<Unit>(
         extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
     val expired: SharedFlow<Unit> = _expired.asSharedFlow()

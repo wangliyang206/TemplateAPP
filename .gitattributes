@@ -1,0 +1,29 @@
+# 统一换行符：跨平台协作（Windows/macOS/Linux）时避免 CRLF/LF 噪音 diff
+* text=auto eol=lf
+
+# Windows 专属脚本必须保持 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Gradle wrapper 与 shell 脚本保持 LF 且可执行
+gradlew text eol=lf
+*.sh text eol=lf
+
+# 二进制文件不做任何转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.jks binary
+*.keystore binary
+*.jar binary
+*.aar binary
+*.so binary
+*.ttf binary
+*.otf binary
+
+# 语言文件由 l10n 工具处理时避免误合并
+*.xml text eol=lf
+*.json text eol=lf

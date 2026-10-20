@@ -17,17 +17,15 @@ import javax.inject.Singleton
  * 分页参数属于数据策略，ViewModel 只应消费 Flow。
  */
 @Singleton
-class ArticleRepository @Inject constructor(
-    private val apiService: ApiService
-) {
+class ArticleRepository @Inject constructor(private val apiService: ApiService) {
 
     fun articles(categoryId: Int): Flow<PagingData<Article>> = Pager(
         config = PagingConfig(
             pageSize = PAGE_SIZE,
             initialLoadSize = PAGE_SIZE,
             enablePlaceholders = false,
-            prefetchDistance = 3
-        )
+            prefetchDistance = 3,
+        ),
     ) {
         ArticlePagingSource(apiService, categoryId)
     }.flow

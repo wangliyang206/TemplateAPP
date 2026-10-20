@@ -4,14 +4,15 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.google.android.material.R as MaterialR
+import com.template.app.R
 import com.template.app.databinding.DialogAppUpdateBinding
+import com.google.android.material.R as MaterialR
 
 class UpdateDialog(
     context: Context,
     private val updateInfo: com.template.app.data.model.UpdateInfo,
     private val onUpdate: () -> Unit,
-    private val onCancel: () -> Unit
+    private val onCancel: () -> Unit,
 ) : Dialog(context, MaterialR.style.Theme_Material3_DayNight_Dialog) {
 
     private lateinit var binding: DialogAppUpdateBinding
@@ -24,7 +25,7 @@ class UpdateDialog(
         setCancelable(!updateInfo.isForce)
         setCanceledOnTouchOutside(!updateInfo.isForce)
 
-        binding.tvVersion.text = "发现新版本 ${updateInfo.versionName}"
+        binding.tvVersion.text = context.getString(R.string.update_new_version, updateInfo.versionName)
         binding.tvContent.text = updateInfo.updateLog
         binding.btnUpdate.setOnClickListener {
             onUpdate()
@@ -39,6 +40,6 @@ class UpdateDialog(
 
     fun setProgress(progress: Int) {
         binding.progressBar.progress = progress
-        binding.tvProgress.text = "$progress%"
+        binding.tvProgress.text = context.getString(R.string.update_progress, progress)
     }
 }

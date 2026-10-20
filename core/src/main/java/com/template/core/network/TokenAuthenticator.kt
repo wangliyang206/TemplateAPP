@@ -1,6 +1,5 @@
 package com.template.core.network
 
-import com.google.gson.Gson
 import com.google.gson.JsonParser
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -26,7 +25,6 @@ class TokenAuthenticator @Inject constructor(
     private val tokenStore: TokenStore,
     private val refresher: TokenRefresher,
     private val sessionManager: SessionManager,
-    private val gson: Gson
 ) : Authenticator {
 
     private val refreshLock = Any()
