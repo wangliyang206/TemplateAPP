@@ -19,6 +19,7 @@
     <string name="mine_upload_progress">上传中 %1$d%%</string>
     <string name="mine_upload_done">上传成功：%1$s</string>
     <string name="mine_upload_failed">上传失败：%1$s</string>
+    <string name="webview_load_failed">页面加载失败，链接可能已失效或网络不可用</string>
     <string name="update_now">立即更新</string>
     <string name="update_later">稍后更新</string>
 

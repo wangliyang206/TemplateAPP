@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.template.core.network.DataStoreTokenStore
 import com.template.core.network.HeaderInterceptor
 import com.template.core.network.LoggingInterceptor
+import com.template.core.network.MockUploadInterceptor
 import com.template.core.network.NetworkConfig
 import com.template.core.network.TokenAuthenticator
 import com.template.core.network.TokenInterceptor
@@ -54,7 +55,8 @@ object CoreNetworkModule {
         .connectTimeout(NetworkConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(NetworkConfig.READ_TIMEOUT, TimeUnit.SECONDS)
         .writeTimeout(NetworkConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
-        // 顺序即语义：Header → Token → Logging → Authenticator(401 刷新)
+        // 顺序即语义：Mock短路 → Header → Token → Logging → Authenticator(401 刷新)
+        .addInterceptor(MockUploadInterceptor())
         .addInterceptor(headerInterceptor)
         .addInterceptor(tokenInterceptor)
         .addInterceptor(LoggingInterceptor())

@@ -30,8 +30,9 @@ class UploadRepository @Inject constructor(
     /**
      * 演示：在 cacheDir 生成一个小文本文件并带进度上传。
      *
-     * 上传端点 `$baseUrl{PATH_DEMO}` 需要后端提供（dev 环境真实接口）；
-     * 端点不存在时走失败分支 —— 错误态展示本身也是示例的一部分。
+     * 上传端点 `$baseUrl{PATH_DEMO}`：IS_DEBUG_DATA 构建下由 MockUploadInterceptor
+     * 短路返回伪 200（见 NetworkConfig.mockUploadEnabled），示例可跑通成功分支；
+     * 接入真实后端时替换端点并关闭 mock 开关。
      * 用 Result 返回而不是抛异常：上传失败属于「业务可预期的结果」，
      * 由调用方决定展示方式。
      */

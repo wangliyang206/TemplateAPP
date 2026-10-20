@@ -38,6 +38,10 @@ class App : BaseApplication() {
         NetworkConfig.channel = "official"
         NetworkConfig.language = Locale.getDefault().language.uppercase()
 
+        // 与 IS_DEBUG_DATA 联动：mock 构建下「上传示例」端点没有真实后端，
+        // 由 MockUploadInterceptor 短路返回伪 200，示例才能跑通成功分支
+        NetworkConfig.mockUploadEnabled = BuildConfig.IS_DEBUG_DATA
+
         // 语义上的兜底：debug 用本地占位密钥，release 必须由构建注入
         NetworkConfig.signSecret = BuildConfig.SIGN_SECRET
         SignUtils.init(NetworkConfig.signSecret)

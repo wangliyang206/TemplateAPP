@@ -137,6 +137,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun onDestroyView() {
         binding.banner.destroy()
+        // View 销毁但 Fragment 实例还在（底部导航切 Tab 的场景）：
+        // pagerReady 必须重置，否则切回时 setupViewPager 直接 return，
+        // 新 View 上的 ViewPager 没有 adapter，表现为「切回来首页没数据」
+        pagerReady = false
         super.onDestroyView()
     }
 

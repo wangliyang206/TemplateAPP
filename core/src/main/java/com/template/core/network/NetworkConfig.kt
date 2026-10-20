@@ -33,4 +33,14 @@ object NetworkConfig {
     // ========== 签名配置 ==========
     /** 签名密钥，从服务端获取 */
     var signSecret: String = ""
+
+    // ========== Mock 配置 ==========
+    /**
+     * 演示上传拦截开关。
+     *
+     * true 时 [MockUploadInterceptor] 会拦截演示上传端点并返回伪 200 响应，
+     * 让「上传示例」在没有真实后端的环境（IS_DEBUG_DATA 构建）也能跑通。
+     * 由宿主 App 启动时按 BuildConfig 赋值；core 不感知 BuildConfig。
+     */
+    var mockUploadEnabled: Boolean = false
 }

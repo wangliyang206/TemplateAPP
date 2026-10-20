@@ -19,6 +19,7 @@
     <string name="mine_upload_progress">Uploading %1$d%%</string>
     <string name="mine_upload_done">Uploaded: %1$s</string>
     <string name="mine_upload_failed">Upload failed: %1$s</string>
+    <string name="webview_load_failed">Failed to load. The link may be broken or the network is unavailable</string>
     <string name="update_now">Update now</string>
     <string name="update_later">Later</string>
 

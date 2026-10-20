@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
@@ -44,6 +46,9 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
 
     private var pageUrl: String = "about:blank"
     private var pageTitle: String = ""
+
+    /** 当前是否处于加载失败态：onPageFinished 只在失败后恢复 Content，避免正常首载多一次状态切换 */
+    private var loadFailed = false
 
     override fun getTitleBarId(): Int = R.id.titleBar
 
@@ -91,8 +96,34 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
                     }
                 }
 
+                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                    super.onReceivedError(view, request, error)
+                    // 只对主 frame 展示错误态：子资源（图片/统计脚本）挂了不影响页面可用性。
+                    // 外链内容失效（404/站点下线/断网）是常态，容器必须给兜底而不是白屏。
+                    if (request?.isForMainFrame == true) {
+                        showLoadError()
+                    }
+                }
+
+                override fun onReceivedHttpError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    errorResponse: WebResourceResponse?,
+                ) {
+                    super.onReceivedHttpError(view, request, errorResponse)
+                    // 404 等 HTTP 错误：WebView 会渲染服务端错误页，但站点下线时是空白/丑陋页面，统一兜底
+                    if (request?.isForMainFrame == true && (errorResponse?.statusCode ?: 0) >= HTTP_ERROR_MIN) {
+                        showLoadError()
+                    }
+                }
+
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                    // 错误态重试成功后恢复内容；正常首载本来就是 Content 态，此调用幂等
+                    if (loadFailed) {
+                        loadFailed = false
+                        binding.stateLayout.showContent()
+                    }
                     backCallback.isEnabled = binding.webView.canGoBack()
                 }
             }
@@ -119,6 +150,14 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
         }
     }
 
+    /** 展示加载失败态，点重试重新加载当前 URL */
+    private fun showLoadError() {
+        loadFailed = true
+        binding.stateLayout.showError(getString(R.string.webview_load_failed)) {
+            binding.webView.reload()
+        }
+    }
+
     override fun onDestroy() {
         binding.webView.apply {
             stopLoading()
@@ -130,6 +169,9 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
     companion object {
         const val EXTRA_URL = "url"
         const val EXTRA_TITLE = "title"
+
+        /** HTTP >= 400 视为加载失败（主 frame） */
+        private const val HTTP_ERROR_MIN = 400
 
         /**
          * 打开 WebView。

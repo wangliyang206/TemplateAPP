@@ -3,6 +3,17 @@
 本模板的所有显著变更记录在此。
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+## [2.1.1] - 2026-10-20
+
+### Fixed 修复
+- **切 Tab 回首页无数据**：`HomeFragment.pagerReady` 是实例字段，底部导航切走销毁 View 后未重置，
+  切回时 ViewPager 未重新绑定 adapter。已在 `onDestroyView` 重置
+- **WebView 外链 404/断网无兜底**：WebView 包进 StatefulLayout，主 frame 网络错误或
+  HTTP >= 400 时展示错误态 + 重试按钮（外链内容失效无法在客户端根除，容器兜底是正解）
+- **上传示例必然失败**：dev 构建（IS_DEBUG_DATA）下 FileUploadManager 走原生 OkHttp 直打真实后端，
+  演示端点不存在。新增 `MockUploadInterceptor`（NetworkConfig.mockUploadEnabled 开关，默认关），
+  仅短路演示端点返回伪 200；附 3 条 JVM 测试
+
 ## [2.1.0] - 2026-10-20
 
 ### Added 新增

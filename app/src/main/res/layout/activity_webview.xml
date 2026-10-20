@@ -20,11 +20,19 @@
         android:progressDrawable="@drawable/webview_progress"
         android:visibility="visible" />
 
-    <!-- WebView -->
-    <WebView
-        android:id="@+id/webView"
+    <!-- WebView 包在 StatefulLayout 里：加载失败（404 / 断网 / 超时）时展示错误态 + 重试，
+         避免直接给用户看系统错误页或白屏（外链内容失效是常态，容器必须有兜底） -->
+    <com.template.core.widget.StatefulLayout
+        android:id="@+id/stateLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.template.core.widget.StatefulLayout>
 
 </LinearLayout>
