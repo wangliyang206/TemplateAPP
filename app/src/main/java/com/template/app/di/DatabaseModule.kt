@@ -2,6 +2,7 @@ package com.template.app.di
 
 import android.content.Context
 import com.template.core.db.AppDatabase
+import com.template.core.db.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,11 +16,10 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
-    }
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
+        AppDatabase.build(context)
 
     @Provides
     @Singleton
-    fun provideUserDao(database: AppDatabase) = database.userDao()
+    fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
 }

@@ -88,6 +88,27 @@ class MockApiService : ApiService {
         )
     }
 
+    /**
+     * 模拟刷新 Token
+     */
+    override suspend fun refreshToken(request: ApiRequest<RefreshTokenParams>): BaseResponse<User> {
+        mockDelay()
+
+        val oldToken = request.data.token
+        if (oldToken.isBlank()) {
+            return errorResponse(-401, "Token 无效，请重新登录")
+        }
+        return successResponse(
+            User(
+                userId = "mock_user_001",
+                userName = "测试用户",
+                userPhone = "15032134297",
+                token = "mock_token_refreshed_${System.currentTimeMillis()}",
+                avatar = "https://picsum.photos/200/200?random=1"
+            )
+        )
+    }
+
     // ===== 系统模块 =====
 
     /**

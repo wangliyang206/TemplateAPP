@@ -16,6 +16,10 @@ data class RegisterParams(
     val password: String
 )
 
+data class RefreshTokenParams(
+    val token: String
+)
+
 data class CheckUpdateParams(
     val versionCode: Int
 )

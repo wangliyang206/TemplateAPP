@@ -1,6 +1,8 @@
 ﻿package com.template.app.ui.webview
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -8,10 +10,12 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.template.app.BuildConfig
 import com.template.app.R
 import com.template.app.databinding.ActivityWebviewBinding
 import com.template.core.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 /**
  * WebView 容器 Activity 示例
@@ -23,10 +27,14 @@ import dagger.hilt.android.AndroidEntryPoint
  * - 拦截外部链接（其他 App 打开）
  * - JS Bridge 接口预留
  *
- * 用法：
+ * 用法（推荐走伴生方法，自动补 H5_HOST）：
+ * WebViewActivity.start(context, "/activity/detail?id=1", "活动详情")   // 相对路径
+ * WebViewActivity.start(context, "https://example.com", "详情")        // 绝对地址
+ *
+ * 也可直接传 Intent：
  * startActivity(Intent(context, WebViewActivity::class.java).apply {
- *     putExtra("url", "https://example.com")
- *     putExtra("title", "详情")
+ *     putExtra(WebViewActivity.EXTRA_URL, "https://example.com")
+ *     putExtra(WebViewActivity.EXTRA_TITLE, "详情")
  * })
  */
 @AndroidEntryPoint
@@ -42,8 +50,8 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun initView() {
-        pageUrl = intent.getStringExtra("url") ?: "about:blank"
-        pageTitle = intent.getStringExtra("title") ?: ""
+        pageUrl = resolveUrl(intent.getStringExtra(EXTRA_URL) ?: "about:blank")
+        pageTitle = intent.getStringExtra(EXTRA_TITLE) ?: ""
 
         binding.titleBar.ivBack.setOnClickListener { onBackPressed() }
         binding.titleBar.tvTitle.text = pageTitle
@@ -71,7 +79,10 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
                     } else {
                         try {
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                        } catch (_: Exception) { }
+                        } catch (e: ActivityNotFoundException) {
+                            // 设备上没有能处理该 Scheme 的 App（如未装支付宝），记录而不是静默吞掉
+                            Timber.w(e, "无法打开外部 Scheme: %s", url)
+                        }
                         true
                     }
                 }
@@ -110,5 +121,31 @@ class WebViewActivity : BaseActivity<ActivityWebviewBinding>() {
             destroy()
         }
         super.onDestroy()
+    }
+
+    companion object {
+        const val EXTRA_URL = "url"
+        const val EXTRA_TITLE = "title"
+
+        /**
+         * 打开 WebView。
+         *
+         * [url] 以 `/` 开头时视为 H5 站内路径，用当前 flavor 的 `BuildConfig.H5_HOST` 拼接；
+         * 否则按原样加载。这样切换 dev / staging / prod 时页面地址跟着变，业务代码不用改。
+         */
+        fun start(context: Context, url: String, title: String = "") {
+            context.startActivity(
+                Intent(context, WebViewActivity::class.java).apply {
+                    putExtra(EXTRA_URL, url)
+                    putExtra(EXTRA_TITLE, title)
+                }
+            )
+        }
+
+        private fun resolveUrl(url: String): String = when {
+            url.isBlank() -> "about:blank"
+            url.startsWith("/") -> BuildConfig.H5_HOST.trimEnd('/') + url
+            else -> url
+        }
     }
 }

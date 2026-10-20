@@ -1,39 +1,46 @@
 package com.template.core.network
 
-import com.template.core.datastore.DataStoreManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
 
 /**
- * OkHttp Interceptor：自动为请求添加 Authorization Header（可选的额外认证层）
+ * 为需要鉴权的请求补上 Authorization 头。
  *
- * 注意：新规范中 token 已在请求体 ApiRequest.token 中传递，
- * 本拦截器作为 HTTP 层面的辅助认证层（可选启用）。
+ * 本项目的 token 同时存在于请求体（ApiRequest.token，后端规范要求）与 header，
+ * 两者由同一份 [TokenStore] 驱动，避免不一致。
  */
-class TokenInterceptor(
-    private val dataStore: DataStoreManager
+class TokenInterceptor @Inject constructor(
+    private val tokenStore: TokenStore
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val original = chain.request()
+        val request = chain.request()
+        if (request.isAuthExempt()) return chain.proceed(request)
 
-        // 不需要 token 的接口路径白名单
-        val skipPaths = listOf("/user/login", "/user/register")
-        val path = original.url.encodedPath
-        if (skipPaths.any { path.contains(it) }) {
-            return chain.proceed(original)
-        }
+        // OkHttp 拦截器运行在 IO 线程，这里阻塞读取是安全的
+        val token = runBlocking { tokenStore.currentToken() }
+        if (token.isEmpty()) return chain.proceed(request)
 
-        val token = runBlocking { dataStore.getUserSync().token }
-        val request = if (token.isNotEmpty()) {
-            original.newBuilder()
-                .header("Authorization", "Bearer $token")
+        return chain.proceed(
+            request.newBuilder()
+                .header(HEADER_AUTHORIZATION, "Bearer $token")
                 .build()
-        } else {
-            original
-        }
+        )
+    }
 
-        return chain.proceed(request)
+    private fun okhttp3.Request.isAuthExempt(): Boolean {
+        val path = url.encodedPath
+        return AUTH_EXEMPT_PATHS.any { path.contains(it) }
+    }
+
+    companion object {
+        private const val HEADER_AUTHORIZATION = "Authorization"
+        private val AUTH_EXEMPT_PATHS = listOf(
+            "member/login",
+            "member/register",
+            "member/refreshToken"
+        )
     }
 }

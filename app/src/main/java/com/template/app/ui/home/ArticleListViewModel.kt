@@ -1,60 +1,40 @@
-﻿package com.template.app.ui.home
+package com.template.app.ui.home
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
-import com.template.app.data.api.ApiService
 import com.template.app.data.model.Article
-import com.template.app.data.paging.ArticlePagingSource
+import com.template.app.data.repository.ArticleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 /**
- * 文章列表 ViewModel - 按分类加载文章数据
+ * 分类文章列表 ViewModel。
+ *
+ * 说明：分页场景不适合套 BaseViewModel 的 UiState 约定
+ * （分页自己的 LoadState 就表达了 加载中/错误/空），所以这里直接组合数据层 Flow。
+ * 这也正是「基类只给能力、不强制状态形状」的原因。
  */
 @HiltViewModel
 class ArticleListViewModel @Inject constructor(
-    private val apiService: ApiService
+    repository: ArticleRepository
 ) : ViewModel() {
 
-    /**
-     * 当前分类 ID
-     */
-    private val _categoryId = MutableStateFlow(0)
+    private val categoryId = MutableStateFlow(0)
 
-    /**
-     * 文章列表数据流 - 根据分类 ID 切换
-     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    val articleFlow: Flow<PagingData<Article>> = _categoryId
-        .flatMapLatest { categoryId ->
-            androidx.paging.Pager(
-                config = androidx.paging.PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false,
-                    initialLoadSize = 20
-                )
-            ) {
-                ArticlePagingSource(apiService, categoryId)
-            }
-                .flow
-                .cachedIn(viewModelScope)
-        }
+    val articleFlow: Flow<PagingData<Article>> = categoryId
+        .flatMapLatest { repository.articles(it) }
+        .cachedIn(viewModelScope)
 
-    /**
-     * 设置分类 ID，触发新的分页加载
-     */
-    fun setCategoryId(categoryId: Int) {
-        if (_categoryId.value != categoryId) {
-            _categoryId.value = categoryId
+    fun setCategoryId(id: Int) {
+        if (categoryId.value != id) {
+            categoryId.value = id
         }
     }
 }

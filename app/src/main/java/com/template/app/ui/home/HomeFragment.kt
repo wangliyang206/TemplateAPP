@@ -14,109 +14,128 @@ import com.template.app.databinding.FragmentHomeBinding
 import com.template.app.ui.adapter.BannerImageAdapter
 import com.template.app.ui.webview.WebViewActivity
 import com.template.core.base.BaseFragment
+import com.template.core.ext.collectEffects
+import com.template.core.ext.collectFlow
+import com.template.core.ext.toastShort
+import com.template.core.state.UiEffect
+import com.template.core.state.UiState
+import com.template.core.state.asString
 import com.youth.banner.indicator.CircleIndicator
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * 首页 Fragment：顶部广告位 + 分类 Tab + 文章列表（吸顶效果）
+ * 首页 Fragment：顶部广告位 + 分类 Tab + 文章列表（吸顶效果）。
+ *
+ * 状态渲染范式（全项目统一，新页面照抄）：
+ *   Idle → 什么都不做
+ *   Loading → StatefulLayout.showLoading()
+ *   Error → showError(文案) { retry }
+ *   Empty → showEmpty()
+ *   Success → showContent() + 绑定数据
  */
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private val viewModel: HomeViewModel by viewModels()
+    private var pagerReady = false
 
     override fun getTitleBarId(): Int = R.id.titleBar
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentHomeBinding.inflate(inflater, container, false)
 
-    override fun initView() {}
-
     override fun initObserver() {
-        // 观察轮播图数据
-        viewModel.bannerList.observe(viewLifecycleOwner) { banners ->
-            setupBanner(banners)
-        }
-
-        // 观察分类数据
-        viewModel.categoryList.observe(viewLifecycleOwner) { categories ->
-            setupViewPager(categories)
+        viewLifecycleOwner.collectFlow(viewModel.state, ::render)
+        viewLifecycleOwner.collectEffects(viewModel) { effect ->
+            when (effect) {
+                is UiEffect.ShowMessage ->
+                    requireContext().toastShort(effect.message.asString(requireContext()))
+                else -> Unit
+            }
         }
     }
 
-    override fun initData() {
-        // 加载首页数据
-        viewModel.loadHomeData()
+    private fun render(state: UiState<HomeData>) {
+        when (state) {
+            is UiState.Idle -> Unit
+            is UiState.Loading -> binding.stateLayout.showLoading()
+            is UiState.Empty -> binding.stateLayout.showEmpty(getString(R.string.home_empty))
+            is UiState.Error -> binding.stateLayout.showError(
+                message = state.message.asString(requireContext()),
+                onRetry = viewModel::refresh
+            )
+            is UiState.Success -> {
+                if (state.data.isEmpty) {
+                    binding.stateLayout.showEmpty(getString(R.string.home_empty))
+                } else {
+                    binding.stateLayout.showContent()
+                    bind(state.data)
+                }
+            }
+        }
     }
 
-    /**
-     * 设置轮播图 - 使用 youth5201314 Banner 库
-     */
+    private fun bind(data: HomeData) {
+        setupBanner(data.banners)
+        setupViewPager(data.categories)
+    }
+
     private fun setupBanner(banners: List<Banner>) {
         if (banners.isEmpty()) return
 
         val adapter = BannerImageAdapter(banners).apply {
             onItemClick = { banner ->
                 if (banner.linkUrl.isNotEmpty()) {
-                    val intent = Intent(requireContext(), WebViewActivity::class.java).apply {
-                        putExtra("url", banner.linkUrl)
-                        putExtra("title", banner.title)
-                    }
-                    startActivity(intent)
+                    startActivity(
+                        Intent(requireContext(), WebViewActivity::class.java).apply {
+                            putExtra("url", banner.linkUrl)
+                            putExtra("title", banner.title)
+                        }
+                    )
                 }
             }
         }
 
         binding.banner.apply {
-            // 设置适配器
             setAdapter(adapter)
-            // 设置圆形指示器
             setIndicator(CircleIndicator(context))
-            // 设置轮播间隔 3 秒
             setLoopTime(3000)
-            // 设置圆角
             setBannerRound(20f)
-            // 开启自动轮播并启动
             isAutoLoop(true)
             start()
         }
     }
 
-    /**
-     * 设置 ViewPager2 和 TabLayout
-     */
+    /** 分类变化时才重建 ViewPager，避免每次刷新都重置 Tab 位置 */
     private fun setupViewPager(categories: List<Category>) {
-        binding.contentViewPager.adapter = object : FragmentStateAdapter(childFragmentManager, lifecycle) {
-            override fun getItemCount(): Int = categories.size
+        if (pagerReady || categories.isEmpty()) return
+        pagerReady = true
 
-            override fun createFragment(position: Int): Fragment {
-                return ArticleListFragment.newInstance(categories[position].id)
+        binding.contentViewPager.adapter =
+            object : FragmentStateAdapter(childFragmentManager, lifecycle) {
+                override fun getItemCount(): Int = categories.size
+                override fun createFragment(position: Int): Fragment =
+                    ArticleListFragment.newInstance(categories[position].id)
             }
-        }
 
-        // TabLayout 与 ViewPager2 联动
         TabLayoutMediator(binding.tabLayout, binding.contentViewPager) { tab, position ->
             tab.text = categories[position].name
         }.attach()
 
-        // 预加载数量，避免频繁重建
         binding.contentViewPager.offscreenPageLimit = categories.size.coerceAtMost(4)
     }
 
     override fun onResume() {
         super.onResume()
-        // 恢复轮播
         binding.banner.start()
     }
 
     override fun onPause() {
         super.onPause()
-        // 暂停轮播
         binding.banner.stop()
     }
 
     override fun onDestroyView() {
-        // 先销毁轮播（此时 binding 还未置空），再调用父类方法
         binding.banner.destroy()
         super.onDestroyView()
     }

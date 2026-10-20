@@ -1,19 +1,18 @@
-﻿package com.template.app.ui.login
+package com.template.app.ui.login
 
 import android.content.Intent
 import android.view.LayoutInflater
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.template.app.MainActivity
+import com.template.app.R
 import com.template.app.databinding.ActivityLoginBinding
 import com.template.app.ui.register.RegisterActivity
 import com.template.core.base.BaseActivity
+import com.template.core.ext.collectFlow
 import com.template.core.ext.toastShort
 import com.template.core.state.UiState
+import com.template.core.state.asString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
@@ -30,23 +29,24 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     }
 
     override fun initObserver() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loginState.collect {
-                    when (it) {
-                        is UiState.Loading -> { }
-                        is UiState.Success -> {
-                            toastShort("登录成功")
-                            // 登录成功后返回 MainActivity，避免重复创建实例
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
-                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                            }
-                            startActivity(intent)
-                            finish()
+        collectFlow(viewModel.loginState) { state ->
+            when (state) {
+                is UiState.Loading -> binding.btnLogin.isEnabled = false
+                is UiState.Success -> {
+                    binding.btnLogin.isEnabled = true
+                    toastShort(getString(R.string.login_success))
+                    startActivity(
+                        Intent(this@LoginActivity, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         }
-                        is UiState.Error -> toastShort(it.message)
-                    }
+                    )
+                    finish()
                 }
+                is UiState.Error -> {
+                    binding.btnLogin.isEnabled = true
+                    toastShort(state.message.asString(this@LoginActivity))
+                }
+                else -> Unit
             }
         }
     }
@@ -55,26 +55,17 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         val phone = binding.etPhone.text.toString().trim()
         val pwd = binding.etPassword.text.toString().trim()
 
-        // 手机号必填 + 格式校验（11 位数字，1 开头）
-        if (phone.isEmpty()) {
-            toastShort("请输入手机号")
-            return
+        when {
+            phone.isEmpty() -> toastShort(getString(R.string.login_phone_required))
+            !phone.matches(PHONE_REGEX) -> toastShort(getString(R.string.login_phone_invalid))
+            pwd.isEmpty() -> toastShort(getString(R.string.login_password_required))
+            pwd.length < MIN_PASSWORD_LENGTH -> toastShort(getString(R.string.login_password_too_short))
+            else -> viewModel.login(phone, pwd)
         }
-        if (!phone.matches(Regex("^1[0-9]{10}$"))) {
-            toastShort("请输入正确的手机号")
-            return
-        }
+    }
 
-        // 密码必填 + 长度校验（至少 6 位）
-        if (pwd.isEmpty()) {
-            toastShort("请输入密码")
-            return
-        }
-        if (pwd.length < 6) {
-            toastShort("密码长度不能少于6位")
-            return
-        }
-
-        viewModel.login(phone, pwd)
+    private companion object {
+        val PHONE_REGEX = Regex("^1[0-9]{10}$")
+        const val MIN_PASSWORD_LENGTH = 6
     }
 }

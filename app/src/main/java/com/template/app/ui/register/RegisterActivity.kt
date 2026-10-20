@@ -1,16 +1,15 @@
-﻿package com.template.app.ui.register
+package com.template.app.ui.register
 
 import android.view.LayoutInflater
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import com.template.app.R
 import com.template.app.databinding.ActivityRegisterBinding
 import com.template.core.base.BaseActivity
+import com.template.core.ext.collectFlow
 import com.template.core.ext.toastShort
 import com.template.core.state.UiState
+import com.template.core.state.asString
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
@@ -24,18 +23,19 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
     }
 
     override fun initObserver() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.registerState.collect {
-                    when (it) {
-                        is UiState.Loading -> { }
-                        is UiState.Success -> {
-                            toastShort("注册成功")
-                            finish()
-                        }
-                        is UiState.Error -> toastShort(it.message)
-                    }
+        collectFlow(viewModel.registerState) { state ->
+            when (state) {
+                is UiState.Loading -> binding.btnRegister.isEnabled = false
+                is UiState.Success -> {
+                    binding.btnRegister.isEnabled = true
+                    toastShort(getString(R.string.register_success))
+                    finish()
                 }
+                is UiState.Error -> {
+                    binding.btnRegister.isEnabled = true
+                    toastShort(state.message.asString(this@RegisterActivity))
+                }
+                else -> Unit
             }
         }
     }

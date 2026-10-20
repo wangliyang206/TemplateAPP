@@ -8,6 +8,7 @@ import com.template.app.data.model.Category
 import com.template.app.data.model.CategoryListParams
 import com.template.app.data.model.CheckUpdateParams
 import com.template.app.data.model.LoginParams
+import com.template.app.data.model.RefreshTokenParams
 import com.template.app.data.model.RegisterParams
 import com.template.app.data.model.UpdateInfo
 import com.template.app.data.model.User
@@ -29,6 +30,13 @@ interface ApiService {
 
     @POST("member/register")
     suspend fun register(@Body request: ApiRequest<RegisterParams>): BaseResponse<User>
+
+    /**
+     * 刷新 Token：401 时由 TokenAuthenticator 自动调用。
+     * 后端若没有该接口，删除此方法并在 TokenRefresher 中改为其他策略（如静默重登）。
+     */
+    @POST("member/refreshToken")
+    suspend fun refreshToken(@Body request: ApiRequest<RefreshTokenParams>): BaseResponse<User>
 
     // ===== 系统模块 =====
     @POST("system/checkUpdate")

@@ -1,40 +1,42 @@
 [versions]
-agp = "8.3.2"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
-coreKtx = "1.12.0"
-appcompat = "1.6.1"
-activityKtx = "1.8.2"
-fragmentKtx = "1.6.2"
-lifecycle = "2.7.0"
-navigation = "2.7.7"
+agp = "8.7.3"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.28"
+coreKtx = "1.13.1"
+appcompat = "1.7.0"
+activityKtx = "1.9.3"
+fragmentKtx = "1.8.5"
+lifecycle = "2.8.7"
+navigation = "2.8.4"
 constraintlayout = "2.1.4"
 recyclerview = "1.3.2"
 swiperefreshlayout = "1.1.0"
-viewpager2 = "1.0.0"
-paging = "3.2.1"
-material = "1.11.0"
+viewpager2 = "1.1.0"
+paging = "3.3.5"
+material = "1.12.0"
 splashscreen = "1.0.1"
-datastore = "1.0.0"
-room = "2.5.2"
-hilt = "2.48.1"
-retrofit = "2.9.0"
+datastore = "1.1.1"
+room = "2.6.1"
+hilt = "2.52"
+retrofit = "2.11.0"
 okhttp = "4.12.0"
-gson = "2.10.1"
-coroutines = "1.7.3"
+gson = "2.11.0"
+coroutines = "1.9.0"
 glide = "4.16.0"
 timber = "5.0.1"
 mmkv = "1.3.2"
 autosize = "v1.2.1"
 immersionbar = "3.2.2"
-smartrefresh = "2.0.5"
+smartrefresh = "2.1.1"
 banner = "2.2.2"
 xxpermissions = "18.5"
 utilcodex = "1.31.1"
-leakcanary = "2.12"
+leakcanary = "2.14"
 junit = "4.13.2"
-junitExt = "1.1.5"
-espresso = "3.5.1"
+androidxTestCore = "1.6.1"
+junitExt = "1.2.1"
+espresso = "3.6.1"
+turbine = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,27 +53,31 @@ androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview"
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging" }
+androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 androidx-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
-glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 mmkv = { group = "com.tencent", name = "mmkv-static", version.ref = "mmkv" }
 autosize = { group = "com.github.JessYanCoding", name = "AndroidAutoSize", version.ref = "autosize" }
@@ -86,13 +92,14 @@ utilcodex = { group = "com.blankj", name = "utilcodex", version.ref = "utilcodex
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
 androidx-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 daggerHiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

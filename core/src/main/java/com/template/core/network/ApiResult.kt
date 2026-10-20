@@ -1,12 +1,15 @@
 package com.template.core.network
 
-sealed class ApiResult<out T> {
-    data class Success<T>(val data: T) : ApiResult<T>()
-    data class Error(val exception: ApiException) : ApiResult<Nothing>()
-}
+import com.template.core.error.AppError
 
-class ApiException(
-    val code: Int = 0,
-    message: String? = null,
-    cause: Throwable? = null
-) : Exception(message, cause)
+/**
+ * Repository 层的统一返回类型。
+ *
+ * 只承载两种结果：拿到数据，或拿到一个已归一化的 [AppError]。
+ */
+sealed interface ApiResult<out T> {
+
+    data class Success<T>(val data: T) : ApiResult<T>
+
+    data class Failure(val error: AppError) : ApiResult<Nothing>
+}

@@ -23,43 +23,50 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <!-- 内容区统一由 StatefulLayout 承载 Loading / Empty / Error / Content 四态 -->
+    <com.template.core.widget.StatefulLayout
+        android:id="@+id/stateLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:elevation="0dp">
+            android:layout_height="match_parent">
 
-            <com.youth.banner.Banner
-                android:id="@+id/banner"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
-                app:layout_scrollFlags="enterAlways"
-                app:tabIndicatorColor="?attr/colorPrimary"
-                app:tabIndicatorHeight="2dp"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="?attr/colorPrimary"
-                app:tabTextColor="@color/text_secondary" />
-        </com.google.android.material.appbar.AppBarLayout>
+                app:elevation="0dp">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/contentViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/white"
+                    app:layout_scrollFlags="enterAlways"
+                    app:tabIndicatorColor="?attr/colorPrimary"
+                    app:tabIndicatorHeight="2dp"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="?attr/colorPrimary"
+                    app:tabTextColor="@color/text_secondary" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/contentViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.template.core.widget.StatefulLayout>
 </LinearLayout>

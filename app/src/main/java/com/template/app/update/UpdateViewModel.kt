@@ -2,11 +2,8 @@ package com.template.app.update
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
-import com.template.app.data.api.ApiService
-import com.template.app.data.model.CheckUpdateParams
 import com.template.app.data.model.UpdateInfo
 import com.template.core.base.BaseViewModel
-import com.template.core.network.ApiRequest
 import com.template.core.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,31 +14,26 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpdateViewModel @Inject constructor(
-    private val apiService: ApiService
+    private val repository: UpdateRepository
 ) : BaseViewModel() {
 
-    private val _updateState = MutableStateFlow<UiState<UpdateInfo>>(UiState.Loading)
+    private val _updateState = MutableStateFlow<UiState<UpdateInfo>>(UiState.Idle)
     val updateState: StateFlow<UiState<UpdateInfo>> = _updateState.asStateFlow()
 
     private val downloadManager = AppDownloadManager()
     val downloadState = downloadManager.state
 
     fun checkUpdate(versionCode: Int) {
-        _updateState.launchWithState {
-            val params = CheckUpdateParams(versionCode)
-            val request = ApiRequest.build(params)
-            val resp = apiService.checkUpdate(request)
-            if (resp.isSuccess && resp.data != null) {
-                resp.data!!
-            } else {
-                throw Exception(resp.errorMessage)
-            }
-        }
+        _updateState.launchWithState { repository.checkUpdate(versionCode) }
     }
 
     fun downloadApk(context: Context, updateInfo: UpdateInfo) {
         viewModelScope.launch {
-            downloadManager.download(context, updateInfo.downloadUrl, "template_app_${updateInfo.versionCode}.apk")
+            downloadManager.download(
+                context,
+                updateInfo.downloadUrl,
+                "template_app_${updateInfo.versionCode}.apk"
+            )
         }
     }
 

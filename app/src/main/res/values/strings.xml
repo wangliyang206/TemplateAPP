@@ -18,4 +18,16 @@
     <string name="update_title">发现新版本</string>
     <string name="update_now">立即更新</string>
     <string name="update_later">稍后更新</string>
+
+    <!-- 首页 -->
+    <string name="home_empty">这里还没有内容</string>
+    <string name="category_empty">暂无分类</string>
+
+    <!-- 登录 / 注册校验与结果 -->
+    <string name="login_success">登录成功</string>
+    <string name="login_phone_required">请输入手机号</string>
+    <string name="login_phone_invalid">请输入正确的手机号</string>
+    <string name="login_password_required">请输入密码</string>
+    <string name="login_password_too_short">密码长度不能少于6位</string>
+    <string name="register_success">注册成功</string>
 </resources>

@@ -1,58 +1,34 @@
-﻿package com.template.app.ui.home
+package com.template.app.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.template.app.data.api.ApiService
-import com.template.app.data.model.Banner
-import com.template.app.data.model.BannerListParams
-import com.template.app.data.model.Category
-import com.template.app.data.model.CategoryListParams
-import com.template.core.network.ApiRequest
+import com.template.core.base.BaseViewModel
+import com.template.core.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 /**
- * 首页 ViewModel - 管理轮播图和分类数据
+ * 首页 ViewModel：一个 State、一个入口、一种错误处理。
+ *
+ * 对照上一版：
+ * - 不再直接注入 ApiService（走 HomeRepository）；
+ * - 不再 `catch (_: Exception) {}` 静默吞错（错误进 UiState.Error → 页面显示重试）；
+ * - 不再用 postValue 拼 LiveData（统一 StateFlow）。
  */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val apiService: ApiService
-) : ViewModel() {
+    private val repository: HomeRepository
+) : BaseViewModel() {
 
-    /**
-     * 轮播图数据
-     */
-    private val _bannerList = MutableLiveData<List<Banner>>()
-    val bannerList: LiveData<List<Banner>> = _bannerList
+    private val _state = MutableStateFlow<UiState<HomeData>>(UiState.Idle)
+    val state: StateFlow<UiState<HomeData>> = _state.asStateFlow()
 
-    /**
-     * 分类数据
-     */
-    private val _categoryList = MutableLiveData<List<Category>>()
-    val categoryList: LiveData<List<Category>> = _categoryList
+    init {
+        refresh()
+    }
 
-    /**
-     * 加载首页数据（轮播图 + 分类）
-     */
-    fun loadHomeData() {
-        viewModelScope.launch {
-            // 加载轮播图
-            launch {
-                try {
-                    val response = apiService.getBannerList(ApiRequest.build(BannerListParams(0)))
-                    _bannerList.postValue(response.data ?: emptyList())
-                } catch (_: Exception) { }
-            }
-            // 加载分类
-            launch {
-                try {
-                    val response = apiService.getCategoryList(ApiRequest.build(CategoryListParams(0)))
-                    _categoryList.postValue(response.data ?: emptyList())
-                } catch (_: Exception) { }
-            }
-        }
+    fun refresh() {
+        _state.launchWithState { repository.load() }
     }
 }

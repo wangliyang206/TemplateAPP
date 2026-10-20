@@ -2,6 +2,7 @@ package com.template.core.exception
 
 import android.content.Context
 import android.os.Process
+import android.util.Log
 import com.template.core.BuildConfig
 import java.io.File
 import java.io.FileWriter
@@ -35,7 +36,13 @@ class GlobalExceptionHandler(private val context: Context) : Thread.UncaughtExce
                     throwable.printStackTrace(pw)
                 }
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            // 崩溃落盘失败时不能再抛，否则会递归崩溃；但必须留痕，否则线上排查会彻底失明。
+            Log.e(TAG, "崩溃日志写入失败", e)
         }
+    }
+
+    private companion object {
+        const val TAG = "GlobalExceptionHandler"
     }
 }
