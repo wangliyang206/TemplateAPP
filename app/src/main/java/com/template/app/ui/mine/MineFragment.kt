@@ -32,12 +32,19 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
             }
         }
         binding.btnLogout.setOnClickListener { viewModel.logout() }
+        // 文件上传示例入口，完整链路见 UploadRepository / MineViewModel.uploadDemo
+        binding.btnUploadDemo.setOnClickListener { viewModel.uploadDemo() }
     }
 
     override fun initObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userState.collect { state -> renderUserState(state) }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uploadState.collect { state -> renderUploadState(state) }
             }
         }
     }
@@ -57,6 +64,16 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
                 binding.tvPhone.text = state.phone
                 binding.btnLogout.visibility = android.view.View.VISIBLE
             }
+        }
+    }
+
+    private fun renderUploadState(state: MineViewModel.UploadUiState) {
+        binding.btnUploadDemo.isEnabled = state !is MineViewModel.UploadUiState.Uploading
+        binding.tvUploadStatus.text = when (state) {
+            is MineViewModel.UploadUiState.Idle -> ""
+            is MineViewModel.UploadUiState.Uploading -> getString(R.string.mine_upload_progress, state.progress)
+            is MineViewModel.UploadUiState.Done -> getString(R.string.mine_upload_done, state.serverBody)
+            is MineViewModel.UploadUiState.Failed -> getString(R.string.mine_upload_failed, state.message)
         }
     }
 }

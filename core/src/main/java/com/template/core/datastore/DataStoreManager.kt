@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "template_app_prefs")
 
-class DataStoreManager(private val context: Context) {
+class DataStoreManager(private val context: Context) : SessionStore {
 
     private val dataStore = context.dataStore
 
@@ -24,7 +24,7 @@ class DataStoreManager(private val context: Context) {
         val KEY_USER_AVATAR = stringPreferencesKey("user_avatar")
     }
 
-    suspend fun saveUser(userId: String, token: String, userName: String, phone: String = "", avatar: String? = null) {
+    override suspend fun saveUser(userId: String, token: String, userName: String, phone: String, avatar: String?) {
         dataStore.edit {
             it[KEY_USER_ID] = userId
             it[KEY_TOKEN] = token
@@ -38,7 +38,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    suspend fun clearUser() {
+    override suspend fun clearUser() {
         dataStore.edit {
             it.remove(KEY_USER_ID)
             it.remove(KEY_TOKEN)
@@ -48,7 +48,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    val userFlow: Flow<UserPref> = dataStore.data.map {
+    override val userFlow: Flow<UserPref> = dataStore.data.map {
         UserPref(
             userId = it[KEY_USER_ID] ?: "",
             token = it[KEY_TOKEN] ?: "",

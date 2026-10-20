@@ -3,6 +3,25 @@
 本模板的所有显著变更记录在此。
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+## [2.1.0] - 2026-10-20
+
+### Added 新增
+- **文件上传 app 侧完整示例**：`UploadRepository`（cacheDir 生成演示文件 → 带进度 PUT），
+  「我的」页新增上传入口，进度/成功/失败三态展示，补齐 `FileUploadManager` 从封装到调用的闭环
+- 单元测试 +7：`LoginViewModelTest`（4，含登录→写会话全链路与失败重试）、
+  `ArticleListViewModelTest`（3，paging-testing `asSnapshot` 验证首屏/翻页/分类切换）
+
+### Changed 变更
+- `DataStoreManager` 抽象出 `SessionStore` 接口（与 `TokenStore` 同套路），
+  `SessionRepository` 面向接口依赖，登录链路可在纯 JVM 下用内存假实现测试
+
+### Fixed 修复
+- READ_PHONE_STATE 敏感权限移除（权限清单 + 死代码 `PermissionHelper.requestPhone` 采集链路）
+- `StatefulLayout` 空态/加载/失败默认文案改走资源，修复 i18n 漏网
+- `TokenAuthenticator` 增加刷新请求重入保护（`X-Skip-Auth-Refresh`），杜绝刷新接口 401 递归
+- lint `warningsAsErrors=true`；kover `verify` 覆盖率非回退底线入 CI
+- 文档漂移修正（静态检查/测试描述与代码对齐）
+
 ## [2.0.0] - 2026-10-20
 
 一次全面的模板化整改：架构、质量门禁、性能、文档同步升级。

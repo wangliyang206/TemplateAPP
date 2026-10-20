@@ -1,7 +1,7 @@
 package com.template.app.data.session
 
 import com.template.app.data.model.User
-import com.template.core.datastore.DataStoreManager
+import com.template.core.datastore.SessionStore
 import com.template.core.db.UserDao
 import com.template.core.db.UserEntity
 import kotlinx.coroutines.flow.Flow
@@ -16,9 +16,12 @@ import javax.inject.Singleton
  * - 上一版 LoginRepository 同时打接口、写 DataStore、写 Room，职责过载；
  * - 现在网络归 AuthRepository，本地归 SessionRepository，边界清晰；
  * - MineViewModel 等页面只依赖本类，不直接碰 DataStore。
+ *
+ * 持久化走 [SessionStore] 接口（生产实现 DataStoreManager），
+ * 单测里换成内存假实现即可，不必拉起 Robolectric。
  */
 @Singleton
-class SessionRepository @Inject constructor(private val dataStore: DataStoreManager, private val userDao: UserDao) {
+class SessionRepository @Inject constructor(private val dataStore: SessionStore, private val userDao: UserDao) {
 
     val session: Flow<Session> = dataStore.userFlow.map { pref ->
         Session(

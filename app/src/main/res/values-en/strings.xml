@@ -15,6 +15,10 @@
     <string name="mine_logout">Sign out</string>
     <string name="mine_not_login">Not signed in</string>
     <string name="mine_click_to_login">Tap to sign in</string>
+    <string name="mine_upload_demo">Upload demo file (FileUploadManager)</string>
+    <string name="mine_upload_progress">Uploading %1$d%%</string>
+    <string name="mine_upload_done">Uploaded: %1$s</string>
+    <string name="mine_upload_failed">Upload failed: %1$s</string>
     <string name="update_now">Update now</string>
     <string name="update_later">Later</string>
 
