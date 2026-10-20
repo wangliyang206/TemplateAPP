@@ -6,6 +6,7 @@
     <string name="core_loading">Loading…</string>
     <string name="core_empty">No data</string>
     <string name="core_retry">Retry</string>
+    <string name="core_error_load_failed">Failed to load</string>
 
     <!-- Error messages: mapped uniformly by AppError.asUiMessage() -->
     <string name="core_error_network">Network unavailable. Check your connection and try again</string>

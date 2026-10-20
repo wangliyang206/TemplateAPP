@@ -80,27 +80,6 @@ class PermissionHelper(private val onResult: (granted: Boolean) -> Unit) {
             })
     }
 
-    /** 申请手机信息权限（读取手机号、SIM 卡信息） */
-    fun requestPhone(activity: FragmentActivity) {
-        val permissions = mutableListOf(Manifest.permission.READ_PHONE_STATE)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            permissions.add(Manifest.permission.READ_PHONE_NUMBERS)
-        }
-        XXPermissions.with(activity)
-            .permission(permissions)
-            .request(object : OnPermissionCallback {
-                override fun onGranted(granted: MutableList<String>, allGranted: Boolean) {
-                    onResult(allGranted)
-                }
-                override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
-                    if (doNotAskAgain) {
-                        activity.toastShort("请在设置中开启手机信息权限")
-                    }
-                    onResult(false)
-                }
-            })
-    }
-
     companion object {
         /** 快速检查权限是否已授予 */
         fun isGranted(activity: FragmentActivity, vararg permissions: String): Boolean = permissions.all {

@@ -19,6 +19,8 @@ plugins {
 // ---------------------------------------------------------------------------
 
 subprojects {
+    val moduleName = name
+
     apply(plugin = "io.gitlab.arturbosch.detekt")
     apply(plugin = "com.diffplug.spotless")
     apply(plugin = "org.jetbrains.kotlinx.kover")
@@ -61,7 +63,11 @@ subprojects {
         }
     }
 
-    // kover：生成每模块的覆盖率报告，供 CI 上传/比对
+    // kover：生成每模块的覆盖率报告，并把阈值变成 CI 卡口（非回退底线）。
+    //
+    // 阈值说明：当前实测行覆盖率 core ≈ 17%、app ≈ 2%（模板业务代码多为真实项目才会覆盖的
+    // UI/DI 层）。这里先卡在实测值之下作为「不许下降」的底线，随补测试逐步上调；
+    // 想门禁更严，应补测试而不是下调这里的数字。
     extensions.configure<kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension>("kover") {
         reports {
             total {
@@ -70,6 +76,11 @@ subprojects {
                 }
                 xml {
                     onCheck = false
+                }
+            }
+            verify {
+                rule("$moduleName 行覆盖率非回退底线") {
+                    minBound(if (moduleName == "core") 15 else 1)
                 }
             }
         }

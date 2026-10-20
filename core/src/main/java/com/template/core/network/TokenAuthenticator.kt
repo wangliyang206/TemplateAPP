@@ -30,8 +30,12 @@ class TokenAuthenticator @Inject constructor(
     private val refreshLock = Any()
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (response.priorCount() >= MAX_RETRY) {
-            Timber.w("TokenAuthenticator: 已达最大重试次数，放弃")
+        val isRefreshRequest = response.request.header(SKIP_AUTH_HEADER) != null
+        // 两种情况都直接放弃重放：
+        // - 刷新请求自身返回 401（isRefreshRequest）：重放会再次触发刷新，造成递归；
+        // - 已达最大重试次数：避免 401 死循环。
+        if (isRefreshRequest || response.priorCount() >= MAX_RETRY) {
+            Timber.w("TokenAuthenticator: 放弃重放（refreshRequest=%s）", isRefreshRequest)
             return null
         }
 
@@ -100,5 +104,12 @@ class TokenAuthenticator @Inject constructor(
     companion object {
         private const val MAX_RETRY = 1
         private const val HEADER_AUTHORIZATION = "Authorization"
+
+        /**
+         * 标记「刷新 token」这类自身不参与 401 重放的请求头。
+         * 由 ApiService 的 refreshToken 方法通过 @Headers 带上；
+         * 见 [authenticate] 开头的放行分支。
+         */
+        const val SKIP_AUTH_HEADER = "X-Skip-Auth-Refresh"
     }
 }

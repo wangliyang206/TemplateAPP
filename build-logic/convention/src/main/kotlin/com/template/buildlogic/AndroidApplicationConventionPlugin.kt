@@ -42,7 +42,9 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 lint {
                     abortOnError = true
                     checkReleaseBuilds = true
-                    warningsAsErrors = false
+                    // 告警即失败：把"0 warning"从口头约定变成 CI 卡口，
+                    // 避免新告警随业务代码悄悄混入（与 README 的门禁描述一致）。
+                    warningsAsErrors = true
                     // 版本升级由 Renovate 负责，不在 lint 里噪音告警
                     disable += setOf("GradleDependency", "AndroidGradlePluginVersion", "NewerVersionAvailable")
                 }

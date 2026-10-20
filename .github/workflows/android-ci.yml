@@ -32,6 +32,10 @@ jobs:
       - name: Unit tests
         run: ./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest --stacktrace
 
+      # 覆盖率非回退底线：低于阈值直接失败（阈值配置见根 build.gradle.kts）
+      - name: Coverage gate (kover verify)
+        run: ./gradlew :core:koverVerify :app:koverVerify --stacktrace
+
       - name: Lint
         run: ./gradlew :app:lintDevDebug --stacktrace
 

@@ -16,8 +16,8 @@ import com.template.core.R
  * 在 Activity/Fragment 中：
  * statefulLayout.showLoading()
  * statefulLayout.showContent()
- * statefulLayout.showEmpty("暂无数据")
- * statefulLayout.showError("加载失败") { retry() }
+ * statefulLayout.showEmpty()            // 默认文案取自 core_empty
+ * statefulLayout.showError { retry() }  // 默认文案取自 core_error_load_failed
  */
 class StatefulLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     FrameLayout(context, attrs, defStyleAttr) {
@@ -49,12 +49,18 @@ class StatefulLayout @JvmOverloads constructor(context: Context, attrs: Attribut
         switchTo(State.Content)
     }
 
-    fun showEmpty(message: String = "暂无数据") {
-        switchTo(State.Empty(message))
+    /**
+     * 空态。[message] 传 null 时使用 [R.string.core_empty]，保证文案可国际化。
+     */
+    fun showEmpty(message: String? = null) {
+        switchTo(State.Empty(message ?: context.getString(R.string.core_empty)))
     }
 
-    fun showError(message: String = "加载失败", onRetry: (() -> Unit)? = null) {
-        switchTo(State.Error(message, onRetry))
+    /**
+     * 错误态。[message] 传 null 时使用 [R.string.core_error_load_failed]。
+     */
+    fun showError(message: String? = null, onRetry: (() -> Unit)? = null) {
+        switchTo(State.Error(message ?: context.getString(R.string.core_error_load_failed), onRetry))
     }
 
     private fun switchTo(state: State) {
@@ -70,7 +76,7 @@ class StatefulLayout @JvmOverloads constructor(context: Context, attrs: Attribut
             is State.Content -> getChildAt(0)?.visibility = VISIBLE
             is State.Loading -> {
                 ensureLoadingView()
-                loadingView?.show(R.drawable.state_loading, "加载中...")
+                loadingView?.show(R.drawable.state_loading, context.getString(R.string.core_loading))
             }
             is State.Empty -> {
                 ensureEmptyView()

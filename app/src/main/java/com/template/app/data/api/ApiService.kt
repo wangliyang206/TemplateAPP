@@ -14,7 +14,9 @@ import com.template.app.data.model.UpdateInfo
 import com.template.app.data.model.User
 import com.template.core.network.ApiRequest
 import com.template.core.network.BaseResponse
+import com.template.core.network.TokenAuthenticator
 import retrofit2.http.Body
+import retrofit2.http.Headers
 import retrofit2.http.POST
 
 /**
@@ -34,7 +36,11 @@ interface ApiService {
     /**
      * 刷新 Token：401 时由 TokenAuthenticator 自动调用。
      * 后端若没有该接口，删除此方法并在 TokenRefresher 中改为其他策略（如静默重登）。
+     *
+     * [TokenAuthenticator.SKIP_AUTH_HEADER] 标记本请求不参与 401 重放：
+     * 否则刷新接口自身返回 401 时会再次触发刷新逻辑，造成递归。
      */
+    @Headers(TokenAuthenticator.SKIP_AUTH_HEADER + ": true")
     @POST("member/refreshToken")
     suspend fun refreshToken(@Body request: ApiRequest<RefreshTokenParams>): BaseResponse<User>
 
