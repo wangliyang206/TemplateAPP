@@ -6,7 +6,14 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- 仅安装 APK 升级需要；存储权限在 targetSdk 33+ 已无用，按需再声明 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--
+      刻意不声明 READ_PHONE_STATE：
+      - 应用商店将其列为敏感权限，需提交用途说明，审核成本高；
+      - Android 10+ 对 line1Number / simSerialNumber 已基本不可得，采集不到有效值。
+      设备信息以无需权限的字段为准（见 core 的 DeviceInfoCollector）。
+      若业务确需，再自行声明并同步扩展采集逻辑。
+    -->
+
 
     <application
         android:name=".App"
