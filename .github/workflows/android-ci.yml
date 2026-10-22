@@ -2,7 +2,8 @@ name: Android CI
 
 on:
   push:
-    branches: [ main, develop ]
+    # 与仓库实际默认分支对齐：本地开发在 devlop，推送走 devlop:master（见 CONTRIBUTING.md）
+    branches: [ master, devlop ]
   pull_request:
 
 concurrency:
@@ -28,6 +29,10 @@ jobs:
       # CI 用 Mock 数据，无需后端即可跑通全链路
       - name: Static analysis (detekt + spotless)
         run: ./gradlew detekt spotlessCheck --stacktrace
+
+      # 文档引用死文件 / 死能力是最常见的腐化方式，这里当成门禁跑（scripts/check-docs.sh）
+      - name: Docs consistency
+        run: ./scripts/check-docs.sh
 
       - name: Unit tests
         run: ./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest --stacktrace

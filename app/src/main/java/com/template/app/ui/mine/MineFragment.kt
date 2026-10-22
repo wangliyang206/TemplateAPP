@@ -7,11 +7,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.template.app.R
 import com.template.app.databinding.FragmentMineBinding
 import com.template.app.ui.login.LoginActivity
 import com.template.core.base.BaseFragment
 import com.template.core.ext.loadCircleOrDrawable
+import com.template.core.ext.pickImage
+import com.template.core.ext.registerPhotoPicker
+import com.template.core.ext.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -19,6 +23,17 @@ import kotlinx.coroutines.launch
 class MineFragment : BaseFragment<FragmentMineBinding>() {
 
     private val viewModel: MineViewModel by viewModels()
+
+    /**
+     * 图片选择：PhotoPicker 不需要任何存储权限，选完只拿到一个临时 Uri。
+     * 要长期保存请把流复制到 App 私有目录（见 core 的 registerPhotoPicker 注释）。
+     */
+    private val pickPhoto = registerPhotoPicker { uri ->
+        // 回调可能在 View 已销毁后到达（用户在相册停留期间被系统回收），先判空再碰 binding
+        if (view != null) {
+            binding.tvPhotoStatus.text = uri?.let { getString(R.string.mine_photo_picked, it.toString()) }.orEmpty()
+        }
+    }
 
     override fun getTitleBarId(): Int = R.id.titleBar
 
@@ -34,6 +49,12 @@ class MineFragment : BaseFragment<FragmentMineBinding>() {
         binding.btnLogout.setOnClickListener { viewModel.logout() }
         // 文件上传示例入口，完整链路见 UploadRepository / MineViewModel.uploadDemo
         binding.btnUploadDemo.setOnClickListener { viewModel.uploadDemo() }
+        // 图片选择示例（系统 PhotoPicker）
+        binding.btnPickPhoto.setOnSingleClickListener { pickPhoto.pickImage() }
+        // 设置页入口（DataStore 业务键示例）
+        binding.btnSettings.setOnSingleClickListener {
+            findNavController().navigate(R.id.action_mine_to_settings)
+        }
     }
 
     override fun initObserver() {

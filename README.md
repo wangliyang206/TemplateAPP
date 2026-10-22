@@ -6,14 +6,15 @@
 - **范式**：一个 State（StateFlow）、一个事件通道（SharedFlow）、一套错误模型（AppError）
 - **无后端可跑**：debug 默认 `IS_DEBUG_DATA=true`，全部接口走内置 Mock
 
-## 开新项目先读这三份
+## 开新项目先读这几份
 
 | 文档 | 什么时候看 |
 |---|---|
 | **[docs/NEW_PROJECT.md](docs/NEW_PROJECT.md)** | **第一步**。改名清单 + 使用说明 + 注意事项，含照抄就踩的坑（支持 `scripts/init-project.sh` 一键初始化） |
 | **[docs/SIGNING.md](docs/SIGNING.md)** | 签名必读。模板自带的是**占位签名密钥**，新项目必须换掉 |
 | **[docs/CHECKLIST.md](docs/CHECKLIST.md)** | 交付前自检，逐条可验证 |
-| **[项目复核报告.md](项目复核报告.md)** | 想知道"这模板还差什么"时看。95 分复评 + 27 项缺口处置对照 |
+| **[模板审计报告_2026-10-22.md](模板审计报告_2026-10-22.md)** | 想知道"这模板还差什么"时看。含文档-代码一致性核查、示例/测试缺口与分级整改清单 |
+| **[项目复核报告.md](项目复核报告.md)** | 架构与门禁的评分依据（95 分复评 + 27 项缺口处置对照） |
 
 > **最低限度**：不改包名直接用会出现两个应用抢同一 applicationId；不换签名密钥等于用一把
 > 公开的私钥上架。这两条都写在 NEW_PROJECT.md 的「注意事项」里。
@@ -21,17 +22,21 @@
 ## 快速开始
 
 ```bash
+# 0. 首次：本地配置（local.properties 不入库）
+cp local.properties.example local.properties   # 填 sdk.dir，其余按需
+
 # 1. 打开项目（Android Studio Koala 及以上）或用命令行
 ./gradlew :app:assembleDevDebug
 
 # 2. 跑测试（不需要模拟器）
 ./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest
+./scripts/test-count.sh                        # 用例数以这个脚本输出为准
 
 # 3. 装到设备
 ./gradlew :app:installDevDebug
 ```
 
-> 环境变量：JDK 17、Android SDK Platform 35。`local.properties` 里的 `sdk.dir` 需自行配置。
+> 环境：JDK 17、Android SDK Platform 35，`local.properties` 的 `sdk.dir` 必填。
 
 ## 模块结构
 
@@ -60,15 +65,19 @@ com.template.app
 │   ├── session/            # SessionRepository：本地登录态唯一入口
 │   └── repository/         # 跨页面复用的数据仓储
 ├── ui/
-│   ├── splash/             # 启动页（SplashScreen API）
-│   ├── home/               # 首页（Banner + Tab + Paging 列表）
+│   ├── home/               # 首页（Banner + Tab + Paging 列表 + 搜索入口）
 │   ├── category/           # 分类页（列表 + 四态，BaseListAdapter 范例）
+│   ├── search/             # 搜索页（防抖 + 取消上次请求，Paging3 复用）
+│   ├── settings/           # 设置页（DataStore 业务键 + 开关即时生效）
 │   ├── login/ register/    # 表单校验 + 登录态落库
-│   ├── mine/               # 登录态展示 / 登出
+│   ├── mine/               # 登录态展示 / 登出 / 上传与选图示例
 │   ├── webview/            # WebView 容器 + JsBridge
 │   └── adapter/            # 列表 Adapter
 └── update/                 # APK 升级：检查 / 弹窗 / 下载 / 安装
 ```
+
+> 启动页不单独建 Activity：`MainActivity` 里 `installSplashScreen()` + `themes.xml` 的
+> `Theme.SplashScreen` 一套搞定（少一个 Activity，也去掉人为延时）。
 
 ## 架构规则（新页面照抄）
 
@@ -132,7 +141,7 @@ detekt 是 0 容忍（`maxIssues: 0`），lint 也是 0 warning 基线 —— �
 ./gradlew :app:assembleDevDebug       # 开发
 ./gradlew :app:assembleStagingRelease # 测试包（需签名）
 ./gradlew :app:assembleProdRelease    # 正式包（需签名）
-./gradlew verifyReleaseSigning        # CI 卡口：签名缺失直接失败
+./gradlew :app:verifyReleaseSigning   # CI 卡口：签名缺失直接失败
 ./gradlew :app:signingReport          # 查看当前变体用了哪份证书、指纹是多少
 ```
 
@@ -156,22 +165,39 @@ debug 默认口令 `android` / `androiddebugkey`，是标准 AOSP Debug 证书�
 
 | 层 | 位置 | 说明 |
 |---|---|---|
-| core 错误映射 / Repository | `core/src/test` | AppError 归一化、safeApi 行为 |
-| Token 刷新 | `core/src/test/.../TokenAuthenticatorTest` | 请求体 token 重写、single-flight、失败清理 |
-| ViewModel | `app/src/test` | 用 Fake ApiService 驱动，不依赖 Robolectric |
+| 错误映射 / Repository | `core/src/test` | AppError 归一化、safeApi 行为 |
+| 网络链路 | `core/src/test` | 签名契约（SignUtils）、请求头 + token 注入（MockWebServer 真实发出）、401 刷新与 single-flight、登录态失效广播 |
+| 数据库 | `core/src/test` | DAO 读写语义（Robolectric）+ **schema 导出与版本号一致性**守卫 |
+| 工具扩展 | `core/src/test` | 金额/千分位/文件大小、时间格式化与相对时间 |
+| ViewModel | `app/src/test` | Fake ApiService 驱动，不依赖 Robolectric；含 Konsist 架构守护 |
+
+用例数不写死在文档里（会腐化），一律以脚本输出为准：
+
+```bash
+./scripts/test-count.sh
+```
 
 新写 ViewModel 时，直接抄 `HomeViewModelTest` 的骨架 + `MainDispatcherRule`。
 
 ## 已内置能力
 
 网络（统一请求体 / 签名 / 统一 Header / 401 自动刷新 / Mock 切换）、
-存储（Room 迁移框架 + DataStore + MMKV）、
-UI（四态容器 `StatefulLayout`、`BaseListAdapter`、Banner、下拉刷新、Paging3）、
-基础设施（崩溃捕获、权限、WebView、APK 升级、Glide 扩展）。
+存储（Room 迁移框架 + DataStore（会话与业务设置分库）+ 版本一致性守卫）、
+UI（四态容器 `StatefulLayout`、`BaseListAdapter`、Banner、下拉刷新、Paging3、PhotoPicker）、
+示例页（列表 / 分页 / 搜索防抖 / 表单 / 设置 / WebView / 上传 / 选图 / APK 升级）、
+基础设施（崩溃捕获、权限、WebView、APK 升级、Glide 与常用 ext 扩展）。
 
 ## 开新项目
 
-不要直接 `git clone` 后就写业务，先按 **[docs/NEW_PROJECT.md](docs/NEW_PROJECT.md)** 走一遍改名清单（8 步，约 10 分钟）。
+不要直接 `git clone` 后就写业务。推荐一条命令：
+
+```bash
+./scripts/init-project.sh com.yourcompany.myapp MyApp
+```
+
+脚本会自动完成「复制 → 改包名/目录 → 改工程名与应用名 → 同步文档 → 关掉占位密钥开关 → 构建验证 → git init」。
+之后仍需手工：换应用图标、重新生成 release 签名、改接口域名（见 **[docs/NEW_PROJECT.md](docs/NEW_PROJECT.md)**）。
+
 交付前用 **[docs/CHECKLIST.md](docs/CHECKLIST.md)** 自检。
 
 ## 决策记录

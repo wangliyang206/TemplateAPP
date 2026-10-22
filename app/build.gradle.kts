@@ -146,7 +146,7 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             resValue("string", "app_name", "TemplateAPP-Dev")
-            buildConfigField("String", "API_HOST", "\"http://www.dagongji.xin/\"")
+            buildConfigField("String", "API_HOST", "\"http://api-dev.example.com/\"")
             buildConfigField("String", "H5_HOST", "\"https://h5-dev.template.com/\"")
             buildConfigField("boolean", "IS_DEBUG_DATA", "true")
         }

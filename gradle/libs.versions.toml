@@ -24,12 +24,10 @@ gson = "2.11.0"
 coroutines = "1.9.0"
 glide = "4.16.0"
 timber = "5.0.1"
-autosize = "v1.2.1"
 immersionbar = "3.2.2"
 smartrefresh = "2.1.1"
 banner = "2.2.2"
 xxpermissions = "18.5"
-utilcodex = "1.31.1"
 leakcanary = "2.14"
 junit = "4.13.2"
 androidxTestCore = "1.6.1"
@@ -87,7 +85,6 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-ksp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
-autosize = { group = "com.github.JessYanCoding", name = "AndroidAutoSize", version.ref = "autosize" }
 immersionbar = { group = "com.geyifeng.immersionbar", name = "immersionbar", version.ref = "immersionbar" }
 immersionbar-components = { group = "com.geyifeng.immersionbar", name = "immersionbar-components", version.ref = "immersionbar" }
 smartrefresh-core = { group = "io.github.scwang90", name = "refresh-layout-kernel", version.ref = "smartrefresh" }
@@ -95,7 +92,6 @@ smartrefresh-header = { group = "io.github.scwang90", name = "refresh-header-cla
 smartrefresh-footer = { group = "io.github.scwang90", name = "refresh-footer-classics", version.ref = "smartrefresh" }
 banner = { group = "io.github.youth5201314", name = "banner", version.ref = "banner" }
 xxpermissions = { group = "com.github.getActivity", name = "XXPermissions", version.ref = "xxpermissions" }
-utilcodex = { group = "com.blankj", name = "utilcodex", version.ref = "utilcodex" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }

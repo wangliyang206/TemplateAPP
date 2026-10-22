@@ -53,13 +53,16 @@ mkdir -p "$TARGET_DIR"
 (
   cd "$TEMPLATE_DIR"
   tar --exclude=.git --exclude=.gradle --exclude=build --exclude='*/build' \
-      --exclude=.idea --exclude=.kotlin \
+      --exclude=.idea --exclude=.kotlin --exclude=.workbuddy \
       -cf - . | (cd "$TARGET_DIR" && tar -xf -)
 )
-# local.properties 不入库但新项目需要 sdk.dir 才能构建验证；
-# 同机初始化时直接沿用，换机器后按自己的 SDK 路径修改即可
+# local.properties 不入库，但新项目需要 sdk.dir 才能构建验证。
+# 只继承 sdk.dir：RELEASE_* / SIGN_SECRET 一律不带走，
+# 否则新项目会"看起来配好了签名"，实际用的是模板的占位密钥。
 if [[ -f "$TEMPLATE_DIR/local.properties" ]]; then
-  cp "$TEMPLATE_DIR/local.properties" "$TARGET_DIR/local.properties"
+  grep -E '^[[:space:]]*sdk\.dir[[:space:]]*=' "$TEMPLATE_DIR/local.properties" \
+    > "$TARGET_DIR/local.properties" 2>/dev/null || true
+  echo "    已继承 sdk.dir（签名口令不继承）"
 fi
 
 cd "$TARGET_DIR"
@@ -101,13 +104,39 @@ sed -i "s/<string name=\"app_name\">.*<\/string>/<string name=\"app_name\">${NEW
 # flavor 的 resValue("string", "app_name", "TemplateAPP") 也一并替换
 sed -i "s/\"app_name\", *\"TemplateAPP\"/\"app_name\", \"${NEW_NAME}\"/g" app/build.gradle.kts
 
+echo "==> 4.1 同步文档里的工程名与包名"
+# 文档不同步 = 新项目自带一套"教你把 TemplateAPP 再改一次名"的旧文档
+for doc in ./*.md ./docs/*.md ./docs/ADR/*.md; do
+  [[ -f "$doc" ]] || continue
+  sed -i "s/TemplateAPP/${NEW_NAME}/g; s/com\.template\.core/${NEW_PKG}.core/g; s/com\.template\.app/${NEW_PKG}/g" "$doc"
+done
+# 模板本身的评测/审计记录对新项目没有意义，留着只会误导
+rm -f ./项目评估.md ./项目复核报告.md ./模板审计报告_*.md
+
+# 新项目必须自带"换密钥"的强制动作：
+# 关掉占位密钥开关后，未换密钥时 verifyReleaseSigning 会失败（这是刻意设计）
+sed -i 's/^template\.usePlaceholderReleaseKey=.*/template.usePlaceholderReleaseKey=false/' gradle.properties
+
 echo "==> 5/5 构建验证（约 1-3 分钟）"
 ./gradlew :app:assembleDevDebug --console=plain -q
+
+echo ""
+echo "==> 收尾：初始化版本控制"
+if command -v git >/dev/null 2>&1; then
+  git init -q
+  git add -A
+  if git config user.email >/dev/null 2>&1; then
+    git commit -q -m "chore: 由模板初始化 ${NEW_NAME}"
+    echo "    已创建首个提交"
+  else
+    echo "    已 git init；未配置 user.name/user.email，跳过首次提交"
+  fi
+fi
 
 echo ""
 echo "完成！新项目位于: $TARGET_DIR"
 echo "接下来（详见 docs/NEW_PROJECT.md）:"
 echo "  1. 替换应用图标（Android Studio -> New -> Image Asset）"
-echo "  2. 重新生成 release 签名（docs/SIGNING.md）"
+echo "  2. 重新生成 release 签名（docs/SIGNING.md）—— 占位开关已自动置 false，换密钥前打包会失败"
 echo "  3. 按业务修改 base_url / H5_HOST"
-echo "  4. git init 后首次提交"
+echo "  4. 删除用不到的示例页面（ui/search、ui/settings 等），并同步移动端导航"

@@ -2,6 +2,7 @@ package com.template.core.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 import com.template.core.network.DataStoreTokenStore
 import com.template.core.network.HeaderInterceptor
 import com.template.core.network.LoggingInterceptor
@@ -38,7 +39,8 @@ object CoreNetworkModule {
     @Singleton
     fun provideGson(): Gson = GsonBuilder()
         .serializeNulls()
-        .setLenient()
+        // Gson 2.11 起 setLenient() 已废弃，等价写法是 setStrictness(LENIENT)
+        .setStrictness(Strictness.LENIENT)
         .create()
 
     @Provides

@@ -14,7 +14,8 @@ data class RefreshTokenParams(val token: String)
 
 data class CheckUpdateParams(val versionCode: Int)
 
-data class ArticleListParams(val page: Int, val pageSize: Int, val categoryId: Int = 0)
+// keyword 是搜索页用到的可选参数：留空时后端按普通列表返回，行为不变
+data class ArticleListParams(val page: Int, val pageSize: Int, val categoryId: Int = 0, val keyword: String = "")
 
 data class BannerListParams(val position: Int = 0)
 

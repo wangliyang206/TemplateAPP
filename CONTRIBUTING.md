@@ -5,17 +5,25 @@
 ## 开发环境
 
 - JDK 17（Temurin）、Android Studio Ladybug+
-- 首次构建前复制 `local.properties` 配置 SDK 路径（不入库）
+- 首次构建前把 `local.properties.example` 复制成 `local.properties` 并填 `sdk.dir`（`local.properties` 不入库）
 
 ## 分支与提交
 
-- 分支：`feature/xxx`、`fix/xxx`，从 `develop` 切出，PR 回 `develop`
+- 远程默认分支是 **`master`**；本地开发在 **`devlop`**，推送时快进到 master：
+
+  ```bash
+  git push origin devlop:master
+  ```
+
+- 临时改动可开 `feature/xxx`、`fix/xxx`，从 `devlop` 切出，合回 `devlop` 后再推 master
+- `origin` 用 SSH（`git@github.com:...`）：本机 HTTPS 推送会卡在凭据管理器
 - 提交信息：`type(scope): summary`，type 取 `feat / fix / refactor / docs / test / build / chore`
 
 ## 提交前必须本地通过（CI 同样会跑）
 
 ```bash
 ./gradlew detekt spotlessCheck          # 静态检查，0 容忍（maxIssues: 0）
+./scripts/check-docs.sh                 # 文档引用的代码路径必须真实存在
 ./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest
 ./gradlew :app:lintDevDebug             # 0 errors, 0 warnings
 ./gradlew :app:assembleDevDebug

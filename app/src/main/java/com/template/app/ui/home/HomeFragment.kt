@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.template.app.R
@@ -16,6 +17,7 @@ import com.template.app.ui.webview.WebViewActivity
 import com.template.core.base.BaseFragment
 import com.template.core.ext.collectEffects
 import com.template.core.ext.collectFlow
+import com.template.core.ext.setOnSingleClickListener
 import com.template.core.ext.toastShort
 import com.template.core.state.UiEffect
 import com.template.core.state.UiState
@@ -43,6 +45,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentHomeBinding.inflate(inflater, container, false)
+
+    override fun initView() {
+        // 二级页面入口：标题栏右侧进搜索页（防抖 + 取消上次请求的参考实现）
+        binding.ivSearch.setOnSingleClickListener {
+            findNavController().navigate(R.id.action_home_to_search)
+        }
+    }
 
     override fun initObserver() {
         viewLifecycleOwner.collectFlow(viewModel.state, ::render)

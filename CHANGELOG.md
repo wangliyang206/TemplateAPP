@@ -3,6 +3,42 @@
 本模板的所有显著变更记录在此。
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+## [2.2.0] - 2026-10-22
+
+> 主题：**按《模板审计报告》清 P0/P1/P2**——先让文档与代码对齐，再补核心链路测试，最后补示例与工具。
+
+### Added 新增
+- **搜索页**（`ui/search/`）：`debounce` + `distinctUntilChanged` + `flatMapLatest` 三件套，
+  换词即取消上次请求；复用 `ArticlePagingSource`（新增 `keyword` 参数）与 `ArticleAdapter`
+- **设置页**（`ui/settings/` + `data/settings/SettingsStore`）：DataStore 业务键示例，
+  与会话存储**分库**（登出不清偏好），回填状态用 `isRendering` 标志位防自激
+- **图片选择**（`core/ext/PhotoPickerExt.kt`）：PhotoPicker 封装，**不需要存储权限**；
+  「我的」页给出选图示例
+- **工具扩展**：`NumberExt`（金额/千分位/文件大小/百分比）、`DateExt` + `DatePattern`（格式化/相对时间/是否今天）、
+  `ViewExt`（防连点/`isVisible`/dp2px）、`NetExt`（网络可用/计费网络）
+- **测试 +23**：`SignUtilsTest`(5)、`RequestPipelineTest`(4, MockWebServer 真实发请求验头与 token)、
+  `SessionManagerTest`(2)、`AppDatabaseTest`(4, Robolectric + schema 与版本一致性守卫)、
+  `NumberExtTest`(6)、`DateExtTest`(6)
+- **`local.properties.example`**：配置模板（不含任何口令），首次构建不再靠口口相传
+- **`scripts/check-docs.sh`**：文档引用的代码路径存在性检查，已接入 CI
+- **`scripts/test-count.sh`**：用例数统一由脚本统计，文档不再写死数字
+
+### Changed 变更
+- **CI push 分支对齐实际**：`main/develop` → `master/devlop`（此前 push 永远不会触发 CI，只有 PR 会跑）
+- **`CONTRIBUTING.md` 分支模型对齐**：明确"本地 devlop，推送 `devlop:master`"，删掉不存在的 develop 流程
+- `init-project.sh`：新增「同步文档里的工程名/包名」「删除模板评测报告」「把占位密钥开关置 false」
+  「`git init` + 首提交」；`local.properties` 改为**只继承 sdk.dir**；复制时排除 `.workbuddy`
+- **删除零调用依赖**：`AndroidAutoSize`、`utilcodex`（声明了但全项目没有调用点）
+- **覆盖率门禁上调**：core 15% → 35%，app 1% → 5%（实测 core 39.4% / app 5.4%；目标 40% / 15%）
+- `dev` flavor 的 `API_HOST` 从真实第三方域名改为 `http://api-dev.example.com/`
+- `GsonBuilder.setLenient()`（Gson 2.11 已废弃）改为 `setStrictness(LENIENT)`，消掉编译告警
+
+### Fixed 修复
+- **文档与代码不符 14 处**（审计报告 §1）：
+  - 删除文档里已不存在的 `PermissionHelper.requestPhone`、MMKV、`mmkv/MMKVManager.kt`、
+    `ui/splash/`、View/LiveData 扩展、`core/schemas/1.json` 错误路径
+  - 术语更正：LICENSE 已存在（MIT）、用例数改为脚本统计、`verifyReleaseSigning` 写作 `:app:verifyReleaseSigning`
+
 ## [2.1.1] - 2026-10-20
 
 ### Fixed 修复

@@ -103,4 +103,33 @@
         android:textSize="@dimen/text_normal"
         tools:text="上传中 32%" />
 
+    <!-- 图片选择示例：PhotoPicker（不需要存储权限），见 core 的 registerPhotoPicker -->
+    <Button
+        android:id="@+id/btn_pick_photo"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_large"
+        android:text="@string/mine_pick_photo" />
+
+    <TextView
+        android:id="@+id/tv_photo_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_normal"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@color/text_hint"
+        android:textSize="@dimen/text_normal"
+        tools:text="已选择：content://media/picker/0/1" />
+
+    <!-- 设置页入口：DataStore 业务键 + 开关即时生效示例 -->
+    <Button
+        android:id="@+id/btn_settings"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_large"
+        android:text="@string/mine_settings" />
+
 </LinearLayout>

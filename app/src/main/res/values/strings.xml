@@ -19,6 +19,9 @@
     <string name="mine_upload_progress">上传中 %1$d%%</string>
     <string name="mine_upload_done">上传成功：%1$s</string>
     <string name="mine_upload_failed">上传失败：%1$s</string>
+    <string name="mine_settings">设置</string>
+    <string name="mine_pick_photo">选择图片（PhotoPicker 示例）</string>
+    <string name="mine_photo_picked">已选择：%1$s</string>
     <string name="webview_load_failed">页面加载失败，链接可能已失效或网络不可用</string>
     <string name="update_now">立即更新</string>
     <string name="update_later">稍后更新</string>
@@ -44,4 +47,18 @@
 
     <!-- 无障碍描述 -->
     <string name="cd_avatar">头像</string>
+    <string name="cd_search">搜索</string>
+
+    <!-- 搜索页：防抖 + 取消上次请求的参考实现 -->
+    <string name="search_title">搜索</string>
+    <string name="search_hint">输入关键词搜索文章</string>
+    <string name="search_empty">没有匹配的内容</string>
+    <string name="search_idle">输入关键词开始搜索</string>
+
+    <!-- 设置页：DataStore 业务键用法参考实现 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_wifi_only">仅 Wi-Fi 下载</string>
+    <string name="settings_wifi_only_desc">移动网络下不自动下载更新包</string>
+    <string name="settings_push">接收推送通知</string>
+    <string name="settings_push_desc">关闭后不再接收运营消息</string>
 </resources>

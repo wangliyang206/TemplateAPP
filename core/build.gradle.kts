@@ -83,14 +83,12 @@ dependencies {
     // UI / 工具
     api(libs.glide)
     api(libs.timber)
-    api(libs.autosize)
     api(libs.immersionbar)
     api(libs.immersionbar.components)
     api(libs.smartrefresh.core)
     api(libs.smartrefresh.header)
     api(libs.smartrefresh.footer)
     api(libs.xxpermissions)
-    api(libs.utilcodex)
 
     // 单元测试：core 的每个能力都应能在 JVM 上被验证
     testImplementation(libs.junit)

@@ -15,11 +15,15 @@
 # 参数 1：新包名（至少两段小写）；参数 2：新工程名
 ```
 
-脚本做的事：复制工程（排除 .git/build/本机配置）→ 替换包名（含 `.pro` 同款通配的测试代码）→
-移动源码目录 → 替换工程名/应用名 → 自动跑 `assembleDevDebug` 验证。
+脚本做的事：复制工程（排除 `.git` / `build` / `.idea` / `.workbuddy` / 本机配置）→ 替换包名（含测试代码）→
+移动源码目录 → 替换工程名/应用名 → **同步替换文档里的工程名与包名** → 删除模板的评测报告 →
+**把 `template.usePlaceholderReleaseKey` 置为 false** → 自动跑 `assembleDevDebug` 验证 → `git init` 并首次提交。
+
+它对 `local.properties` 的处理是**只继承 `sdk.dir`**：`RELEASE_*` / `SIGN_SECRET` 一律不带走，
+避免新项目"看起来配好了签名"，实际用的还是模板那把公开过的占位密钥。
 
 **脚本做完后仍需手工的**（也可见下文第 4-8 步）：换应用图标、重新生成 release 签名、
-改 base_url / H5_HOST、git init 首次提交。想了解每一步在干什么、验证命令是什么，继续读下文。
+改 base_url / H5_HOST。想了解每一步在干什么、验证命令是什么，继续读下文。
 
 ---
 
@@ -163,15 +167,23 @@ SIGN_SECRET=接口签名密钥
 |---|---|
 | `ui/home/` | 首页示例（Banner + Tab + Paging），建议先留着当参考 |
 | `ui/category/` | 列表 + 四态参考实现 |
+| `ui/search/` | 搜索页（防抖 + 取消上次请求）。删它要同时去掉首页标题栏的 `ivSearch` 与导航图里的 `searchFragment` |
+| `ui/settings/`、`data/settings/` | 设置页 + DataStore 业务键示例。删它要同时去掉「我的」页的设置按钮与 `settingsFragment` |
 | `ui/login/`、`ui/register/` | 账号体系示例，连同 `SessionRepository` 一起删 |
 | `update/` | APK 升级模块 |
 | `data/api/MockApiService.kt` | 有真实后端后删，同时把 flavor 的 `IS_DEBUG_DATA` 置 `false` |
+
+> 删页面**必须同步导航**：`res/navigation/mobile_navigation.xml`（目的地与 action）和
+> `res/menu/bottom_nav_menu.xml`（底部项）。只删类不删导航，运行时会
+> `IllegalArgumentException: navigation destination ... not found`。
 
 ### 8. 收尾检查
 
 ```bash
 ./gradlew clean :app:assembleDevDebug :app:testDevDebugUnitTest
-./gradlew :app:lintDevDebug
+./gradlew detekt spotlessCheck :app:lintDevDebug
+./scripts/check-docs.sh                               # 文档引用的代码路径必须真实存在
+./scripts/test-count.sh                               # 用例数以脚本输出为准
 git ls-files | grep -E "\.jks|local\.properties"   # 应只有 app/keystore/debug.jks
 ```
 

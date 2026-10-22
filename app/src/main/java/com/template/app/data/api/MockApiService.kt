@@ -288,8 +288,11 @@ class MockApiService : ApiService {
      */
     private val authors = listOf("Android 开发者", "Kotlin 爱好者", "技术达人", "程序员小明", "架构师老王")
 
+    /** 每个分类生成的假数据条数 */
+    private val mockArticleTotal = 50
+
     /**
-     * 模拟获取文章列表 - 支持分页和分类筛选，每个分类 50 条数据
+     * 模拟获取文章列表 —— 支持分页、分类筛选与关键词搜索，每个分类 50 条数据
      */
     override suspend fun getArticleList(request: ApiRequest<ArticleListParams>): BaseResponse<ArticleListResponse> {
         mockDelay()
@@ -298,42 +301,40 @@ class MockApiService : ApiService {
         val page = params.page
         val pageSize = params.pageSize
         val categoryId = params.categoryId.takeIf { it > 0 } ?: 1
+        val keyword = params.keyword.trim()
 
         val titles = categoryTitles[categoryId] ?: categoryTitles.values.first()
         val descs = categoryDescs[categoryId] ?: categoryDescs.values.first()
         val urls = categoryUrls[categoryId] ?: categoryUrls.values.first()
 
-        // 每个分类 50 条数据
-        val total = 50
-        val totalPages = (total + pageSize - 1) / pageSize
-
-        val list = if (page <= totalPages) {
-            val startIndex = (page - 1) * pageSize
-            val endIndex = minOf(startIndex + pageSize, total)
-            (startIndex until endIndex).map { index ->
-                val titleIndex = index % titles.size
-                val descIndex = index % descs.size
-                val urlIndex = index % urls.size
-                val authorIndex = index % authors.size
-                val baseId = categoryId.toLong() * 10000
-
-                Article(
-                    id = baseId + index + 1,
-                    title = titles[titleIndex] + if (index >= titles.size) "（${index + 1}）" else "",
-                    desc = descs[descIndex],
-                    url = urls[urlIndex],
-                    cover = "https://picsum.photos/400/300?random=${categoryId * 100 + index + 1}",
-                    author = authors[authorIndex],
-                    createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}",
-                )
-            }
-        } else {
-            emptyList()
+        val baseId = categoryId.toLong() * 10000
+        val all = (0 until mockArticleTotal).map { index ->
+            Article(
+                id = baseId + index + 1,
+                title = titles[index % titles.size] + if (index >= titles.size) "（${index + 1}）" else "",
+                desc = descs[index % descs.size],
+                url = urls[index % urls.size],
+                cover = "https://picsum.photos/400/300?random=${categoryId * 100 + index + 1}",
+                author = authors[index % authors.size],
+                createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}",
+            )
         }
+
+        // 关键词只做大小写不敏感的包含匹配，够用来验证"输入 → 防抖 → 请求 → 渲染"这条链路
+        val matched = if (keyword.isEmpty()) {
+            all
+        } else {
+            all.filter { article ->
+                article.title.contains(keyword, ignoreCase = true) ||
+                    article.desc.contains(keyword, ignoreCase = true)
+            }
+        }
+
+        val list = matched.drop((page - 1) * pageSize).take(pageSize)
 
         return successResponse(
             ArticleListResponse(
-                total = total,
+                total = matched.size,
                 list = list,
             ),
         )

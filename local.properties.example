@@ -1,0 +1,27 @@
+# 本地配置模板 —— 复制成 local.properties 后按需修改（local.properties 不入库）
+#
+#   cp local.properties.example local.properties
+#
+# 说明：
+# - Android Studio 打开项目时会自动写入 sdk.dir，通常不需要手填；
+# - 只跑 debug 包（assembleDevDebug）时，下面 RELEASE_* 四项可以全部留空；
+# - 要出 release 包，必须把四项配齐，并把 gradle.properties 的
+#   template.usePlaceholderReleaseKey 改成 false（详见 docs/SIGNING.md）。
+
+# ---- Android SDK（绝对路径，Windows 注意用 / 或 \\） ----
+sdk.dir=C:/Users/your-name/AppData/Local/Android/Sdk
+
+# ---- release 签名（不入库，缺失时 release 变体不签名） ----
+# RELEASE_STORE_FILE=app/keystore/release.jks
+# RELEASE_STORE_PASSWORD=你的store口令
+# RELEASE_KEY_ALIAS=你的alias
+# RELEASE_KEY_PASSWORD=你的key口令
+
+# ---- debug 签名（默认用仓库内的团队密钥，通常不用改） ----
+# DEBUG_STORE_FILE=app/keystore/debug.jks
+# DEBUG_STORE_PASSWORD=android
+# DEBUG_KEY_ALIAS=androiddebugkey
+# DEBUG_KEY_PASSWORD=android
+
+# ---- 接口签名密钥（构建时注入 BuildConfig.SIGN_SECRET） ----
+# SIGN_SECRET=由服务端下发的签名密钥

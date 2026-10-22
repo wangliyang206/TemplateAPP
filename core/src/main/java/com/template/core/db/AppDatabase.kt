@@ -7,16 +7,24 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 
 /**
+ * 数据库版本号的单一真相源。
+ *
+ * `@Database(version = ...)` 与迁移测试（`AppDatabaseTest`）都引用这里，
+ * 升版本时只改这一处，避免"注解改了、测试还在校验旧版本"。
+ */
+const val APP_DATABASE_VERSION = 1
+
+/**
  * 应用数据库。
  *
  * 规范：
  * - `exportSchema = true`，schema 输出到 core/schemas，升级前先 diff 再写迁移；
  * - **禁止 fallbackToDestructiveMigration**：线上升级会清空用户数据；
- * - 新增版本时在 [MIGRATIONS] 中追加，并在 androidTest 覆盖迁移测试。
+ * - 新增版本时在 [MIGRATIONS] 中追加，并补一条迁移测试（Room 的 MigrationTestHelper）。
  */
 @Database(
     entities = [UserEntity::class],
-    version = 1,
+    version = APP_DATABASE_VERSION,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

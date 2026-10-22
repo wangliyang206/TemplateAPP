@@ -13,15 +13,19 @@ import javax.inject.Inject
  *
  * @param apiService API 服务实例
  * @param categoryId 分类 ID，0 表示全部
+ * @param keyword 搜索关键词，空串表示不搜索（搜索页复用同一个 PagingSource）
  */
-class ArticlePagingSource @Inject constructor(private val apiService: ApiService, private val categoryId: Int = 0) :
-    PagingSource<Int, Article>() {
+class ArticlePagingSource @Inject constructor(
+    private val apiService: ApiService,
+    private val categoryId: Int = 0,
+    private val keyword: String = "",
+) : PagingSource<Int, Article>() {
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val page = params.key ?: 1
         return try {
-            val requestParams = ArticleListParams(page, params.loadSize, categoryId)
+            val requestParams = ArticleListParams(page, params.loadSize, categoryId, keyword)
             val request = ApiRequest.build(requestParams)
             val response = apiService.getArticleList(request)
             val data = response.data?.list ?: emptyList()

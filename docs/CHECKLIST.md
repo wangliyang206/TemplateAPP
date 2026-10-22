@@ -38,13 +38,21 @@
 - [ ] 统一 Header 真实发出（抓包可见 `Device-Type` / `Client-Id`）
 - [ ] `StatefulLayout` 至少在两个页面使用（首页、分类页）
 - [ ] `BaseListAdapter` 至少在列表页使用（`CategoryAdapter`）
+- [ ] 搜索页可用：首页标题栏 → 输入关键词 → 300ms 后出结果，连续改词不串结果
+      `grep -n "flatMapLatest\|debounce" app/src/main/java/com/template/app/ui/search/SearchViewModel.kt`
+- [ ] 设置页可用：我的 → 设置 → 拨开关 → 杀进程重进，状态被记住（DataStore 生效）
+- [ ] 图片选择可用：我的 → 选择图片 → 系统相册选一张 → 页面显示 `content://` 路径
+- [ ] 图片选择**没有**申请存储权限（PhotoPicker 不需要）
+      `grep -n "READ_MEDIA_IMAGES\|READ_EXTERNAL_STORAGE" app/src/main/AndroidManifest.xml` → 输出为空
 - [ ] Room 未使用 `fallbackToDestructiveMigration`
       `grep -rn "fallbackToDestructiveMigration" core` → 输出为空
 
 ## 构建与质量
 
 - [ ] `./gradlew :app:assembleDevDebug` 通过
-- [ ] `./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest` 通过，用例数 ≥ 20（当前 26，含 Konsist 架构测试 4 条）
+- [ ] `./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest` 通过
+- [ ] 用例数用脚本核对，不靠记忆：`./scripts/test-count.sh`（应包含 Konsist 架构测试 4 条）
+- [ ] `./gradlew :core:koverVerify :app:koverVerify` 通过（非回退底线：core 35% / app 5%）
 - [ ] `./gradlew detekt spotlessCheck` 全绿（detekt 为 0 容忍，任何违规都会失败）
 - [ ] `./gradlew :app:lintDevDebug` **无 error 且无 warning**（基线为 0 warning，新增告警必须当场处理）
 - [ ] `./gradlew :app:connectedDevDebugAndroidTest` 真机冒烟 2/2 通过
@@ -63,9 +71,10 @@
 - [ ] 断网时首页显示错误态 + 重试可恢复
 - [ ] 脚手架用当前命名空间生成且可直接编译
       `./scripts/new-feature.sh demo && ./gradlew :app:assembleDevDebug`（验完记得删掉生成的 4 个文件）
-- [ ] 文档中引用的文件/任务都真实存在（无 `RetrofitClient`、`ApiErrorHandler`、`local.properties.example` 之类残留）
-      `CHECKLIST.md` 自身（举例必然带这些词）与 `docs/ADR/`（历史记录，允许出现已删文件名）需排除：
-      `grep -rn "RetrofitClient\|ApiErrorHandler\|local.properties.example\|PROJECT_STRUCTURE" *.md docs README.md | grep -vE "docs/(CHECKLIST\.md|ADR/)"` → 输出为空
+- [ ] 文档引用的代码路径全部存在（脚本化，CI 也会跑）
+      `./scripts/check-docs.sh` → 输出 `OK: 文档引用的 N 个代码路径全部存在`
+- [ ] 文档里的能力描述都有对应调用点（"已支持"必须 grep 得到）
+      `grep -rn "AutoSize\|blankj" app core --include=*.kt` → 输出为空（已删除的依赖不得再出现在文档能力表里）
 - [ ] 无空 catch 块（吞异常且不记日志）
       `grep -rn "catch (_: Exception)" app core --include=*.kt` → 仅允许出现在注释/文档字符串里，代码中为 0 处
 - [ ] [NEW_PROJECT.md](NEW_PROJECT.md) 的 8 步在干净环境里能走通
