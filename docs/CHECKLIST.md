@@ -36,8 +36,10 @@
 - [ ] 401 能自动刷新并**重写请求体 token**（`TokenAuthenticatorTest` 通过）
 - [ ] 刷新失败会清理登录态并跳登录页（`SessionManager.expire()` → `App.kt` 监听）
 - [ ] 统一 Header 真实发出（抓包可见 `Device-Type` / `Client-Id`）
-- [ ] `StatefulLayout` 至少在两个页面使用（首页、分类页）
-- [ ] `BaseListAdapter` 至少在列表页使用（`CategoryAdapter`）
+- [ ] `StatefulLayout` 至少在两个页面使用（首页、分类页、收藏页、历史页）
+- [ ] `BaseListAdapter` 至少在列表页使用（`ArticleListAdapter`：收藏页、历史页）；多类型列表见 `DiscoverAdapter`
+- [ ] **分页列表用 `PagingDataAdapter`，定长列表用 `ListAdapter`**，两者不混用
+      `grep -rn "PagingDataAdapter" app/src/main/java` → 只有 `ArticleAdapter`
 - [ ] 搜索页可用：首页标题栏 → 输入关键词 → 300ms 后出结果，连续改词不串结果
       `grep -n "flatMapLatest\|debounce" app/src/main/java/com/template/app/ui/search/SearchViewModel.kt`
 - [ ] 设置页可用：我的 → 设置 → 拨开关 → 杀进程重进，状态被记住（DataStore 生效）
@@ -46,6 +48,11 @@
       `grep -n "READ_MEDIA_IMAGES\|READ_EXTERNAL_STORAGE" app/src/main/AndroidManifest.xml` → 输出为空
 - [ ] Room 未使用 `fallbackToDestructiveMigration`
       `grep -rn "fallbackToDestructiveMigration" core` → 输出为空
+- [ ] **升 Room 版本时补了迁移 + 迁移测试**（`MigrationTest` 会逐列比对 schema JSON）
+      `./gradlew :core:testDebugUnitTest --tests "*MigrationTest"` 通过；
+      `ls core/schemas/com.template.core.db.AppDatabase/` 里最新版本的 json 已提交
+- [ ] 收藏 / 历史可用：详情页收藏 → 我的 → 我的收藏出现该文章；取消收藏后列表自动少一条
+- [ ] 浏览历史上限生效（`HistoryRepository.MAX_ENTRIES`），超限后最旧的被裁掉
 
 ## 构建与质量
 

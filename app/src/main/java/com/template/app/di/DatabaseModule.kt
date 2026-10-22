@@ -2,6 +2,8 @@ package com.template.app.di
 
 import android.content.Context
 import com.template.core.db.AppDatabase
+import com.template.core.db.FavoriteDao
+import com.template.core.db.HistoryDao
 import com.template.core.db.UserDao
 import dagger.Module
 import dagger.Provides
@@ -21,4 +23,12 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
+
+    @Provides
+    @Singleton
+    fun provideFavoriteDao(database: AppDatabase): FavoriteDao = database.favoriteDao()
+
+    @Provides
+    @Singleton
+    fun provideHistoryDao(database: AppDatabase): HistoryDao = database.historyDao()
 }

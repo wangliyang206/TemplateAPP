@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TemplateAPP</string>
-    <string name="tab_home">首页</string>
+    <string name="tab_home">资讯</string>
+    <string name="tab_discover">发现</string>
+    <string name="tab_message">消息</string>
     <string name="tab_category">分类</string>
     <string name="tab_mine">我的</string>
     <string name="login_title">账号登录</string>
@@ -20,6 +22,11 @@
     <string name="mine_upload_done">上传成功：%1$s</string>
     <string name="mine_upload_failed">上传失败：%1$s</string>
     <string name="mine_settings">设置</string>
+    <string name="mine_my_content">我的内容</string>
+    <string name="mine_favorite">我的收藏</string>
+    <string name="mine_history">浏览历史</string>
+    <string name="mine_count_format">%1$d</string>
+    <string name="mine_dev_tools">开发示例</string>
     <string name="mine_pick_photo">选择图片（PhotoPicker 示例）</string>
     <string name="mine_photo_picked">已选择：%1$s</string>
     <string name="webview_load_failed">页面加载失败，链接可能已失效或网络不可用</string>
@@ -45,6 +52,17 @@
     <string name="update_progress">%1$d%%</string>
     <string name="category_id_tag">#%1$d</string>
 
+    <!-- 发现页：分类入口 + 热门排行 -->
+    <string name="discover_title">发现</string>
+    <string name="discover_section_category">技术分类</string>
+    <string name="discover_section_rank">热门排行</string>
+    <string name="discover_rank_position">%1$d</string>
+    <string name="discover_rank_reads">%1$d 阅读</string>
+
+    <!-- 消息页：本地通知列表 + 未读角标 -->
+    <string name="message_title">消息</string>
+    <string name="message_empty">暂时没有新消息</string>
+
     <!-- 无障碍描述 -->
     <string name="cd_avatar">头像</string>
     <string name="cd_search">搜索</string>
@@ -69,4 +87,28 @@
     <string name="settings_push_desc">关闭后不再接收运营消息</string>
     <string name="settings_version">当前版本</string>
     <string name="settings_version_desc">v%1$s（%2$d）</string>
+    <string name="message_mark_all_read">全部已读</string>
+
+    <!-- 文章详情页 -->
+    <string name="article_detail_title">详情</string>
+    <string name="article_detail_favorite">收藏</string>
+    <string name="article_detail_favorited">已收藏</string>
+    <string name="article_detail_favorite_added">已加入收藏</string>
+    <string name="article_detail_favorite_removed">已取消收藏</string>
+    <string name="article_detail_open_source">查看原文</string>
+    <string name="article_detail_share">分享</string>
+    <string name="article_detail_share_title">分享到</string>
+    <string name="article_detail_share_via">来自「模板 App」，原文链接：%1$s</string>
+    <string name="article_detail_meta">%1$s · %2$s</string>
+    <string name="article_detail_load_failed">内容加载失败</string>
+    <string name="article_detail_not_found">文章不存在或已下架</string>
+
+    <!-- 我的收藏 / 浏览历史 -->
+    <string name="favorite_title">我的收藏</string>
+    <string name="favorite_empty">还没有收藏任何文章\n在文章详情页点「收藏」试试</string>
+    <string name="history_title">浏览历史</string>
+    <string name="history_empty">还没有浏览记录</string>
+    <string name="history_clear">清空</string>
+    <string name="history_clear_confirm">确定清空全部浏览记录？</string>
+    <string name="history_cleared">已清空浏览记录</string>
 </resources>

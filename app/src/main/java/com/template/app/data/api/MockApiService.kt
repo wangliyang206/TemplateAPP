@@ -5,6 +5,8 @@
 package com.template.app.data.api
 
 import com.template.app.data.model.Article
+import com.template.app.data.model.ArticleDetail
+import com.template.app.data.model.ArticleDetailParams
 import com.template.app.data.model.ArticleListParams
 import com.template.app.data.model.ArticleListResponse
 import com.template.app.data.model.Banner
@@ -13,6 +15,11 @@ import com.template.app.data.model.Category
 import com.template.app.data.model.CategoryListParams
 import com.template.app.data.model.CheckUpdateParams
 import com.template.app.data.model.LoginParams
+import com.template.app.data.model.Message
+import com.template.app.data.model.MessageListParams
+import com.template.app.data.model.MessageType
+import com.template.app.data.model.RankArticle
+import com.template.app.data.model.RankListParams
 import com.template.app.data.model.RefreshTokenParams
 import com.template.app.data.model.RegisterParams
 import com.template.app.data.model.UpdateInfo
@@ -305,22 +312,7 @@ class MockApiService : ApiService {
         val categoryId = params.categoryId.takeIf { it > 0 } ?: 1
         val keyword = params.keyword.trim()
 
-        val titles = categoryTitles[categoryId] ?: categoryTitles.values.first()
-        val descs = categoryDescs[categoryId] ?: categoryDescs.values.first()
-        val urls = categoryUrls[categoryId] ?: categoryUrls.values.first()
-
-        val baseId = categoryId.toLong() * 10000
-        val all = (0 until mockArticleTotal).map { index ->
-            Article(
-                id = baseId + index + 1,
-                title = titles[index % titles.size] + if (index >= titles.size) "（${index + 1}）" else "",
-                desc = descs[index % descs.size],
-                url = urls[index % urls.size],
-                cover = "res://cover_placeholder",
-                author = authors[index % authors.size],
-                createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}",
-            )
-        }
+        val all = buildArticles(categoryId)
 
         // 关键词只做大小写不敏感的包含匹配，够用来验证"输入 → 防抖 → 请求 → 渲染"这条链路
         val matched = if (keyword.isEmpty()) {
@@ -340,5 +332,130 @@ class MockApiService : ApiService {
                 list = list,
             ),
         )
+    }
+
+    // ===== 发现模块 =====
+
+    /**
+     * 模拟热门排行 - 取分类 1 的前 10 条，热度按 [10_000, 9_800, ...] 递减。
+     * 热度用固定序列而不是随机数：让列表顺序稳定，便于截图对比和回归验收。
+     */
+    override suspend fun getRankList(request: ApiRequest<RankListParams>): BaseResponse<List<RankArticle>> {
+        mockDelay()
+
+        val size = request.data.size.coerceIn(1, 20)
+        // 排行条目复用列表的生成逻辑，只把 id 换成排行号段、再补一个热度值，
+        // 这样详情页按 id 反查时标题/作者与排行里显示的完全一致。
+        val base = buildArticles(1)
+        val list = (0 until size).map { index ->
+            RankArticle(
+                article = base[index % base.size].copy(id = RANK_ID_BASE + index),
+                reads = 12_800 - index * 640,
+            )
+        }
+        return successResponse(list)
+    }
+
+    // ===== 消息模块 =====
+
+    /**
+     * 模拟站内消息。
+     * 已读状态是**进程内**的：Mock 实例是单例（Hilt @Singleton），
+     * 所以"点开后角标减少"在本次运行内有效，重启复位——够用来演示未读角标联动。
+     */
+    override suspend fun getMessageList(request: ApiRequest<MessageListParams>): BaseResponse<List<Message>> {
+        mockDelay()
+        val filter = request.data.type
+        val list = mockMessages.map { it.copy() }
+        return successResponse(if (filter == null) list else list.filter { it.type == filter })
+    }
+
+    private val mockMessages = listOf(
+        Message(1, "v2.3.0 已发布", "新增收藏与浏览历史，支持离线查看已收藏内容。", "10 分钟前", MessageType.SYSTEM),
+        Message(2, "系统维护通知", "本周日 02:00-04:00 进行服务升级，期间可能无法登录。", "2 小时前", MessageType.SYSTEM),
+        Message(3, "Kotlin 爱好者 回复了你", "协程的取消传播这块讲得很清楚，收藏了。", "3 小时前", MessageType.INTERACT),
+        Message(4, "程序员小明 赞了你的评论", "在《Room 数据库迁移实践》中", "5 小时前", MessageType.INTERACT),
+        Message(5, "架构师老王 关注了你", "点击查看对方的主页与动态", "昨天", MessageType.INTERACT),
+        Message(6, "新功能上线：搜索结果支持历史记录", "最近 10 条搜索词会自动保留，可一键清空。", "2 天前", MessageType.SYSTEM, isRead = true),
+        Message(7, "技术达人 回复了你", "这个防抖写法我一直在用，确实比手写 Handler 稳。", "3 天前", MessageType.INTERACT, isRead = true),
+        Message(8, "账号安全提醒", "检测到你的账号在新设备登录，如非本人操作请及时修改密码。", "5 天前", MessageType.SYSTEM, isRead = true),
+    )
+
+    /**
+     * 按分类生成文章全集。
+     *
+     * 抽成独立函数是为了让列表、排行、详情三处共用同一份数据：
+     * 否则详情页按 id 反查时，标题/作者很容易和列表对不上。
+     */
+    private fun buildArticles(categoryId: Int): List<Article> {
+        val titles = categoryTitles[categoryId] ?: categoryTitles.values.first()
+        val descs = categoryDescs[categoryId] ?: categoryDescs.values.first()
+        val urls = categoryUrls[categoryId] ?: categoryUrls.values.first()
+        val baseId = categoryId.toLong() * 10_000
+
+        return (0 until mockArticleTotal).map { index ->
+            Article(
+                id = baseId + index + 1,
+                title = titles[index % titles.size] + if (index >= titles.size) "（${index + 1}）" else "",
+                desc = descs[index % descs.size],
+                url = urls[index % urls.size],
+                cover = "res://cover_placeholder",
+                author = authors[index % authors.size],
+                createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}",
+            )
+        }
+    }
+
+    /**
+     * 按 id 反查文章：列表来源的 id 形如 `分类 * 10000 + 序号`，
+     * 排行来源的 id 是 `900000 + 序号`，两条规则分开处理。
+     */
+    private fun findArticle(articleId: Long): Article? {
+        if (articleId >= RANK_ID_BASE) {
+            val index = (articleId - RANK_ID_BASE).toInt()
+            val ranks = buildArticles(1)
+            return ranks.getOrNull(index)?.copy(id = articleId)
+        }
+        val categoryId = (articleId / 10_000).toInt().takeIf { it in categoryTitles.keys } ?: return null
+        val index = (articleId % 10_000).toInt() - 1
+        return buildArticles(categoryId).getOrNull(index)
+    }
+
+    override suspend fun getArticleDetail(request: ApiRequest<ArticleDetailParams>): BaseResponse<ArticleDetail> {
+        mockDelay()
+        val article = findArticle(request.data.articleId)
+            ?: return errorResponse(-404, "文章不存在或已下架")
+        return successResponse(
+            ArticleDetail(
+                article = article,
+                content = buildContent(article),
+                likeCount = 128 + (article.id % 40).toInt(),
+                commentCount = 6 + (article.id % 12).toInt(),
+            ),
+        )
+    }
+
+    /**
+     * 生成正文。
+     * 内容与文章标题关联但不联网——够用来验证"详情页渲染 + 长文滚动 + 收藏按钮状态"这条链路。
+     */
+    private fun buildContent(article: Article): String = buildString {
+        appendLine("这篇笔记围绕「${article.title}」展开，写给已经能独立写业务代码、开始在意边界情况的同学。")
+        appendLine()
+        appendLine("一、问题从哪来")
+        appendLine("${article.desc}。这类问题在真实项目里很少以「报错」的形式出现，更多是偶发卡顿、数据不一致，或者只在某几台设备上复现。")
+        appendLine()
+        appendLine("二、先把现象拆成可验证的假设")
+        appendLine("不要一上来就改代码。先写清楚「什么条件下必现」，再把它压缩成一个最小复现路径。能稳定复现，问题就解决了一半。")
+        appendLine()
+        appendLine("三、实现上的取舍")
+        appendLine("同一件事通常有两三种写法。选哪一种，取决于你更怕什么：怕内存涨得快，就少缓存；怕请求太频繁，就加防抖；怕状态不同步，就把真相源收敛到一个地方。")
+        appendLine()
+        appendLine("四、怎么验证改对了")
+        appendLine("给自己留三条验收：正常路径、异常路径、连续操作的边界。三条都过，再去点提交。")
+    }
+
+    private companion object {
+        const val RANK_ID_BASE = 900_000L
     }
 }

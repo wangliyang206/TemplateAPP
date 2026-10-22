@@ -65,18 +65,26 @@ com.template.app
 ├── data/
 │   ├── api/                # ApiService（接口定义）+ MockApiService
 │   ├── model/              # 请求/响应模型
+│   ├── mapper/             # Article ⇄ Room 实体
+│   ├── message/            # MessageCenter：未读数单一真相源
 │   ├── paging/             # PagingSource
+│   ├── settings/           # SettingsStore：DataStore 业务键
 │   ├── session/            # SessionRepository：本地登录态唯一入口
 │   └── repository/         # 跨页面复用的数据仓储
 ├── ui/
 │   ├── home/               # 首页（Banner + Tab + Paging 列表 + 搜索入口）
-│   ├── category/           # 分类页（列表 + 四态，BaseListAdapter 范例）
+│   ├── discover/           # 发现页（多数据源 + 多 ItemType）
+│   ├── message/            # 消息页（单例状态源 + 未读角标）
+│   ├── categoryarticle/    # 分类文章页（二级页，复用列表 VM）
+│   ├── articledetail/      # 原生详情页（收藏 + 分享 + 记历史）
+│   ├── favorite/           # 收藏页（Room Flow 持续驱动列表）
+│   ├── history/            # 浏览历史（清空确认 + 上限裁剪）
 │   ├── search/             # 搜索页（防抖 + 取消上次请求，Paging3 复用）
 │   ├── settings/           # 设置页（DataStore 业务键 + 开关即时生效）
 │   ├── login/ register/    # 表单校验 + 登录态落库
-│   ├── mine/               # 登录态展示 / 登出 / 上传与选图示例
+│   ├── mine/               # 登录态 / 收藏与历史入口 / 上传与选图示例
 │   ├── webview/            # WebView 容器 + JsBridge
-│   └── adapter/            # 列表 Adapter
+│   └── adapter/            # 列表 Adapter（分页用 PagingDataAdapter，定长用 ListAdapter）
 └── update/                 # APK 升级：检查 / 弹窗 / 下载 / 安装
 ```
 

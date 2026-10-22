@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,109 +26,172 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- 用户信息卡片（点击区域） -->
-    <LinearLayout
-        android:id="@+id/layout_user"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal"
-        android:background="@color/surface"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/margin_normal">
-
-        <ImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="64dp"
-            android:contentDescription="@string/cd_avatar"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_avatar_circle"
-            android:scaleType="centerCrop" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_normal"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="12dp">
 
+            <!-- 用户信息卡片（点击区域）：未登录时整块可点，跳登录页 -->
+            <LinearLayout
+                android:id="@+id/layout_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:contentDescription="@string/cd_avatar"
+                    android:scaleType="centerCrop" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mine_not_login"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_large"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/mine_click_to_login"
+                        android:textColor="@color/text_hint"
+                        android:textSize="@dimen/text_normal" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <!-- 我的内容：右侧条数由 Room 的 COUNT(*) Flow 驱动 -->
             <TextView
-                android:id="@+id/tv_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mine_not_login"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/text_large"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/mine_click_to_login"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/mine_my_content"
                 android:textColor="@color/text_hint"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/rowFavorite"
+                    layout="@layout/layout_mine_row" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/divider" />
+
+                <include
+                    android:id="@+id/rowHistory"
+                    layout="@layout/layout_mine_row" />
+            </LinearLayout>
+
+            <!-- 开发示例：模板自带的三个能力演示，真实项目可以整块删掉 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/mine_dev_tools"
+                android:textColor="@color/text_hint"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/rowPickPhoto"
+                    layout="@layout/layout_mine_row" />
+
+                <TextView
+                    android:id="@+id/tv_photo_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp"
+                    tools:text="已选择：content://media/picker/0/1" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/divider" />
+
+                <include
+                    android:id="@+id/rowUploadDemo"
+                    layout="@layout/layout_mine_row" />
+
+                <TextView
+                    android:id="@+id/tv_upload_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp"
+                    tools:text="上传中 32%" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@color/divider" />
+
+                <include
+                    android:id="@+id/rowSettings"
+                    layout="@layout/layout_mine_row" />
+            </LinearLayout>
+
+            <!-- 退出登录：只在登录后显示 -->
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/mine_logout"
+                android:visibility="gone" />
         </LinearLayout>
-    </LinearLayout>
-
-    <!-- 退出登录按钮 -->
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/mine_logout"
-        android:visibility="gone" />
-
-    <!-- 文件上传示例：FileUploadManager 的完整调用示范（见 MineViewModel.uploadDemo） -->
-    <Button
-        android:id="@+id/btn_upload_demo"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/mine_upload_demo" />
-
-    <TextView
-        android:id="@+id/tv_upload_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_normal"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:textColor="@color/text_hint"
-        android:textSize="@dimen/text_normal"
-        tools:text="上传中 32%" />
-
-    <!-- 图片选择示例：PhotoPicker（不需要存储权限），见 core 的 registerPhotoPicker -->
-    <Button
-        android:id="@+id/btn_pick_photo"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/mine_pick_photo" />
-
-    <TextView
-        android:id="@+id/tv_photo_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_normal"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:textColor="@color/text_hint"
-        android:textSize="@dimen/text_normal"
-        tools:text="已选择：content://media/picker/0/1" />
-
-    <!-- 设置页入口：DataStore 业务键 + 开关即时生效示例 -->
-    <Button
-        android:id="@+id/btn_settings"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="@dimen/margin_normal"
-        android:layout_marginTop="@dimen/margin_large"
-        android:text="@string/mine_settings" />
-
+    </ScrollView>
 </LinearLayout>

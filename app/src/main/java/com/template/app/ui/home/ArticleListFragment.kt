@@ -1,6 +1,5 @@
 package com.template.app.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import com.template.app.ui.adapter.ArticleAdapter
-import com.template.app.ui.webview.WebViewActivity
+import com.template.app.ui.articledetail.ArticleDetailActivity
 import com.template.core.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -65,15 +64,10 @@ class ArticleListFragment : BaseFragment<com.template.app.databinding.FragmentAr
         // 设置分类 ID，触发数据加载
         viewModel.setCategoryId(categoryId)
 
-        adapter = ArticleAdapter(
-            onItemClick = { article ->
-                val intent = Intent(requireContext(), WebViewActivity::class.java).apply {
-                    putExtra("url", article.url)
-                    putExtra("title", article.title)
-                }
-                startActivity(intent)
-            },
-        )
+        adapter = ArticleAdapter { article ->
+            // 点进原生详情页（可收藏/分享），详情页里再提供「查看原文」跳 WebView
+            startActivity(ArticleDetailActivity.intent(requireContext(), article.id))
+        }
         binding.recyclerView.adapter = adapter
 
         // 下拉刷新

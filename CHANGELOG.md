@@ -3,6 +3,69 @@
 本模板的所有显著变更记录在此。
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+## [2.3.0] - 2026-10-22
+
+> 主题：**从"技术 Demo 合集"变成"能日常用的产品，同时保持每个功能可当参考实现"**——
+> 对标开源中国（OSChina）App 的信息架构重排页面，并补上 Room 落地的收藏与浏览历史。
+
+### Changed 调整（信息架构）
+
+- **底部导航改为 4 Tab：资讯 / 发现 / 消息 / 我的**（原来 3 Tab + 分类直铺）
+  每个 Tab 都是一级页，二级页统一有返回入口、统一转场动画、进入时自动隐藏底栏。
+- **首页下拉刷新崩溃修复（P0）**
+  `IllegalStateException: An instance of PagingSource was re-used`：`pager()` 接收的是
+  `ArticlePagingSource` **实例**，Paging3 每次重试/刷新都要求新的 PagingSource。
+  改为接收工厂 `sourceFactory: () -> ArticlePagingSource`，让"传实例"在编译期就写不出来。
+  这是用类型签名消灭一类 bug，而不是靠注释提醒。
+- **搜索页 / 设置页不再是"孤立页面"**
+  补齐标题栏返回按钮、搜索页改成「返回 + 输入框 + 取消」标准布局、进页面自动弹键盘、
+  二级页统一 `slide_in_right` 转场，并按 `addOnDestinationChangedListener` 隐藏底栏。
+- **分类不再是独立 Tab**，改为「发现」页里的一个区块，点进去是二级页（`CategoryArticleFragment`）。
+
+### Added 新增
+
+- **发现页**（`ui/discover/`）：`viewModelScope` 内 `async` 并行加载分类 + 热门排行，
+  三种 ItemType（分组标题 / 分类卡片行 / 排行条目）共用一个多类型 `DiscoverAdapter`，
+  分类卡片按 `weight=1` 动态均分，数量变化不用改布局。
+- **消息页 + 跨页面未读数**（`ui/message/` + `data/message/MessageCenter.kt`）：
+  `@Singleton` + `StateFlow` 做单一真相源，消息页已读操作直接影响底栏角标，不经过任何事件总线。
+- **原生文章详情页**（`ui/articledetail/`）：收藏切换、系统分享（`ShareCompat`）、
+  「打开原文」跳 WebView、进页面自动记一条浏览历史。
+- **收藏与浏览历史（Room）**
+  - `AppDatabase` 升到 **version 2**，新增 `favorite` / `history` 两张表 + `MIGRATION_1_2`
+  - 收藏页 `ui/favorite/`、历史页 `ui/history/`（含「清空」二次确认 + 空态 + 按钮置灰）
+  - 两个页面都由 **Room 的 Flow 持续驱动**：详情页取消收藏返回后列表自动更新，
+    没有 `onResume` 重查、没有 `onActivityResult` 回传
+  - 浏览历史上限 200 条，由 `HistoryDao.trimTo()` 一条 SQL 裁剪
+  - 「我的」页显示收藏 / 历史条数，数据来自 `COUNT(*)` 的 Flow
+- **`ArticleListAdapter`**（`core/base/BaseListAdapter` 的首个真实用例）：
+  明确区分「分页列表用 `PagingDataAdapter`」与「定长列表用 `ListAdapter`」，
+  复用同一个 `ArticleDiffCallback`，避免两个列表对同一篇文章的比较口径不一致。
+- **「我的」页重排**：用户卡片 + 「我的内容」（收藏 / 历史，带条数）+ 「开发示例」（选图 / 上传 / 设置）分组，
+  条目共用 `layout_mine_row.xml`，标题在 Fragment 里按资源 id 填（支持国际化）。
+- **测试 +8（JVM，不需要真机）**
+  - `MigrationTest`（2 条）：`MigrationTestHelper` 跑在 Robolectric 上，`validateDroppedTables = true`
+    逐列比对 schema JSON，另有一条专门验证「老用户升级后 `users` 表数据不丢」
+  - `FavoriteHistoryDaoTest`（5 条）：倒序、REPLACE 去重、`trimTo` 裁剪、`COUNT(*)` Flow
+  - `FavoriteHistoryRepositoryTest`（5 条）：`toggle` 返回值与库内状态一致、上限生效、清历史不影响收藏
+  - 关键基建：`core/build.gradle.kts` 把 `schemas/` 挂到 test 的 assets 上，
+    迁移测试才能留在 JVM 侧（放到 androidTest 就要真机，CI 跑不起来）
+- **`StubApiService`**：`ApiService` 每加一个方法不必再改 3 处测试 Fake，只需在被测方法上 override。
+
+### Fixed 修复
+
+- `FavoriteFragment` 引用了布局里不存在的 `emptyView`（编译期靠 ViewBinding 才暴露），
+  改为 `StatefulLayout` 的 `showEmpty()` / `showContent()` 二选一，顺带删掉多余的状态同步。
+- `BaseListAdapter` 此前在文档里被写成「已用于 `ArticleAdapter`」，实际 `ArticleAdapter` 是
+  `PagingDataAdapter`——基类长期是死代码。现已由 `ArticleListAdapter` 真正用起来，文档同步纠正。
+- lint 4 处新增告警：`PluralsCandidate`（英文 `%1$d reads` 改为 `Reads: %1$d`）、
+  `Overdraw`、`RtlSymmetry`、以及 1 处 `UnusedResources`（`article_detail_load_failed` 接入正文为空时的兜底文案）。
+
+### Known 已知未覆盖
+
+对标 OSChina 的完整产品化还差：评论 / 点赞交互、搜索历史、动弹（动态）流、开源项目列表。
+这几块在后续版本按同样的口径补：**先能当产品用，再能当参考实现读**。
+
 ## [2.2.1] - 2026-10-22
 
 > 主题：**修掉两个会静默骗过门禁的问题**——BOM 让 `@file:Suppress` 失效、Mock 图片绑死外网图床。

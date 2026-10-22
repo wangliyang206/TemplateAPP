@@ -1,7 +1,6 @@
 package com.template.app.ui.search
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -15,7 +14,7 @@ import androidx.paging.LoadState
 import com.template.app.R
 import com.template.app.databinding.FragmentSearchBinding
 import com.template.app.ui.adapter.ArticleAdapter
-import com.template.app.ui.webview.WebViewActivity
+import com.template.app.ui.articledetail.ArticleDetailActivity
 import com.template.core.base.BaseFragment
 import com.template.core.ext.collectFlow
 import com.template.core.ext.isVisible
@@ -38,12 +37,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
     private val adapter by lazy {
         ArticleAdapter { article ->
-            startActivity(
-                Intent(requireContext(), WebViewActivity::class.java).apply {
-                    putExtra("url", article.url)
-                    putExtra("title", article.title)
-                },
-            )
+            startActivity(ArticleDetailActivity.intent(requireContext(), article.id))
         }
     }
 

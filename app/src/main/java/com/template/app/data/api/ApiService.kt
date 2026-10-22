@@ -1,5 +1,7 @@
 package com.template.app.data.api
 
+import com.template.app.data.model.ArticleDetail
+import com.template.app.data.model.ArticleDetailParams
 import com.template.app.data.model.ArticleListParams
 import com.template.app.data.model.ArticleListResponse
 import com.template.app.data.model.Banner
@@ -8,6 +10,10 @@ import com.template.app.data.model.Category
 import com.template.app.data.model.CategoryListParams
 import com.template.app.data.model.CheckUpdateParams
 import com.template.app.data.model.LoginParams
+import com.template.app.data.model.Message
+import com.template.app.data.model.MessageListParams
+import com.template.app.data.model.RankArticle
+import com.template.app.data.model.RankListParams
 import com.template.app.data.model.RefreshTokenParams
 import com.template.app.data.model.RegisterParams
 import com.template.app.data.model.UpdateInfo
@@ -58,4 +64,17 @@ interface ApiService {
     // ===== 列表分页示例 =====
     @POST("article/list")
     suspend fun getArticleList(@Body request: ApiRequest<ArticleListParams>): BaseResponse<ArticleListResponse>
+
+    /** 文章详情：正文 + 点赞/评论计数 */
+    @POST("article/detail")
+    suspend fun getArticleDetail(@Body request: ApiRequest<ArticleDetailParams>): BaseResponse<ArticleDetail>
+
+    // ===== 发现模块 =====
+    /** 热门排行：一次返回固定条数，不需要分页 */
+    @POST("article/rank")
+    suspend fun getRankList(@Body request: ApiRequest<RankListParams>): BaseResponse<List<RankArticle>>
+
+    // ===== 消息模块 =====
+    @POST("message/list")
+    suspend fun getMessageList(@Body request: ApiRequest<MessageListParams>): BaseResponse<List<Message>>
 }

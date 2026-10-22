@@ -1,6 +1,8 @@
 package com.template.app.ui.mine
 
 import androidx.lifecycle.viewModelScope
+import com.template.app.data.repository.FavoriteRepository
+import com.template.app.data.repository.HistoryRepository
 import com.template.app.data.repository.UploadRepository
 import com.template.app.data.session.SessionRepository
 import com.template.core.base.BaseViewModel
@@ -27,6 +29,8 @@ import javax.inject.Inject
 class MineViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val uploadRepository: UploadRepository,
+    favoriteRepository: FavoriteRepository,
+    historyRepository: HistoryRepository,
 ) : BaseViewModel() {
 
     val userState: StateFlow<UserUiState> = sessionRepository.session
@@ -46,6 +50,18 @@ class MineViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = UserUiState.NotLoggedIn,
         )
+
+    /**
+     * 「我的收藏 / 浏览历史」右侧的条数。
+     *
+     * 直接观察 Room 的 `COUNT(*)`，所以在详情页收藏或看完文章返回时数字就已经是最新的，
+     * 不需要在 `onResume` 里重新查一遍。
+     */
+    val favoriteCount: StateFlow<Int> = favoriteRepository.observeCount()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
+
+    val historyCount: StateFlow<Int> = historyRepository.observeCount()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
     private val _uploadState = MutableStateFlow<UploadUiState>(UploadUiState.Idle)
     val uploadState: StateFlow<UploadUiState> = _uploadState.asStateFlow()

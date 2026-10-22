@@ -30,6 +30,11 @@ android {
         // Robolectric 需要真实资源来 inflate 布局（StatefulLayout / StateCardView 的回归测试依赖它）
         unitTests.isIncludeAndroidResources = true
     }
+
+    // 把导出的 schema 挂到 test 的 assets 上，MigrationTestHelper 才能在 JVM 上
+    // 按 `com.template.core.db.AppDatabase/<version>.json` 的路径读到它。
+    // 不加这行就只能把迁移测试放到 androidTest（需要真机/模拟器），CI 跑不起来。
+    sourceSets.getByName("test").assets.srcDir("$projectDir/schemas")
 }
 
 // Room 导出 schema，供迁移 diff 与 androidTest 使用
@@ -98,4 +103,6 @@ dependencies {
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.junit)
+    // MigrationTestHelper：在 JVM（Robolectric）上验证 Room 迁移，不依赖真机
+    testImplementation(libs.androidx.room.testing)
 }

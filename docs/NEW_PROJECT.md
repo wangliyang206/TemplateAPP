@@ -166,7 +166,11 @@ SIGN_SECRET=接口签名密钥
 | 目录/文件 | 说明 |
 |---|---|
 | `ui/home/` | 首页示例（Banner + Tab + Paging），建议先留着当参考 |
-| `ui/category/` | 列表 + 四态参考实现 |
+| `ui/discover/` | 多数据源 + 多 ItemType + 四态参考实现 |
+| `ui/message/` | 单例状态源 + 未读角标 |
+| `ui/categoryarticle/` | 二级页复用列表 ViewModel 的范例 |
+| `ui/articledetail/` | 原生详情页（收藏 + 分享 + 记历史）。删它要同时去掉 4 个列表页的点击跳转与 `AndroidManifest` 里的注册 |
+| `ui/favorite/`、`ui/history/` | Room 驱动列表的范例（含清空确认、上限裁剪）。删它要同时去掉「我的」页两个入口与 `favoriteFragment` / `historyFragment` |
 | `ui/search/` | 搜索页（防抖 + 取消上次请求）。删它要同时去掉首页标题栏的 `ivSearch` 与导航图里的 `searchFragment` |
 | `ui/settings/`、`data/settings/` | 设置页 + DataStore 业务键示例。删它要同时去掉「我的」页的设置按钮与 `settingsFragment` |
 | `ui/login/`、`ui/register/` | 账号体系示例，连同 `SessionRepository` 一起删 |
@@ -234,10 +238,15 @@ git ls-files | grep -E "\.jks|local\.properties"   # 应只有 app/keystore/debu
 
 ### 2.5 数据库
 
-Room 已开 `exportSchema = true`，`core/schemas/` 里是迁移基线。
+Room 已开 `exportSchema = true`，`core/schemas/` 里是迁移基线（当前有 `1.json` / `2.json`）。
 
 - 改表结构必须**升 version + 写 Migration**，禁止加 `fallbackToDestructiveMigration()`（等于删库）
 - 新增 Entity 后同步登记到 `AppDatabase.entities` 和 `MIGRATIONS`
+- **升版本后必须补一条迁移测试**：`core/src/test/.../MigrationTest.kt` 里加一个用例，
+  `MigrationTestHelper` 会在 JVM 上逐列比对迁移结果与 schema JSON。
+  前置条件是 `core/build.gradle.kts` 的 `sourceSets.getByName("test").assets.srcDir("$projectDir/schemas")`
+  —— 没有它 helper 找不到 schema，只能把测试挪到 androidTest（要真机，CI 跑不了）
+- 迁移测试写在 `src/test/`（Robolectric）而不是 `src/androidTest/`：CI 没有模拟器
 
 ---
 

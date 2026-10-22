@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    android:orientation="vertical"
+    tools:ignore="Overdraw">
+
+    <LinearLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="4dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_back"
+            android:padding="10dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/article_detail_title"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/ivShare"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/article_detail_share"
+            android:padding="10dp"
+            android:src="@drawable/ic_share" />
+    </LinearLayout>
+
+    <com.template.core.widget.StatefulLayout
+        android:id="@+id/stateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/margin_large"
+                android:paddingTop="@dimen/margin_normal"
+                android:paddingBottom="32dp">
+
+                <TextView
+                    android:id="@+id/tvArticleTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    android:lineSpacingExtra="4dp"
+                    tools:text="Jetpack Compose 动画教程" />
+
+                <TextView
+                    android:id="@+id/tvMeta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/text_hint"
+                    android:textSize="13sp"
+                    tools:text="Android 开发者 · 2024-03-12" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@color/divider" />
+
+                <TextView
+                    android:id="@+id/tvContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:lineSpacingExtra="7dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    tools:text="正文内容" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.template.core.widget.StatefulLayout>
+
+    <!-- 底部操作栏：收藏 + 查看原文。放在滚动区之外，长文滚动时始终可见 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/margin_large"
+        android:paddingVertical="10dp">
+
+        <LinearLayout
+            android:id="@+id/btnFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="6dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp">
+
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:contentDescription="@string/article_detail_favorite"
+                android:src="@drawable/ic_star_outline" />
+
+            <TextView
+                android:id="@+id/tvFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/article_detail_favorite"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/btnOpenSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_search_box"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@string/article_detail_open_source"
+            android:textColor="@color/primary"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

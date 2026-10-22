@@ -20,3 +20,12 @@ data class ArticleListParams(val page: Int, val pageSize: Int, val categoryId: I
 data class BannerListParams(val position: Int = 0)
 
 data class CategoryListParams(val type: Int = 0)
+
+/** 排行不需要分页，只按条数取 */
+data class RankListParams(val size: Int = 10)
+
+/** 消息列表按类型过滤：null 表示全部 */
+data class MessageListParams(val type: MessageType? = null)
+
+/** 文章详情 */
+data class ArticleDetailParams(val articleId: Long)

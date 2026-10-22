@@ -5,9 +5,13 @@
         android:icon="@drawable/ic_home"
         android:title="@string/tab_home" />
     <item
-        android:id="@+id/categoryFragment"
-        android:icon="@drawable/ic_category"
-        android:title="@string/tab_category" />
+        android:id="@+id/discoverFragment"
+        android:icon="@drawable/ic_discover"
+        android:title="@string/tab_discover" />
+    <item
+        android:id="@+id/messageFragment"
+        android:icon="@drawable/ic_message"
+        android:title="@string/tab_message" />
     <item
         android:id="@+id/mineFragment"
         android:icon="@drawable/ic_mine"

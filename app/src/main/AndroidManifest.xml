@@ -51,6 +51,7 @@
             android:name=".ui.register.RegisterActivity"
             android:theme="@style/AppTheme.Form" />
         <activity android:name=".ui.webview.WebViewActivity" />
+        <activity android:name=".ui.articledetail.ArticleDetailActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -187,6 +187,11 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    testOptions {
+        // 让 Robolectric 能拿到真实资源与 assets：Room 的 JVM 测试（收藏 / 历史仓储）依赖它
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 // CI 在打包 release 前执行，签名缺失时直接失败，避免"空口令签名"的产物流出。

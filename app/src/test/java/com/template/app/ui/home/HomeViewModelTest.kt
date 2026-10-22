@@ -1,18 +1,11 @@
 package com.template.app.ui.home
 
 import com.template.app.data.api.ApiService
-import com.template.app.data.model.ArticleListParams
-import com.template.app.data.model.ArticleListResponse
+import com.template.app.data.api.StubApiService
 import com.template.app.data.model.Banner
 import com.template.app.data.model.BannerListParams
 import com.template.app.data.model.Category
 import com.template.app.data.model.CategoryListParams
-import com.template.app.data.model.CheckUpdateParams
-import com.template.app.data.model.LoginParams
-import com.template.app.data.model.RefreshTokenParams
-import com.template.app.data.model.RegisterParams
-import com.template.app.data.model.UpdateInfo
-import com.template.app.data.model.User
 import com.template.app.testing.MainDispatcherRule
 import com.template.core.network.ApiRequest
 import com.template.core.network.ApiRequestFactory
@@ -41,27 +34,18 @@ class HomeViewModelTest {
         override suspend fun clearToken() = Unit
     }
 
-    /** 只实现首页用到的两个接口，其余调用直接失败，防止测试里误用 */
+    /** 只实现首页用到的两个接口，其余调用由 [StubApiService] 抛异常，防止测试里误用 */
     private class FakeApiService(
         private val banners: List<Banner> = emptyList(),
         private val categories: List<Category> = emptyList(),
         private val businessError: ErrorInfo? = null,
-    ) : ApiService {
+    ) : StubApiService() {
 
         override suspend fun getBannerList(request: ApiRequest<BannerListParams>): BaseResponse<List<Banner>> =
             BaseResponse(1, businessError, if (businessError == null) banners else null)
 
         override suspend fun getCategoryList(request: ApiRequest<CategoryListParams>): BaseResponse<List<Category>> =
             BaseResponse(1, businessError, if (businessError == null) categories else null)
-
-        override suspend fun login(request: ApiRequest<LoginParams>): BaseResponse<User> = notUsed()
-        override suspend fun register(request: ApiRequest<RegisterParams>): BaseResponse<User> = notUsed()
-        override suspend fun refreshToken(request: ApiRequest<RefreshTokenParams>): BaseResponse<User> = notUsed()
-        override suspend fun checkUpdate(request: ApiRequest<CheckUpdateParams>): BaseResponse<UpdateInfo> = notUsed()
-        override suspend fun getArticleList(request: ApiRequest<ArticleListParams>): BaseResponse<ArticleListResponse> =
-            notUsed()
-
-        private fun notUsed(): Nothing = error("该接口不应在 HomeViewModel 测试中被调用")
     }
 
     private fun repository(service: ApiService) = HomeRepository(service, ApiRequestFactory(FakeTokenStore()))

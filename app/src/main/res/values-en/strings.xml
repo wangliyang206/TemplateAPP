@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TemplateAPP</string>
-    <string name="tab_home">Home</string>
+    <string name="tab_home">News</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_message">Messages</string>
     <string name="tab_category">Categories</string>
     <string name="tab_mine">Me</string>
     <string name="login_title">Sign in</string>
@@ -20,6 +22,8 @@
     <string name="mine_upload_done">Uploaded: %1$s</string>
     <string name="mine_upload_failed">Upload failed: %1$s</string>
     <string name="mine_settings">Settings</string>
+    <string name="mine_my_content">My Content</string>
+    <string name="mine_dev_tools">Dev Samples</string>
     <string name="mine_pick_photo">Pick a photo (PhotoPicker demo)</string>
     <string name="mine_photo_picked">Selected: %1$s</string>
     <string name="webview_load_failed">Failed to load. The link may be broken or the network is unavailable</string>
@@ -43,6 +47,17 @@
     <string name="update_new_version">New version %1$s available</string>
     <string name="update_progress">%1$d%%</string>
     <string name="category_id_tag">#%1$d</string>
+
+    <!-- Discover page: category entries + hot ranking -->
+    <string name="discover_title">Discover</string>
+    <string name="discover_section_category">Categories</string>
+    <string name="discover_section_rank">Trending</string>
+    <string name="discover_rank_position">%1$d</string>
+    <string name="discover_rank_reads">Reads: %1$d</string>
+
+    <!-- Messages page: local notification list + unread badge -->
+    <string name="message_title">Messages</string>
+    <string name="message_empty">No new messages</string>
 
     <!-- Accessibility -->
     <string name="cd_avatar">Avatar</string>
@@ -68,4 +83,31 @@
     <string name="settings_push_desc">Turn off to stop receiving marketing messages</string>
     <string name="settings_version">Version</string>
     <string name="settings_version_desc">v%1$s (%2$d)</string>
+    <string name="message_mark_all_read">Mark all read</string>
+
+    <!-- Article detail page -->
+    <string name="article_detail_title">Article</string>
+    <string name="article_detail_favorite">Save</string>
+    <string name="article_detail_favorited">Saved</string>
+    <string name="article_detail_favorite_added">Added to favorites</string>
+    <string name="article_detail_favorite_removed">Removed from favorites</string>
+    <string name="article_detail_open_source">Open original</string>
+    <string name="article_detail_share">Share</string>
+    <string name="article_detail_share_title">Share via</string>
+    <string name="article_detail_share_via">From Template App, original link: %1$s</string>
+    <string name="article_detail_meta">%1$s · %2$s</string>
+    <string name="article_detail_load_failed">Failed to load</string>
+    <string name="article_detail_not_found">This article is unavailable</string>
+
+    <!-- Favorites / history -->
+    <string name="favorite_title">Favorites</string>
+    <string name="favorite_empty">Nothing saved yet\nTap Save on an article to keep it here</string>
+    <string name="history_title">History</string>
+    <string name="history_empty">No reading history yet</string>
+    <string name="history_clear">Clear</string>
+    <string name="history_clear_confirm">Clear all reading history?</string>
+    <string name="history_cleared">Reading history cleared</string>
+    <string name="mine_favorite">Favorites</string>
+    <string name="mine_history">History</string>
+    <string name="mine_count_format">%1$d</string>
 </resources>

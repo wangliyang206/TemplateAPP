@@ -1,16 +1,10 @@
 package com.template.app.ui.home
 
 import androidx.paging.testing.asSnapshot
-import com.template.app.data.api.ApiService
+import com.template.app.data.api.StubApiService
 import com.template.app.data.model.Article
 import com.template.app.data.model.ArticleListParams
 import com.template.app.data.model.ArticleListResponse
-import com.template.app.data.model.BannerListParams
-import com.template.app.data.model.CategoryListParams
-import com.template.app.data.model.CheckUpdateParams
-import com.template.app.data.model.LoginParams
-import com.template.app.data.model.RefreshTokenParams
-import com.template.app.data.model.RegisterParams
 import com.template.app.data.repository.ArticleRepository
 import com.template.app.testing.MainDispatcherRule
 import com.template.core.network.ApiRequest
@@ -36,7 +30,7 @@ class ArticleListViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private class FakeApiService : ApiService {
+    private class FakeApiService : StubApiService() {
 
         /** 每页条数（与 ArticleRepository.PAGE_SIZE 保持一致） */
         private val pageSize = 20
@@ -56,15 +50,6 @@ class ArticleListViewModelTest {
             }
             return BaseResponse(1, null as ErrorInfo?, ArticleListResponse(total = pagesWithData * pageSize, list))
         }
-
-        override suspend fun login(request: ApiRequest<LoginParams>) = notUsed()
-        override suspend fun register(request: ApiRequest<RegisterParams>) = notUsed()
-        override suspend fun refreshToken(request: ApiRequest<RefreshTokenParams>) = notUsed()
-        override suspend fun checkUpdate(request: ApiRequest<CheckUpdateParams>) = notUsed()
-        override suspend fun getBannerList(request: ApiRequest<BannerListParams>) = notUsed()
-        override suspend fun getCategoryList(request: ApiRequest<CategoryListParams>) = notUsed()
-
-        private fun notUsed(): Nothing = error("该接口不应在 ArticleListViewModel 测试中被调用")
     }
 
     @Test

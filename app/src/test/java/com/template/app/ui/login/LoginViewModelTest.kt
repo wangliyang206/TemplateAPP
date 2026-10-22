@@ -1,18 +1,8 @@
 package com.template.app.ui.login
 
 import app.cash.turbine.test
-import com.template.app.data.api.ApiService
-import com.template.app.data.model.ArticleListParams
-import com.template.app.data.model.ArticleListResponse
-import com.template.app.data.model.Banner
-import com.template.app.data.model.BannerListParams
-import com.template.app.data.model.Category
-import com.template.app.data.model.CategoryListParams
-import com.template.app.data.model.CheckUpdateParams
+import com.template.app.data.api.StubApiService
 import com.template.app.data.model.LoginParams
-import com.template.app.data.model.RefreshTokenParams
-import com.template.app.data.model.RegisterParams
-import com.template.app.data.model.UpdateInfo
 import com.template.app.data.model.User
 import com.template.app.data.session.SessionRepository
 import com.template.app.testing.MainDispatcherRule
@@ -104,23 +94,10 @@ class LoginViewModelTest {
     }
 
     /** 只有 login 可用；businessError 非空时返回业务错误，测试中途可改以验证重试。inner 为访问外部的 successUser */
-    private inner class FakeApiService(initialError: ErrorInfo? = null) : ApiService {
+    private inner class FakeApiService(initialError: ErrorInfo? = null) : StubApiService() {
         var businessError: ErrorInfo? = initialError
         override suspend fun login(request: ApiRequest<LoginParams>): BaseResponse<User> =
             BaseResponse(1, businessError, if (businessError == null) successUser else null)
-
-        override suspend fun getBannerList(request: ApiRequest<BannerListParams>): BaseResponse<List<Banner>> =
-            notUsed()
-        override suspend fun getCategoryList(request: ApiRequest<CategoryListParams>): BaseResponse<List<Category>> =
-            notUsed()
-
-        override suspend fun register(request: ApiRequest<RegisterParams>): BaseResponse<User> = notUsed()
-        override suspend fun refreshToken(request: ApiRequest<RefreshTokenParams>): BaseResponse<User> = notUsed()
-        override suspend fun checkUpdate(request: ApiRequest<CheckUpdateParams>): BaseResponse<UpdateInfo> = notUsed()
-        override suspend fun getArticleList(request: ApiRequest<ArticleListParams>): BaseResponse<ArticleListResponse> =
-            notUsed()
-
-        private fun notUsed(): Nothing = error("该接口不应在 LoginViewModel 测试中被调用")
     }
 
     private class LoginStack(val viewModel: LoginViewModel, val api: FakeApiService, val sessionStore: FakeSessionStore)
