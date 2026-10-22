@@ -72,7 +72,7 @@ class MockApiService : ApiService {
                     userName = "测试用户",
                     userPhone = params.mobile,
                     token = "mock_token_${System.currentTimeMillis()}",
-                    avatar = "https://picsum.photos/200/200?random=1",
+                    avatar = "res://avatar_default",
                 ),
             )
         } else {
@@ -116,7 +116,7 @@ class MockApiService : ApiService {
                 userName = "测试用户",
                 userPhone = "15032134297",
                 token = "mock_token_refreshed_${System.currentTimeMillis()}",
-                avatar = "https://picsum.photos/200/200?random=1",
+                avatar = "res://avatar_default",
             ),
         )
     }
@@ -150,13 +150,15 @@ class MockApiService : ApiService {
     override suspend fun getBannerList(request: ApiRequest<BannerListParams>): BaseResponse<List<Banner>> {
         mockDelay()
 
+        // 图片走本地资源（drawable-nodpi/），不依赖外网图床 —— Mock 演示不联网也能看到完整 UI。
+        // 真实项目接后端后，这里换成服务器返回的 https URL 即可，UI 层代码零改动。
         val banners = listOf(
-            Banner(1, "新品推荐", "https://picsum.photos/800/400?random=101", "https://www.baidu.com"),
-            Banner(2, "限时特惠", "https://picsum.photos/800/400?random=102", "https://github.com"),
-            Banner(3, "热门活动", "https://picsum.photos/800/400?random=103", "https://developer.android.com"),
-            Banner(4, "精选好物", "https://picsum.photos/800/400?random=104", "https://kotlinlang.org"),
-            Banner(5, "品牌盛典", "https://picsum.photos/800/400?random=105", "https://www.csdn.net"),
-            Banner(6, "会员专享", "https://picsum.photos/800/400?random=106", "https://www.jianshu.com"),
+            Banner(1, "新品推荐", "res://banner_1", "https://www.baidu.com"),
+            Banner(2, "限时特惠", "res://banner_2", "https://github.com"),
+            Banner(3, "热门活动", "res://banner_3", "https://developer.android.google.cn"),
+            Banner(4, "精选好物", "res://banner_4", "https://kotlinlang.org"),
+            Banner(5, "品牌盛典", "res://banner_5", "https://www.csdn.net"),
+            Banner(6, "会员专享", "res://banner_6", "https://www.jianshu.com"),
         )
         return successResponse(banners)
     }
@@ -268,11 +270,11 @@ class MockApiService : ApiService {
             "https://developer.android.google.cn/training/permissions/requesting", // Android 权限适配方案
         ),
         3 to listOf(
-            "https://picsum.photos/1200/800?random=landscape-1", // 精美风景图片
-            "https://picsum.photos/1200/800?random=citynight-2", // 城市夜景摄影
-            "https://picsum.photos/1200/800?random=nature-3", // 自然风光大片
-            "https://picsum.photos/1200/800?random=architecture-4", // 建筑摄影精选
-            "https://picsum.photos/1200/800?random=portrait-5", // 人像摄影佳作
+            "https://tuchong.com/", // 图虫：国内摄影社区
+            "https://500px.com.cn/", // 500px 中国版：风光与人像摄影
+            "https://www.xitek.com/", // 色影无忌：摄影器材与技巧
+            "https://www.fengniao.com/", // 蜂鸟网：摄影教程与作品
+            "https://sspai.com/tag/Photography", // 少数派摄影专题
         ),
         4 to listOf(
             "https://www.36kr.com/", // 科技前沿资讯
@@ -314,7 +316,7 @@ class MockApiService : ApiService {
                 title = titles[index % titles.size] + if (index >= titles.size) "（${index + 1}）" else "",
                 desc = descs[index % descs.size],
                 url = urls[index % urls.size],
-                cover = "https://picsum.photos/400/300?random=${categoryId * 100 + index + 1}",
+                cover = "res://cover_placeholder",
                 author = authors[index % authors.size],
                 createTime = "2024-0${(index % 12) + 1}-${(index % 28) + 1}",
             )

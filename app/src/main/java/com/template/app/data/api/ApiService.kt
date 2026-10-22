@@ -1,4 +1,4 @@
-﻿package com.template.app.data.api
+package com.template.app.data.api
 
 import com.template.app.data.model.ArticleListParams
 import com.template.app.data.model.ArticleListResponse

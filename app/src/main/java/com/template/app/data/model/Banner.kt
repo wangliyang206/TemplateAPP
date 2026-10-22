@@ -1,4 +1,4 @@
-﻿package com.template.app.data.model
+package com.template.app.data.model
 
 /**
  * 轮播广告数据模型

@@ -34,6 +34,10 @@ cp local.properties.example local.properties   # 填 sdk.dir，其余按需
 
 # 3. 装到设备
 ./gradlew :app:installDevDebug
+
+# 4. 提交前的两项脚本门禁（CI 也会跑）
+./scripts/check-docs.sh                        # 文档引用的代码路径必须存在
+./scripts/check-encoding.sh                     # 源文件不得带 BOM（会让 @file:Suppress 失效）
 ```
 
 > 环境：JDK 17、Android SDK Platform 35，`local.properties` 的 `sdk.dir` 必填。

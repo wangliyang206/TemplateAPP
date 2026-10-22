@@ -183,6 +183,7 @@ SIGN_SECRET=接口签名密钥
 ./gradlew clean :app:assembleDevDebug :app:testDevDebugUnitTest
 ./gradlew detekt spotlessCheck :app:lintDevDebug
 ./scripts/check-docs.sh                               # 文档引用的代码路径必须真实存在
+./scripts/check-encoding.sh                            # 源文件不得带 BOM（会让 @file:Suppress 失效）
 ./scripts/test-count.sh                               # 用例数以脚本输出为准
 git ls-files | grep -E "\.jks|local\.properties"   # 应只有 app/keystore/debug.jks
 ```

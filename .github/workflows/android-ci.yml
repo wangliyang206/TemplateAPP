@@ -34,6 +34,10 @@ jobs:
       - name: Docs consistency
         run: ./scripts/check-docs.sh
 
+      # BOM 会让 @file:Suppress 静默失效，增量构建看不出来，必须显式拦（scripts/check-encoding.sh）
+      - name: Encoding check (no BOM)
+        run: ./scripts/check-encoding.sh
+
       - name: Unit tests
         run: ./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest --stacktrace
 

@@ -24,10 +24,15 @@
 ```bash
 ./gradlew detekt spotlessCheck          # 静态检查，0 容忍（maxIssues: 0）
 ./scripts/check-docs.sh                 # 文档引用的代码路径必须真实存在
+./scripts/check-encoding.sh             # 源文件不得带 UTF-8 BOM（会让 @file:Suppress 失效）
 ./gradlew :core:testDebugUnitTest :app:testDevDebugUnitTest
 ./gradlew :app:lintDevDebug             # 0 errors, 0 warnings
 ./gradlew :app:assembleDevDebug
 ```
+
+> 关于 `check-encoding.sh`：BOM 会让 Kotlin 的 `@file:Suppress(...)` **静默失效**，
+> 而且增量构建看不出来（detekt 任务往往是 UP-TO-DATE），只有干净构建才报错。
+> 本仓库踩过一次，所以直接做成门禁。
 
 一次通过门禁的快捷方式：
 

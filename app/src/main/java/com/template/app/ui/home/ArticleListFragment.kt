@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.home
+package com.template.app.ui.home
 
 import android.content.Intent
 import android.os.Bundle

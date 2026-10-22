@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+      drawable-nodpi/ 只放 Mock 演示图，由 core/ext/GlideExt.kt 的 res:// 协议在运行时按名字解析，
+      没有 R.drawable.xxx 静态引用，lint 的 UnusedResources 分析看不到它们（会报 7 条 error）。
+      整目录豁免而不是逐个列出：这个目录的定位就是"运行时动态加载的资源池"。
+      真实项目接入后端、删掉 Mock 数据后，可连同本目录一起删除这段豁免。
+    -->
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/drawable-nodpi/" />
+    </issue>
+</lint>

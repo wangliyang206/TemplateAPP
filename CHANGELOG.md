@@ -3,6 +3,41 @@
 本模板的所有显著变更记录在此。
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+## [2.2.1] - 2026-10-22
+
+> 主题：**修掉两个会静默骗过门禁的问题**——BOM 让 `@file:Suppress` 失效、Mock 图片绑死外网图床。
+
+### Fixed 修复
+
+- **BOM 导致 `@file:Suppress` 静默失效（16 个文件）**
+  `MockApiService.kt` 首行带 UTF-8 BOM，文件头写的 `@file:Suppress("MagicNumber")` 完全没生效，
+  干净构建下 detekt 报 8 条 MagicNumber；去掉 BOM 后同一份代码立刻通过。
+  这类问题在增量构建里看不出来（`:app:detekt` 一直 UP-TO-DATE），只有 CI 干净构建才炸——
+  而此前 CI 的 push 分支写错了（见 2.2.0），所以一直没有暴露。
+  已清理全部 16 个带 BOM 的源文件（15 个 `.kt` + `core/src/main/AndroidManifest.xml`）。
+
+- **Mock 图片不再依赖外网图床**
+  原先 Banner / 头像 / 封面全部指向 `picsum.photos`，国内网络实测 `SocketTimeoutException`（2.5s 超时），
+  真机首屏 6 张轮播图**全部加载失败且无兜底**，界面一片空白。
+  现改为打包进 APK 的本地图（`app/src/main/res/drawable-nodpi/`）：
+  `banner_1` ~ `banner_6`、`avatar_default`、`cover_placeholder`，模板不联网也有完整 UI。
+  Mock 里写 `"res://banner_1"` 即可，接真实后端后换成 https 地址，UI 层零改动。
+  摄影分类的 5 个示例链接也从 picsum 换成国内可访问的摄影社区。
+
+- **Glide 扩展补齐加载失败兜底**
+  `placeholder` 之前只在加载中显示，失败后仍是空白。现在同时作为 `error` 图，
+  网络异常时保留占位图而不是白块。
+
+### Added 新增
+
+- **`res://` 本地资源协议**（`core/ext/GlideExt.kt`）：`load/loadCircle/loadRounded/loadCircleOrDrawable`
+  四个方法统一支持，`res://名称` 解析成 drawable 资源 id，带 `ConcurrentHashMap` 缓存避免反复反射。
+  名称找不到时返回 `null` 走 error 图，不崩溃。
+- **`scripts/check-encoding.sh`**：BOM 检查，已接入 CI。
+- **StrictMode 系统噪音过滤**（`core/BaseApplication.kt`）：API 28+ 用 `penaltyListener` 过滤
+  `com.miui.server.` / `com.android.server.` 栈帧的违规。这类日志是系统进程读盘（如 MIUI 应用锁
+  检查密码文件）被归因到调用方，与业务代码无关，不过滤会把真实违规淹掉。
+
 ## [2.2.0] - 2026-10-22
 
 > 主题：**按《模板审计报告》清 P0/P1/P2**——先让文档与代码对齐，再补核心链路测试，最后补示例与工具。

@@ -1,4 +1,4 @@
-﻿package com.template.app.data.model
+package com.template.app.data.model
 
 /**
  * 业务请求参数数据类

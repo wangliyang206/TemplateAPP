@@ -73,6 +73,8 @@
       `./scripts/new-feature.sh demo && ./gradlew :app:assembleDevDebug`（验完记得删掉生成的 4 个文件）
 - [ ] 文档引用的代码路径全部存在（脚本化，CI 也会跑）
       `./scripts/check-docs.sh` → 输出 `OK: 文档引用的 N 个代码路径全部存在`
+- [ ] 源文件无 UTF-8 BOM（BOM 会让 `@file:Suppress` 静默失效，增量构建查不出来）
+      `./scripts/check-encoding.sh` → 输出 `OK: 检查 N 个文件，无 BOM`
 - [ ] 文档里的能力描述都有对应调用点（"已支持"必须 grep 得到）
       `grep -rn "AutoSize\|blankj" app core --include=*.kt` → 输出为空（已删除的依赖不得再出现在文档能力表里）
 - [ ] 无空 catch 块（吞异常且不记日志）

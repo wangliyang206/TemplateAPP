@@ -1,4 +1,4 @@
-﻿package com.template.app.ui.webview
+package com.template.app.ui.webview
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException

@@ -1,8 +1,9 @@
-﻿package com.template.app.ui.adapter
+package com.template.app.ui.adapter
 
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.template.app.R
 import com.template.app.data.model.Banner
 import com.template.core.ext.loadRounded
 import com.youth.banner.adapter.BannerAdapter
@@ -41,8 +42,8 @@ class BannerImageAdapter(banners: List<Banner>) : BannerAdapter<Banner, BannerVi
     }
 
     override fun onBindView(holder: BannerViewHolder, data: Banner, position: Int, size: Int) {
-        // 使用圆角加载图片
-        holder.imageView.loadRounded(data.imageUrl, roundedRadiusDp)
+        // 使用圆角加载图片；占位图兼作加载失败兜底，网络异常时不会是一片空白
+        holder.imageView.loadRounded(data.imageUrl, roundedRadiusDp, R.drawable.cover_placeholder)
         holder.imageView.setOnClickListener {
             onItemClick?.invoke(data)
         }
