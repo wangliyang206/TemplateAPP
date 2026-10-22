@@ -48,6 +48,10 @@
     <string name="cd_avatar">Avatar</string>
     <string name="cd_search">Search</string>
 
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+
     <!-- Search page: debounce + cancel-previous-request reference implementation -->
     <string name="search_title">Search</string>
     <string name="search_hint">Search articles by keyword</string>
@@ -56,8 +60,12 @@
 
     <!-- Settings page: DataStore business-key reference implementation -->
     <string name="settings_title">Settings</string>
+    <string name="settings_group_common">General</string>
+    <string name="settings_group_about">About</string>
     <string name="settings_wifi_only">Wi-Fi only downloads</string>
     <string name="settings_wifi_only_desc">Do not auto-download updates on mobile data</string>
     <string name="settings_push">Push notifications</string>
     <string name="settings_push_desc">Turn off to stop receiving marketing messages</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_version_desc">v%1$s (%2$d)</string>
 </resources>

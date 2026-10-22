@@ -69,6 +69,13 @@
       `./gradlew :app:assembleDevDebug :app:assembleProdDebug` 后 `aapt2 dump badging *.apk | grep package`
 - [ ] 三个 flavor 的包名互不冲突，可同时安装
 - [ ] 断网时首页显示错误态 + 重试可恢复
+- [ ] **下拉刷新连续 3 次不崩溃**
+      Paging 要求 `pagingSourceFactory` 每次返回新实例，传实例会抛
+      `IllegalStateException: An instance of PagingSource was re-used`（本仓库踩过，只在刷新时触发，
+      首屏加载正常，容易漏测）。`ArticleRepository.pager()` 的参数是 `() -> ArticlePagingSource`，
+      就是为了让"传实例"在类型层面写不出来
+- [ ] 二级页（搜索 / 设置）有返回按钮，进入时底部导航隐藏，返回后恢复
+- [ ] 搜索页进入即弹键盘，空态文案居中显示
 - [ ] 脚手架用当前命名空间生成且可直接编译
       `./scripts/new-feature.sh demo && ./gradlew :app:assembleDevDebug`（验完记得删掉生成的 4 个文件）
 - [ ] 文档引用的代码路径全部存在（脚本化，CI 也会跑）

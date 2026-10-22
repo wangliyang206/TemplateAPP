@@ -12,7 +12,11 @@
         <!-- 搜索页不是底部导航项，只能从首页标题栏进入，所以用 action 显式声明跳转 -->
         <action
             android:id="@+id/action_home_to_search"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -27,10 +31,17 @@
 
         <action
             android:id="@+id/action_mine_to_settings"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
-    <!-- 以下两个是二级页面，不在 bottom_nav_menu.xml 里，靠 action 进入 -->
+    <!--
+      以下两个是二级页面，不在 bottom_nav_menu.xml 里：
+      靠 action 进入，进入时 MainActivity 会隐藏底部导航（见 addOnDestinationChangedListener）。
+    -->
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.template.app.ui.search.SearchFragment"

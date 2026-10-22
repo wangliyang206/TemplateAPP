@@ -49,6 +49,10 @@
     <string name="cd_avatar">头像</string>
     <string name="cd_search">搜索</string>
 
+    <!-- 通用动作 -->
+    <string name="action_back">返回</string>
+    <string name="action_cancel">取消</string>
+
     <!-- 搜索页：防抖 + 取消上次请求的参考实现 -->
     <string name="search_title">搜索</string>
     <string name="search_hint">输入关键词搜索文章</string>
@@ -57,8 +61,12 @@
 
     <!-- 设置页：DataStore 业务键用法参考实现 -->
     <string name="settings_title">设置</string>
+    <string name="settings_group_common">通用</string>
+    <string name="settings_group_about">关于</string>
     <string name="settings_wifi_only">仅 Wi-Fi 下载</string>
     <string name="settings_wifi_only_desc">移动网络下不自动下载更新包</string>
     <string name="settings_push">接收推送通知</string>
     <string name="settings_push_desc">关闭后不再接收运营消息</string>
+    <string name="settings_version">当前版本</string>
+    <string name="settings_version_desc">v%1$s（%2$d）</string>
 </resources>

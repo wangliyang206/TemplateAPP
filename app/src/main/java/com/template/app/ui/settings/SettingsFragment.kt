@@ -3,6 +3,8 @@ package com.template.app.ui.settings
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.template.app.BuildConfig
 import com.template.app.R
 import com.template.app.data.settings.AppSettings
 import com.template.app.databinding.FragmentSettingsBinding
@@ -33,6 +35,15 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         FragmentSettingsBinding.inflate(inflater, container, false)
 
     override fun initView() {
+        binding.ivBack.setOnClickListener { findNavController().navigateUp() }
+
+        // 版本号直接从 BuildConfig 读，避免"设置页写着 1.0.0、实际装的是 1.2.0"
+        binding.tvVersion.text = getString(
+            R.string.settings_version_desc,
+            BuildConfig.VERSION_NAME,
+            BuildConfig.VERSION_CODE,
+        )
+
         binding.switchWifiOnly.setOnCheckedChangeListener { _, checked ->
             if (!isRendering) viewModel.setWifiOnlyDownload(checked)
         }

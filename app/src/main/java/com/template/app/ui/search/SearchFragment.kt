@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.template.app.R
 import com.template.app.databinding.FragmentSearchBinding
@@ -65,12 +66,30 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             true
         }
 
+        // 返回与取消都回上一页；用 navigateUp 而不是 finish，保证与 Navigation 回退栈一致
+        binding.ivBack.setOnClickListener { navigateUp() }
+        binding.tvCancel.setOnClickListener { navigateUp() }
+
+        // 进页面直接弹键盘，省掉"先点输入框"这一步。
+        // 用 post 而不是放 onResume：从搜索结果点进 WebView 再回来时不该重复弹键盘。
+        binding.etKeyword.post {
+            if (view == null) return@post
+            binding.etKeyword.requestFocus()
+            val manager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            manager?.showSoftInput(binding.etKeyword, InputMethodManager.SHOW_IMPLICIT)
+        }
+
         // Paging 的"加载完了但一条都没有"只能从 LoadState 拿到，adapter 本身不暴露"是否为空"
         adapter.addLoadStateListener { states ->
             val refresh = states.refresh
             lastPageEmpty = refresh is LoadState.NotLoading && adapter.itemCount == 0
             updateHint()
         }
+    }
+
+    private fun navigateUp() {
+        hideKeyboard()
+        findNavController().navigateUp()
     }
 
     override fun initObserver() {
